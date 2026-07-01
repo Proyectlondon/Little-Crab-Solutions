@@ -27,8 +27,8 @@ const FRAME_INDEX: Record<Frame, number> = {
   "click-snap": 3,
 };
 
-const FRAME_W = 52;
-const FRAME_H = 48;
+const FRAME_W = 50;
+const FRAME_H = 54;
 const FRAME_COUNT = 4;
 
 export default function CrabCursor() {
