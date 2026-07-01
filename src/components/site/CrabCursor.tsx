@@ -178,6 +178,7 @@ export default function CrabCursor() {
         rightClawRef={rightClawRef}
         legsRef={legsRef}
         bodyRef={bodyRef}
+        snapping={snapping}
       />
     </div>
   );
@@ -188,11 +189,13 @@ function CrabSVG({
   rightClawRef,
   legsRef,
   bodyRef,
+  snapping,
 }: {
   leftClawRef: React.RefObject<SVGGElement | null>;
   rightClawRef: React.RefObject<SVGGElement | null>;
   legsRef: React.RefObject<SVGGElement | null>;
   bodyRef: React.RefObject<SVGGElement | null>;
+  snapping: boolean;
 }) {
   // Color palette matching the user's logo
   const SHELL = "#1E8B9F";        // teal body
