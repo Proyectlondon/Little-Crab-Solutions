@@ -2,35 +2,34 @@
 
 import { useEffect, useRef, useState } from "react";
 
-type Frame = "idle-1" | "idle-2" | "walk-1" | "walk-2" | "rest" | "click-1" | "click-2";
+type Frame = "idle" | "walk" | "click-mid" | "click-snap";
 
 /**
- * Sprite-based CrabCursor.
+ * Sprite-based CrabCursor — professional version.
  *
- * Uses the actual crab cursor spritesheet the user provided.
+ * Uses 4 hand-picked, cleanly-cropped, defringed crab sprites.
+ * Smaller size (52×48) for a refined, non-intrusive cursor.
+ *
  * States:
- *  - IDLE    → cycles idle-1 ↔ idle-2 slowly (breathing)
- *  - WALKING → cycles walk-1 ↔ walk-2 fast (legs moving)
- *  - CLICK   → click-1 (snap mid) → click-2 (snap closed) → back to idle
+ *  - IDLE    → static idle frame (claws open, neutral)
+ *  - WALKING → cycles idle ↔ walk every 130ms (subtle claw shimmer)
+ *  - CLICK   → click-mid (claws mid-closing) → click-snap (claws closed)
  *
- * The crab flips horizontally based on the direction of horizontal movement,
- * so it always "faces" the way it's walking.
+ * The crab flips horizontally based on movement direction.
  *
- * Sprite sheet layout (7 frames, 80px wide each):
- *  [0] idle-1  [1] walk-1  [2] rest  [3] walk-2  [4] idle-2  [5] click-1  [6] click-2
+ * Sprite sheet layout (4 frames, 52px wide each):
+ *  [0] idle  [1] walk  [2] click-mid  [3] click-snap
  */
 const FRAME_INDEX: Record<Frame, number> = {
-  "idle-1": 0,
-  "walk-1": 1,
-  rest: 2,
-  "walk-2": 3,
-  "idle-2": 4,
-  "click-1": 5,
-  "click-2": 6,
+  idle: 0,
+  walk: 1,
+  "click-mid": 2,
+  "click-snap": 3,
 };
 
-const FRAME_W = 80;
-const FRAME_H = 75;
+const FRAME_W = 52;
+const FRAME_H = 48;
+const FRAME_COUNT = 4;
 
 export default function CrabCursor() {
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -57,13 +56,12 @@ export default function CrabCursor() {
     let raf = 0;
 
     // State machine
-    let frame: Frame = "idle-1";
-    let facing: 1 | -1 = 1; // 1 = right, -1 = left
+    let frame: Frame = "idle";
+    let facing: 1 | -1 = 1;
     let lastMoveTime = performance.now();
     let isClicking = false;
     let clickFrameTime = 0;
     let walkFrameTime = 0;
-    let idleFrameTime = 0;
     let lastBubbleTime = 0;
 
     // Bubble trail
@@ -72,8 +70,6 @@ export default function CrabCursor() {
     const applyFrame = (f: Frame, flip: 1 | -1) => {
       const idx = FRAME_INDEX[f];
       img.style.transform = `translateX(${-idx * FRAME_W}px) scaleX(${flip})`;
-      img.style.width = `${FRAME_W * 7}px`;
-      img.style.height = `${FRAME_H}px`;
     };
 
     applyFrame(frame, facing);
@@ -87,20 +83,18 @@ export default function CrabCursor() {
     const onDown = () => {
       isClicking = true;
       clickFrameTime = performance.now();
-      frame = "click-1";
+      frame = "click-mid";
       applyFrame(frame, facing);
     };
 
     const onUp = () => {
       isClicking = false;
-      // Brief delay then return to idle
       setTimeout(() => {
         if (!isClicking) {
-          frame = "idle-1";
-          idleFrameTime = performance.now();
+          frame = "idle";
           applyFrame(frame, facing);
         }
-      }, 180);
+      }, 150);
     };
 
     const onLeave = () => { container.style.opacity = "0"; };
@@ -108,8 +102,8 @@ export default function CrabCursor() {
 
     const tick = (t: number) => {
       // Smooth follow
-      cx += (mx - cx) * 0.28;
-      cy += (my - cy) * 0.28;
+      cx += (mx - cx) * 0.32;
+      cy += (my - cy) * 0.32;
 
       const dx = mx - prevX;
       const dy = my - prevY;
@@ -123,31 +117,26 @@ export default function CrabCursor() {
 
       // State transitions
       if (isClicking) {
-        // Click animation: click-1 for 80ms, then click-2 for 200ms
+        // Click animation: click-mid for 70ms, then click-snap for 180ms
         const elapsed = now - clickFrameTime;
-        if (elapsed > 80 && frame !== "click-2") {
-          frame = "click-2";
+        if (elapsed > 70 && frame !== "click-snap") {
+          frame = "click-snap";
           applyFrame(frame, facing);
         }
       } else {
         // Walking vs idle
         const timeSinceMove = now - lastMoveTime;
-        if (speed > 1.2 && timeSinceMove < 100) {
-          // Walking — cycle walk frames every 140ms
-          if (now - walkFrameTime > 140) {
+        if (speed > 1.2 && timeSinceMove < 90) {
+          // Walking — cycle idle/walk every 130ms
+          if (now - walkFrameTime > 130) {
             walkFrameTime = now;
-            frame = frame === "walk-1" ? "walk-2" : "walk-1";
+            frame = frame === "idle" ? "walk" : "idle";
             applyFrame(frame, facing);
           }
         } else {
-          // Idle — slow cycle between idle-1 and idle-2 every 900ms (breathing)
-          if (now - idleFrameTime > 900) {
-            idleFrameTime = now;
-            if (frame !== "idle-1" && frame !== "idle-2") {
-              frame = "idle-1";
-            } else {
-              frame = frame === "idle-1" ? "idle-2" : "idle-1";
-            }
+          // Idle
+          if (frame !== "idle") {
+            frame = "idle";
             applyFrame(frame, facing);
           }
         }
@@ -156,17 +145,17 @@ export default function CrabCursor() {
       prevX = mx;
       prevY = my;
 
-      // Emit bubble trail when moving
-      if (now - lastBubbleTime > 110 && speed > 1.8) {
+      // Emit bubble trail when moving (less frequent, smaller)
+      if (now - lastBubbleTime > 140 && speed > 2.5) {
         bubbles.push({
-          x: cx + (Math.random() - 0.5) * 14,
-          y: cy + 6,
-          r: Math.random() * 2.5 + 1.2,
-          vy: -(Math.random() * 0.5 + 0.35),
+          x: cx + (Math.random() - 0.5) * 8,
+          y: cy + 4,
+          r: Math.random() * 1.8 + 0.8,
+          vy: -(Math.random() * 0.4 + 0.3),
           life: 1,
         });
         lastBubbleTime = now;
-        if (bubbles.length > 12) bubbles.shift();
+        if (bubbles.length > 8) bubbles.shift();
       }
 
       // Render bubbles
@@ -175,21 +164,19 @@ export default function CrabCursor() {
         let html = "";
         for (const b of bubbles) {
           b.y += b.vy;
-          b.life -= 0.014;
+          b.life -= 0.016;
           if (b.life <= 0) continue;
-          html += `<div style="position:fixed;left:${b.x}px;top:${b.y}px;width:${b.r * 2}px;height:${b.r * 2}px;border-radius:50%;background:radial-gradient(circle at 30% 30%, rgba(255,255,255,0.9), rgba(180,210,230,0.25));pointer-events:none;opacity:${b.life * 0.7};transform:translate(-50%,-50%);z-index:9997;mix-blend-mode:screen;"></div>`;
+          html += `<div style="position:fixed;left:${b.x}px;top:${b.y}px;width:${b.r * 2}px;height:${b.r * 2}px;border-radius:50%;background:radial-gradient(circle at 30% 30%, rgba(220,240,255,0.9), rgba(140,200,240,0.2));pointer-events:none;opacity:${b.life * 0.6};transform:translate(-50%,-50%);z-index:9997;mix-blend-mode:screen;"></div>`;
         }
         layer.innerHTML = html;
-        // Prune dead
         for (let i = bubbles.length - 1; i >= 0; i--) {
           if (bubbles[i].life <= 0) bubbles.splice(i, 1);
         }
       }
 
-      // Apply container transform (position). Slight rotation toward movement direction.
-      const tilt = Math.max(-12, Math.min(12, dy * 0.8));
+      // Apply container transform
+      const tilt = Math.max(-8, Math.min(8, dy * 0.6));
       container.style.transform = `translate(${cx}px, ${cy}px) translate(-50%, -50%) rotate(${tilt}deg)`;
-      container.style.setProperty("--facing", facing.toString());
 
       raf = requestAnimationFrame(tick);
     };
@@ -238,7 +225,7 @@ export default function CrabCursor() {
         pointerEvents: "none",
         zIndex: 9999,
         willChange: "transform",
-        filter: "drop-shadow(0 4px 6px rgba(0, 0, 0, 0.5)) drop-shadow(0 0 8px rgba(229, 75, 27, 0.25))",
+        filter: "drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5)) drop-shadow(0 0 4px rgba(229, 75, 27, 0.2))",
         transition: "opacity 0.3s ease",
       }}
       aria-hidden
@@ -247,7 +234,7 @@ export default function CrabCursor() {
         ref={imgRef}
         src="/crab/sprite-sheet.png"
         alt=""
-        width={FRAME_W * 7}
+        width={FRAME_W * FRAME_COUNT}
         height={FRAME_H}
         style={{
           display: "block",
