@@ -2,19 +2,39 @@
 
 import { useEffect, useRef, useState } from "react";
 
-/**
- * Crab-shaped custom cursor.
- * - Body follows pointer with slight lag
- * - Eyes blink occasionally
- * - Claws SNAP (close) on mousedown, reopen on mouseup
- * - Tiny air bubbles trail the crab
- * - Rotates slightly based on movement direction
- */
-export default function CrabCursor() {
-  const crabRef = useRef<HTMLDivElement | null>(null);
-  const [snapping, setSnapping] = useState(false);
+type Frame = "idle-1" | "idle-2" | "walk-1" | "walk-2" | "rest" | "click-1" | "click-2";
 
-  // Detect touch / coarse pointer synchronously on first render
+/**
+ * Sprite-based CrabCursor.
+ *
+ * Uses the actual crab cursor spritesheet the user provided.
+ * States:
+ *  - IDLE    → cycles idle-1 ↔ idle-2 slowly (breathing)
+ *  - WALKING → cycles walk-1 ↔ walk-2 fast (legs moving)
+ *  - CLICK   → click-1 (snap mid) → click-2 (snap closed) → back to idle
+ *
+ * The crab flips horizontally based on the direction of horizontal movement,
+ * so it always "faces" the way it's walking.
+ *
+ * Sprite sheet layout (7 frames, 80px wide each):
+ *  [0] idle-1  [1] walk-1  [2] rest  [3] walk-2  [4] idle-2  [5] click-1  [6] click-2
+ */
+const FRAME_INDEX: Record<Frame, number> = {
+  "idle-1": 0,
+  "walk-1": 1,
+  rest: 2,
+  "walk-2": 3,
+  "idle-2": 4,
+  "click-1": 5,
+  "click-2": 6,
+};
+
+const FRAME_W = 80;
+const FRAME_H = 75;
+
+export default function CrabCursor() {
+  const containerRef = useRef<HTMLDivElement | null>(null);
+  const imgRef = useRef<HTMLImageElement | null>(null);
   const [hidden, setHidden] = useState(() => {
     if (typeof window === "undefined") return false;
     return window.matchMedia("(hover: none), (pointer: coarse)").matches;
@@ -24,79 +44,153 @@ export default function CrabCursor() {
     if (hidden) return;
     document.body.classList.add("has-custom-cursor");
 
-    const crab = crabRef.current!;
+    const container = containerRef.current!;
+    const img = imgRef.current!;
+
+    // Pointer tracking
     let mx = window.innerWidth / 2;
     let my = window.innerHeight / 2;
     let cx = mx;
     let cy = my;
     let prevX = mx;
     let prevY = my;
-    let angle = 0;
     let raf = 0;
-    let lastBubble = 0;
 
+    // State machine
+    let frame: Frame = "idle-1";
+    let facing: 1 | -1 = 1; // 1 = right, -1 = left
+    let lastMoveTime = performance.now();
+    let isClicking = false;
+    let clickFrameTime = 0;
+    let walkFrameTime = 0;
+    let idleFrameTime = 0;
+    let lastBubbleTime = 0;
+
+    // Bubble trail
     const bubbles: { x: number; y: number; r: number; vy: number; life: number }[] = [];
+
+    const applyFrame = (f: Frame, flip: 1 | -1) => {
+      const idx = FRAME_INDEX[f];
+      img.style.transform = `translateX(${-idx * FRAME_W}px) scaleX(${flip})`;
+      img.style.width = `${FRAME_W * 7}px`;
+      img.style.height = `${FRAME_H}px`;
+    };
+
+    applyFrame(frame, facing);
 
     const onMove = (e: MouseEvent) => {
       mx = e.clientX;
       my = e.clientY;
+      lastMoveTime = performance.now();
     };
+
+    const onDown = () => {
+      isClicking = true;
+      clickFrameTime = performance.now();
+      frame = "click-1";
+      applyFrame(frame, facing);
+    };
+
+    const onUp = () => {
+      isClicking = false;
+      // Brief delay then return to idle
+      setTimeout(() => {
+        if (!isClicking) {
+          frame = "idle-1";
+          idleFrameTime = performance.now();
+          applyFrame(frame, facing);
+        }
+      }, 180);
+    };
+
+    const onLeave = () => { container.style.opacity = "0"; };
+    const onEnter = () => { container.style.opacity = "1"; };
 
     const tick = (t: number) => {
       // Smooth follow
-      cx += (mx - cx) * 0.22;
-      cy += (my - cy) * 0.22;
+      cx += (mx - cx) * 0.28;
+      cy += (my - cy) * 0.28;
 
-      // Direction-based rotation (subtle)
       const dx = mx - prevX;
       const dy = my - prevY;
-      if (Math.abs(dx) > 0.5 || Math.abs(dy) > 0.5) {
-        const target = Math.atan2(dy, dx) * (180 / Math.PI);
-        // Crab faces right by default; rotate body to face movement
-        // We clamp rotation to avoid flipping upside-down
-        angle = target;
+      const speed = Math.hypot(dx, dy);
+      const now = t;
+
+      // Determine facing based on horizontal movement
+      if (Math.abs(dx) > 0.6) {
+        facing = dx > 0 ? 1 : -1;
       }
+
+      // State transitions
+      if (isClicking) {
+        // Click animation: click-1 for 80ms, then click-2 for 200ms
+        const elapsed = now - clickFrameTime;
+        if (elapsed > 80 && frame !== "click-2") {
+          frame = "click-2";
+          applyFrame(frame, facing);
+        }
+      } else {
+        // Walking vs idle
+        const timeSinceMove = now - lastMoveTime;
+        if (speed > 1.2 && timeSinceMove < 100) {
+          // Walking — cycle walk frames every 140ms
+          if (now - walkFrameTime > 140) {
+            walkFrameTime = now;
+            frame = frame === "walk-1" ? "walk-2" : "walk-1";
+            applyFrame(frame, facing);
+          }
+        } else {
+          // Idle — slow cycle between idle-1 and idle-2 every 900ms (breathing)
+          if (now - idleFrameTime > 900) {
+            idleFrameTime = now;
+            if (frame !== "idle-1" && frame !== "idle-2") {
+              frame = "idle-1";
+            } else {
+              frame = frame === "idle-1" ? "idle-2" : "idle-1";
+            }
+            applyFrame(frame, facing);
+          }
+        }
+      }
+
       prevX = mx;
       prevY = my;
 
-      // Emit bubble trail occasionally
-      if (t - lastBubble > 90 && Math.hypot(dx, dy) > 1.5) {
+      // Emit bubble trail when moving
+      if (now - lastBubbleTime > 110 && speed > 1.8) {
         bubbles.push({
-          x: cx + (Math.random() - 0.5) * 12,
-          y: cy + 4,
-          r: Math.random() * 3 + 1.2,
-          vy: -(Math.random() * 0.6 + 0.4),
+          x: cx + (Math.random() - 0.5) * 14,
+          y: cy + 6,
+          r: Math.random() * 2.5 + 1.2,
+          vy: -(Math.random() * 0.5 + 0.35),
           life: 1,
         });
-        lastBubble = t;
-        if (bubbles.length > 14) bubbles.shift();
+        lastBubbleTime = now;
+        if (bubbles.length > 12) bubbles.shift();
       }
 
-      // Update + render bubbles via CSS variables on the container
-      const container = crab.parentElement!;
-      // Use a single data attribute for the bubble layer to render
-      const bubbleHtml = bubbles
-        .map((b, i) => {
+      // Render bubbles
+      const layer = document.getElementById("crab-bubble-layer");
+      if (layer) {
+        let html = "";
+        for (const b of bubbles) {
           b.y += b.vy;
-          b.life -= 0.012;
-          if (b.life <= 0) return "";
-          const left = b.x;
-          const top = b.y;
-          return `<div data-bubble="${i}" style="position:fixed;left:${left}px;top:${top}px;width:${b.r * 2}px;height:${b.r * 2}px;border-radius:50%;background:radial-gradient(circle at 30% 30%, rgba(255,255,255,0.85), rgba(180,210,230,0.25));pointer-events:none;opacity:${b.life * 0.7};transform:translate(-50%,-50%);z-index:9997;mix-blend-mode:screen;"></div>`;
-        })
-        .join("");
-      const existingLayer = document.getElementById("crab-bubble-layer");
-      if (existingLayer) {
-        existingLayer.innerHTML = bubbleHtml;
-      }
-      // Prune dead bubbles
-      for (let i = bubbles.length - 1; i >= 0; i--) {
-        if (bubbles[i].life <= 0) bubbles.splice(i, 1);
+          b.life -= 0.014;
+          if (b.life <= 0) continue;
+          html += `<div style="position:fixed;left:${b.x}px;top:${b.y}px;width:${b.r * 2}px;height:${b.r * 2}px;border-radius:50%;background:radial-gradient(circle at 30% 30%, rgba(255,255,255,0.9), rgba(180,210,230,0.25));pointer-events:none;opacity:${b.life * 0.7};transform:translate(-50%,-50%);z-index:9997;mix-blend-mode:screen;"></div>`;
+        }
+        layer.innerHTML = html;
+        // Prune dead
+        for (let i = bubbles.length - 1; i >= 0; i--) {
+          if (bubbles[i].life <= 0) bubbles.splice(i, 1);
+        }
       }
 
-      // Apply transform — clamp rotation to ±35deg so the crab never flips
-      const clampedAngle = Math.max(-35, Math.min(35, angle));
-      crab.style.transform = `translate(${cx}px, ${cy}px) translate(-50%, -50%) rotate(${clampedAngle}deg)`;
+      // Apply container transform (position). Slight rotation toward movement direction.
+      const tilt = Math.max(-12, Math.min(12, dy * 0.8));
+      container.style.transform = `translate(${cx}px, ${cy}px) translate(-50%, -50%) rotate(${tilt}deg)`;
+      container.style.setProperty("--facing", facing.toString());
+
       raf = requestAnimationFrame(tick);
     };
     raf = requestAnimationFrame(tick);
@@ -109,11 +203,6 @@ export default function CrabCursor() {
     layer.style.pointerEvents = "none";
     layer.style.zIndex = "9997";
     document.body.appendChild(layer);
-
-    const onDown = () => setSnapping(true);
-    const onUp = () => setSnapping(false);
-    const onLeave = () => { crab.style.opacity = "0"; };
-    const onEnter = () => { crab.style.opacity = "1"; };
 
     window.addEventListener("mousemove", onMove, { passive: true });
     window.addEventListener("mousedown", onDown);
@@ -137,126 +226,35 @@ export default function CrabCursor() {
 
   return (
     <div
-      ref={crabRef}
+      ref={containerRef}
       className="crab-cursor"
-      style={{ opacity: hidden ? 0 : 1 }}
+      style={{
+        position: "fixed",
+        top: 0,
+        left: 0,
+        width: FRAME_W,
+        height: FRAME_H,
+        pointerEvents: "none",
+        zIndex: 9999,
+        willChange: "transform",
+        filter: "drop-shadow(0 4px 6px rgba(0, 0, 0, 0.5)) drop-shadow(0 0 8px rgba(229, 75, 27, 0.25))",
+        transition: "opacity 0.3s ease",
+      }}
       aria-hidden
     >
-      <CrabSVG snapping={snapping} />
+      <img
+        ref={imgRef}
+        src="/crab/sprite-sheet.png"
+        alt=""
+        width={FRAME_W * 7}
+        height={FRAME_H}
+        style={{
+          display: "block",
+          imageRendering: "auto",
+          maxWidth: "none",
+        }}
+        draggable={false}
+      />
     </div>
-  );
-}
-
-function CrabSVG({ snapping }: { snapping: boolean }) {
-  return (
-    <svg
-      width="44"
-      height="40"
-      viewBox="0 0 64 56"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      {/* Left claw */}
-      <g
-        className="crab-claw crab-claw-left"
-        style={{ transformOrigin: "16px 22px" }}
-      >
-        <path
-          d="M6 22 Q2 14 8 10 Q14 6 20 12 L18 18 Q14 16 12 20 Z"
-          fill="#E54B1B"
-          stroke="#7A1E0A"
-          strokeWidth="1.2"
-        />
-        {/* Claw pincer — closes on snap */}
-        <path
-          className="crab-pincer-left"
-          d={
-            snapping
-              ? "M8 10 Q14 10 18 18"
-              : "M8 10 Q10 4 18 6"
-          }
-          stroke="#7A1E0A"
-          strokeWidth="2"
-          strokeLinecap="round"
-          fill="none"
-          style={{ transition: "d 0.18s ease" }}
-        />
-      </g>
-
-      {/* Right claw */}
-      <g
-        className="crab-claw crab-claw-right"
-        style={{ transformOrigin: "48px 22px" }}
-      >
-        <path
-          d="M58 22 Q62 14 56 10 Q50 6 44 12 L46 18 Q50 16 52 20 Z"
-          fill="#E54B1B"
-          stroke="#7A1E0A"
-          strokeWidth="1.2"
-        />
-        <path
-          className="crab-pincer-right"
-          d={
-            snapping
-              ? "M56 10 Q50 10 46 18"
-              : "M56 10 Q54 4 46 6"
-          }
-          stroke="#7A1E0A"
-          strokeWidth="2"
-          strokeLinecap="round"
-          fill="none"
-          style={{ transition: "d 0.18s ease" }}
-        />
-      </g>
-
-      {/* Body */}
-      <ellipse
-        cx="32"
-        cy="30"
-        rx="18"
-        ry="13"
-        fill="#E54B1B"
-        stroke="#7A1E0A"
-        strokeWidth="1.5"
-      />
-      {/* Body highlight */}
-      <ellipse
-        cx="28"
-        cy="26"
-        rx="6"
-        ry="3"
-        fill="#FF8866"
-        opacity="0.7"
-      />
-
-      {/* Legs (3 each side) */}
-      <g stroke="#7A1E0A" strokeWidth="1.5" strokeLinecap="round" fill="none">
-        <path d="M18 36 Q14 42 16 48" />
-        <path d="M24 40 Q22 46 22 52" />
-        <path d="M32 42 Q32 48 30 54" />
-        <path d="M46 36 Q50 42 48 48" />
-        <path d="M40 40 Q42 46 42 52" />
-      </g>
-
-      {/* Eyes */}
-      <g className="crab-eyes">
-        <line x1="28" y1="20" x2="26" y2="14" stroke="#7A1E0A" strokeWidth="1.4" />
-        <line x1="36" y1="20" x2="38" y2="14" stroke="#7A1E0A" strokeWidth="1.4" />
-        <circle cx="26" cy="13" r="2.5" fill="#0C1116" />
-        <circle cx="38" cy="13" r="2.5" fill="#0C1116" />
-        <circle cx="26.6" cy="12.4" r="0.8" fill="#fff" />
-        <circle cx="38.6" cy="12.4" r="0.8" fill="#fff" />
-      </g>
-
-      {/* Mouth — smiles when snapping (snapping = happy) */}
-      <path
-        d={snapping ? "M28 34 Q32 38 36 34" : "M29 34 Q32 36 35 34"}
-        stroke="#7A1E0A"
-        strokeWidth="1.4"
-        strokeLinecap="round"
-        fill="none"
-        style={{ transition: "d 0.2s ease" }}
-      />
-    </svg>
   );
 }

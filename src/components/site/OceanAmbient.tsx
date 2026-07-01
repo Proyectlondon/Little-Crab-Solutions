@@ -102,25 +102,27 @@ export default function OceanAmbient() {
         const rad = 320 + Math.sin(t * 0.002 + phase) * 70;
 
         const grad = ctx.createRadialGradient(cx, cy, 0, cx, cy, rad);
-        grad.addColorStop(0, "rgba(46, 110, 158, 0.32)");
-        grad.addColorStop(0.4, "rgba(229, 75, 27, 0.14)");
+        // Alternate blue and coral caustics for richer color mix
+        const isBlue = i % 2 === 0;
+        grad.addColorStop(0, isBlue ? "rgba(46, 110, 158, 0.40)" : "rgba(86, 160, 210, 0.32)");
+        grad.addColorStop(0.45, "rgba(229, 75, 27, 0.10)");
         grad.addColorStop(1, "rgba(0, 0, 0, 0)");
         ctx.fillStyle = grad;
         ctx.fillRect(cx - rad, cy - rad, rad * 2, rad * 2);
       }
 
-      // Soft caustic "lines" — sine-based overlay
+      // Soft caustic "lines" — sine-based overlay (more visible blue)
       ctx.globalCompositeOperation = "lighter";
-      ctx.strokeStyle = "rgba(120, 180, 220, 0.10)";
-      ctx.lineWidth = 1.2;
-      for (let i = 0; i < 5; i++) {
+      ctx.strokeStyle = "rgba(120, 180, 220, 0.14)";
+      ctx.lineWidth = 1.4;
+      for (let i = 0; i < 6; i++) {
         ctx.beginPath();
-        const yBase = (h / 5) * i + (h / 10);
+        const yBase = (h / 6) * i + (h / 12);
         for (let x = 0; x <= w; x += 6) {
           const y =
             yBase +
-            Math.sin(x * 0.008 + t * 0.0015 + i * 1.7) * 22 +
-            Math.sin(x * 0.015 + t * 0.0022 + i) * 10;
+            Math.sin(x * 0.008 + t * 0.0015 + i * 1.7) * 24 +
+            Math.sin(x * 0.015 + t * 0.0022 + i) * 12;
           if (x === 0) ctx.moveTo(x, y);
           else ctx.lineTo(x, y);
         }
@@ -128,12 +130,14 @@ export default function OceanAmbient() {
       }
 
       // Mouse "spotlight" caustic — pointer pushes light through water
-      const mouseGrad = ctx.createRadialGradient(mxs, mys, 0, mxs, mys, 320);
-      mouseGrad.addColorStop(0, "rgba(229, 75, 27, 0.28)");
-      mouseGrad.addColorStop(0.4, "rgba(232, 185, 116, 0.10)");
+      // Mixed coral + ocean blue for richer effect
+      const mouseGrad = ctx.createRadialGradient(mxs, mys, 0, mxs, mys, 340);
+      mouseGrad.addColorStop(0, "rgba(229, 75, 27, 0.30)");
+      mouseGrad.addColorStop(0.3, "rgba(86, 160, 210, 0.20)");
+      mouseGrad.addColorStop(0.7, "rgba(46, 110, 158, 0.08)");
       mouseGrad.addColorStop(1, "rgba(0, 0, 0, 0)");
       ctx.fillStyle = mouseGrad;
-      ctx.fillRect(mxs - 320, mys - 320, 640, 640);
+      ctx.fillRect(mxs - 340, mys - 340, 680, 680);
 
       // ========== RIPPLES ==========
       ctx.globalCompositeOperation = "lighter";
@@ -190,17 +194,17 @@ export default function OceanAmbient() {
         if (b.x < -20) b.x = w + 20;
         if (b.x > w + 20) b.x = -20;
 
-        // Draw bubble — brighter for visibility on dark
+        // Draw bubble — ocean-tinted for blue presence
         ctx.beginPath();
-        ctx.fillStyle = "rgba(180, 220, 240, 0.18)";
+        ctx.fillStyle = "rgba(140, 200, 240, 0.22)";
         ctx.arc(b.x, b.y, b.r, 0, Math.PI * 2);
         ctx.fill();
-        ctx.strokeStyle = "rgba(220, 240, 250, 0.55)";
-        ctx.lineWidth = 0.8;
+        ctx.strokeStyle = "rgba(180, 220, 250, 0.65)";
+        ctx.lineWidth = 0.9;
         ctx.stroke();
-        // Highlight
+        // Highlight (cool white-blue)
         ctx.beginPath();
-        ctx.fillStyle = "rgba(255, 255, 255, 0.7)";
+        ctx.fillStyle = "rgba(220, 240, 255, 0.8)";
         ctx.arc(b.x - b.r * 0.35, b.y - b.r * 0.35, b.r * 0.35, 0, Math.PI * 2);
         ctx.fill();
       }
