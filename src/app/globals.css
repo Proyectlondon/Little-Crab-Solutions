@@ -179,6 +179,10 @@
   position: fixed;
   top: 0;
   left: 0;
+  /* Container is an 80x75 "window" onto the 7-frame sprite sheet.
+     Without overflow:hidden the full 560px sheet spills out and all
+     frames render side by side (the "row of crabs" bug). */
+  overflow: hidden;
   pointer-events: none;
   z-index: 9999;
   will-change: transform;

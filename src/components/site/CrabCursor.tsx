@@ -234,6 +234,7 @@ export default function CrabCursor() {
         left: 0,
         width: FRAME_W,
         height: FRAME_H,
+        overflow: "hidden",
         pointerEvents: "none",
         zIndex: 9999,
         willChange: "transform",
