@@ -66,7 +66,7 @@ export default function Services() {
   return (
     <section
       id="servicios"
-      className="relative overflow-hidden bg-deep/25 py-32 lg:py-44 backdrop-blur-[1px]"
+      className="relative py-32 lg:py-44"
     >
       <div className="absolute inset-0 grid-backdrop opacity-15" />
       <div className="glow-blob left-[-200px] top-[20%] h-[400px] w-[400px] bg-crab/10" />

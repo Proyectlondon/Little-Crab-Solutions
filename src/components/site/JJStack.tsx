@@ -26,7 +26,7 @@ export default function JJStack() {
   return (
     <section
       id="ecosistema"
-      className="relative overflow-hidden bg-abyss/25 py-32 lg:py-44 backdrop-blur-[1px]"
+      className="relative py-32 lg:py-44"
     >
       <div className="glow-blob right-[-200px] top-[10%] h-[500px] w-[500px] bg-ocean/20" />
 

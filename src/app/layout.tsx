@@ -65,11 +65,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="es" suppressHydrationWarning className="dark">
+    <html lang="es" suppressHydrationWarning className="dark bg-background">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${spaceGrotesk.variable} antialiased bg-background text-foreground relative`}
+        className={`${geistSans.variable} ${geistMono.variable} ${spaceGrotesk.variable} antialiased text-foreground relative`}
+        style={{ backgroundColor: "transparent" }}
       >
-        {/* Global ocean ambient — fixed canvas, sits behind ALL content but above body bg */}
+        {/* Global ocean ambient — fixed canvas, paints the ocean directly on top of html bg */}
         <OceanAmbient />
         {children}
         <Toaster />

@@ -2,7 +2,6 @@ import CrabCursor from "@/components/site/CrabCursor";
 import AudioToggle from "@/components/site/AudioToggle";
 import Navigation from "@/components/site/Navigation";
 import Hero from "@/components/site/Hero";
-import Marquee from "@/components/site/Marquee";
 import Manifesto from "@/components/site/Manifesto";
 import Services from "@/components/site/Services";
 import SwarmArchitecture from "@/components/site/SwarmArchitecture";
@@ -25,7 +24,6 @@ export default function Home() {
       <div className="relative z-10">
         <Navigation />
         <Hero />
-        <Marquee />
         <Manifesto />
         <Services />
         <SwarmArchitecture />

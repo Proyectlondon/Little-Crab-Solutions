@@ -34,7 +34,7 @@ const COLS = [
 
 export default function Footer() {
   return (
-    <footer className="relative overflow-hidden border-t border-white/10 bg-abyss/60 backdrop-blur-[1px]">
+    <footer className="relative border-t border-white/10">
       <div className="absolute inset-0 grid-backdrop opacity-30" />
       <div className="glow-blob left-1/2 top-0 h-[300px] w-[600px] -translate-x-1/2 bg-crab/10" />
 

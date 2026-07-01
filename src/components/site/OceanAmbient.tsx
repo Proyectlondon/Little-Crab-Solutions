@@ -5,17 +5,16 @@ import { useEffect, useRef } from "react";
 /**
  * OceanAmbient — fixed full-viewport canvas layered behind ALL content.
  *
- * Renders three effects:
- *  1. CAUSTICS — soft moving light pools on the "seabed" (the page bg).
- *     Implemented as sum of sine waves in a fragment shader-like approach
- *     using offscreen canvas + globalCompositeOperation.
- *  2. BUBBLES — small rising air bubbles from bottom to top, drifting
- *     sideways. Density is low to keep performance.
- *  3. RIPPLES — on pointer move, gentle radial waves emanate from the
- *     cursor position. Pointer "feels" like it's pushing through water.
+ * Effects (in render order):
+ *  1. DEPTH GRADIENT — vertical blue gradient suggesting water depth (lighter top, darker bottom)
+ *  2. GOD RAYS — soft vertical light shafts descending from the surface (volumetric)
+ *  3. CAUSTICS — soft moving radial light pools on the "seabed"
+ *  4. WAVE LINES — sine-based horizontal wave overlays
+ *  5. MOUSE SPOTLIGHT — coral+blue glow following cursor
+ *  6. RIPPLES — concentric rings emanating from clicks/mouse moves
+ *  7. BUBBLES — rising air bubbles with mouse attraction
  *
- * The canvas also reads pointer position and applies a subtle "magnetic"
- * pull to nearby bubbles — same vibe as the hero-only effect, but global.
+ * Color palette leans blue (ocean) with subtle coral accents (Little Crab brand).
  */
 export default function OceanAmbient() {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -43,7 +42,7 @@ export default function OceanAmbient() {
     let mx = w / 2;
     let my = h / 2;
     let mxs = mx;
-    let mys = my; // smoothed
+    let mys = my;
     const ripples: { x: number; y: number; t: number }[] = [];
 
     const onMove = (e: MouseEvent) => {
@@ -62,19 +61,27 @@ export default function OceanAmbient() {
     window.addEventListener("mousedown", onDown, { passive: true });
 
     // Bubbles — generated at bottom, rise to top
-    const BUBBLE_COUNT = 28;
+    const BUBBLE_COUNT = 24;
     const bubbles = Array.from({ length: BUBBLE_COUNT }).map(() => ({
       x: Math.random() * w,
       y: h + Math.random() * h,
-      r: Math.random() * 4 + 1.5,
-      vy: -(Math.random() * 0.7 + 0.35),
-      vx: (Math.random() - 0.5) * 0.25,
+      r: Math.random() * 3.5 + 1.2,
+      vy: -(Math.random() * 0.6 + 0.3),
+      vx: (Math.random() - 0.5) * 0.2,
       wob: Math.random() * Math.PI * 2,
       wobSpeed: Math.random() * 0.02 + 0.008,
     }));
 
-    // Caustics parameters — sampled at low resolution for perf
-    const CAUSTIC_RES = 1; // 1 = full size; we'll use larger cells via blur
+    // God ray sources (fixed positions at the top, with subtle sway)
+    const RAY_COUNT = 7;
+    const rays = Array.from({ length: RAY_COUNT }).map((_, i) => ({
+      xRatio: 0.1 + (i / (RAY_COUNT - 1)) * 0.8, // spread across width
+      widthBase: 80 + Math.random() * 60,
+      phase: Math.random() * Math.PI * 2,
+      swaySpeed: 0.0003 + Math.random() * 0.0002,
+      intensity: 0.06 + Math.random() * 0.05,
+    }));
+
     let t = 0;
     let raf = 0;
 
@@ -85,10 +92,46 @@ export default function OceanAmbient() {
       mxs += (mx - mxs) * 0.12;
       mys += (my - mys) * 0.12;
 
-      // ========== CAUSTICS ==========
-      // We render soft moving radial gradients as faux caustic light pools.
+      // ========== 1. DEPTH GRADIENT (vertical blue gradient for depth) ==========
+      // Lighter blue at top (surface), darker at bottom (deep)
+      ctx.globalCompositeOperation = "source-over";
+      const depthGrad = ctx.createLinearGradient(0, 0, 0, h);
+      depthGrad.addColorStop(0, "rgba(20, 54, 79, 0.45)");     // ocean-deep blue at top
+      depthGrad.addColorStop(0.4, "rgba(12, 38, 58, 0.25)");   // mid
+      depthGrad.addColorStop(0.7, "rgba(7, 20, 32, 0.15)");    // darker
+      depthGrad.addColorStop(1, "rgba(3, 10, 18, 0.4)");       // abyss at bottom
+      ctx.fillStyle = depthGrad;
+      ctx.fillRect(0, 0, w, h);
+
+      // ========== 2. GOD RAYS (volumetric light shafts from surface) ==========
       ctx.globalCompositeOperation = "lighter";
-      const causticCount = 6;
+      for (const ray of rays) {
+        const swayX = Math.sin(t * ray.swaySpeed + ray.phase) * 40;
+        const rayX = w * ray.xRatio + swayX;
+        const rayWidth = ray.widthBase + Math.sin(t * 0.001 + ray.phase) * 20;
+        // Taper: wider at top, narrower at bottom
+        const topW = rayWidth * 1.2;
+        const bottomW = rayWidth * 0.4;
+
+        // Draw the ray as a vertical gradient trapezoid
+        const rayGrad = ctx.createLinearGradient(0, 0, 0, h);
+        rayGrad.addColorStop(0, `rgba(140, 200, 240, ${ray.intensity})`);     // bright at surface
+        rayGrad.addColorStop(0.5, `rgba(86, 160, 210, ${ray.intensity * 0.5})`);
+        rayGrad.addColorStop(1, "rgba(46, 110, 158, 0)");                      // fade at bottom
+
+        ctx.fillStyle = rayGrad;
+        ctx.beginPath();
+        ctx.moveTo(rayX - topW / 2, 0);
+        ctx.lineTo(rayX + topW / 2, 0);
+        ctx.lineTo(rayX + bottomW / 2, h);
+        ctx.lineTo(rayX - bottomW / 2, h);
+        ctx.closePath();
+        ctx.fill();
+      }
+
+      // ========== 3. CAUSTICS (soft moving radial light pools) ==========
+      ctx.globalCompositeOperation = "lighter";
+      const causticCount = 5;
       for (let i = 0; i < causticCount; i++) {
         const phase = (i / causticCount) * Math.PI * 2;
         const cx =
@@ -96,116 +139,113 @@ export default function OceanAmbient() {
           Math.cos(t * 0.0006 + phase) * w * 0.45 +
           Math.sin(t * 0.0009 + phase * 1.3) * w * 0.15;
         const cy =
-          h * 0.5 +
-          Math.sin(t * 0.0007 + phase * 1.1) * h * 0.45 +
-          Math.cos(t * 0.0011 + phase * 0.7) * h * 0.12;
-        const rad = 320 + Math.sin(t * 0.002 + phase) * 70;
+          h * 0.4 +
+          Math.sin(t * 0.0007 + phase * 1.1) * h * 0.35 +
+          Math.cos(t * 0.0011 + phase * 0.7) * h * 0.1;
+        const rad = 280 + Math.sin(t * 0.002 + phase) * 60;
 
         const grad = ctx.createRadialGradient(cx, cy, 0, cx, cy, rad);
-        // Alternate blue and coral caustics for richer color mix
+        // More blue, less coral — subtle accent only
         const isBlue = i % 2 === 0;
-        grad.addColorStop(0, isBlue ? "rgba(46, 110, 158, 0.40)" : "rgba(86, 160, 210, 0.32)");
-        grad.addColorStop(0.45, "rgba(229, 75, 27, 0.10)");
+        grad.addColorStop(0, isBlue ? "rgba(46, 110, 158, 0.32)" : "rgba(86, 160, 210, 0.28)");
+        grad.addColorStop(0.5, "rgba(229, 75, 27, 0.06)"); // very subtle coral accent
         grad.addColorStop(1, "rgba(0, 0, 0, 0)");
         ctx.fillStyle = grad;
         ctx.fillRect(cx - rad, cy - rad, rad * 2, rad * 2);
       }
 
-      // Soft caustic "lines" — sine-based overlay (more visible blue)
+      // ========== 4. WAVE LINES (sine-based horizontal overlays) ==========
       ctx.globalCompositeOperation = "lighter";
-      ctx.strokeStyle = "rgba(120, 180, 220, 0.14)";
-      ctx.lineWidth = 1.4;
-      for (let i = 0; i < 6; i++) {
+      ctx.strokeStyle = "rgba(120, 180, 220, 0.08)";
+      ctx.lineWidth = 1;
+      for (let i = 0; i < 5; i++) {
         ctx.beginPath();
-        const yBase = (h / 6) * i + (h / 12);
-        for (let x = 0; x <= w; x += 6) {
+        const yBase = (h / 5) * i + (h / 10);
+        for (let x = 0; x <= w; x += 8) {
           const y =
             yBase +
-            Math.sin(x * 0.008 + t * 0.0015 + i * 1.7) * 24 +
-            Math.sin(x * 0.015 + t * 0.0022 + i) * 12;
+            Math.sin(x * 0.006 + t * 0.0012 + i * 1.7) * 20 +
+            Math.sin(x * 0.013 + t * 0.0018 + i) * 8;
           if (x === 0) ctx.moveTo(x, y);
           else ctx.lineTo(x, y);
         }
         ctx.stroke();
       }
 
-      // Mouse "spotlight" caustic — pointer pushes light through water
-      // Mixed coral + ocean blue for richer effect
-      const mouseGrad = ctx.createRadialGradient(mxs, mys, 0, mxs, mys, 340);
-      mouseGrad.addColorStop(0, "rgba(229, 75, 27, 0.30)");
-      mouseGrad.addColorStop(0.3, "rgba(86, 160, 210, 0.20)");
-      mouseGrad.addColorStop(0.7, "rgba(46, 110, 158, 0.08)");
+      // ========== 5. MOUSE SPOTLIGHT (coral + blue glow) ==========
+      const mouseGrad = ctx.createRadialGradient(mxs, mys, 0, mxs, mys, 300);
+      mouseGrad.addColorStop(0, "rgba(229, 75, 27, 0.22)");
+      mouseGrad.addColorStop(0.35, "rgba(86, 160, 210, 0.16)");
+      mouseGrad.addColorStop(0.7, "rgba(46, 110, 158, 0.06)");
       mouseGrad.addColorStop(1, "rgba(0, 0, 0, 0)");
       ctx.fillStyle = mouseGrad;
-      ctx.fillRect(mxs - 340, mys - 340, 680, 680);
+      ctx.fillRect(mxs - 300, mys - 300, 600, 600);
 
-      // ========== RIPPLES ==========
+      // ========== 6. RIPPLES ==========
       ctx.globalCompositeOperation = "lighter";
       for (let i = ripples.length - 1; i >= 0; i--) {
         const r = ripples[i];
         r.t += 1;
-        const radius = r.t * 2.4;
-        const alpha = Math.max(0, 0.55 - r.t * 0.012);
+        const radius = r.t * 2.2;
+        const alpha = Math.max(0, 0.45 - r.t * 0.011);
         if (alpha <= 0) {
           ripples.splice(i, 1);
           continue;
         }
-        ctx.strokeStyle = `rgba(180, 220, 240, ${alpha})`;
-        ctx.lineWidth = 1.6;
+        ctx.strokeStyle = `rgba(140, 200, 240, ${alpha})`;
+        ctx.lineWidth = 1.4;
         ctx.beginPath();
         ctx.arc(r.x, r.y, radius, 0, Math.PI * 2);
         ctx.stroke();
-        // Inner softer ring
-        ctx.strokeStyle = `rgba(229, 75, 27, ${alpha * 0.6})`;
-        ctx.lineWidth = 1;
+        // Inner softer ring with coral tint
+        ctx.strokeStyle = `rgba(229, 75, 27, ${alpha * 0.4})`;
+        ctx.lineWidth = 0.8;
         ctx.beginPath();
-        ctx.arc(r.x, r.y, radius * 0.65, 0, Math.PI * 2);
+        ctx.arc(r.x, r.y, radius * 0.6, 0, Math.PI * 2);
         ctx.stroke();
       }
 
-      // ========== BUBBLES ==========
+      // ========== 7. BUBBLES ==========
       ctx.globalCompositeOperation = "lighter";
       for (const b of bubbles) {
-        // Wobble + rise
         b.wob += b.wobSpeed;
-        b.x += b.vx + Math.sin(b.wob) * 0.35;
+        b.x += b.vx + Math.sin(b.wob) * 0.3;
         b.y += b.vy;
 
         // Magnetic attraction to mouse (subtle)
         const dx = mxs - b.x;
         const dy = mys - b.y;
         const d2 = dx * dx + dy * dy;
-        if (d2 < 22000) {
-          const f = 0.0012;
+        if (d2 < 20000) {
+          const f = 0.001;
           b.vx += dx * f;
-          b.vy += dy * f * 0.6;
+          b.vy += dy * f * 0.5;
         }
-        // Damping
         b.vx *= 0.985;
-        b.vy = b.vy * 0.99 - 0.0008;
+        b.vy = b.vy * 0.99 - 0.0006;
 
         // Wrap
         if (b.y < -20) {
           b.y = h + 20;
           b.x = Math.random() * w;
-          b.vy = -(Math.random() * 0.7 + 0.35);
-          b.vx = (Math.random() - 0.5) * 0.25;
+          b.vy = -(Math.random() * 0.6 + 0.3);
+          b.vx = (Math.random() - 0.5) * 0.2;
         }
         if (b.x < -20) b.x = w + 20;
         if (b.x > w + 20) b.x = -20;
 
-        // Draw bubble — ocean-tinted for blue presence
+        // Draw bubble — ocean blue tint
         ctx.beginPath();
-        ctx.fillStyle = "rgba(140, 200, 240, 0.22)";
+        ctx.fillStyle = "rgba(140, 200, 240, 0.18)";
         ctx.arc(b.x, b.y, b.r, 0, Math.PI * 2);
         ctx.fill();
-        ctx.strokeStyle = "rgba(180, 220, 250, 0.65)";
-        ctx.lineWidth = 0.9;
+        ctx.strokeStyle = "rgba(180, 220, 250, 0.55)";
+        ctx.lineWidth = 0.8;
         ctx.stroke();
-        // Highlight (cool white-blue)
+        // Highlight
         ctx.beginPath();
-        ctx.fillStyle = "rgba(220, 240, 255, 0.8)";
-        ctx.arc(b.x - b.r * 0.35, b.y - b.r * 0.35, b.r * 0.35, 0, Math.PI * 2);
+        ctx.fillStyle = "rgba(220, 240, 255, 0.7)";
+        ctx.arc(b.x - b.r * 0.35, b.y - b.r * 0.35, b.r * 0.3, 0, Math.PI * 2);
         ctx.fill();
       }
 
@@ -236,8 +276,8 @@ export default function OceanAmbient() {
         width: "100vw",
         height: "100vh",
         pointerEvents: "none",
-        // Behind all section content. Sections use semi-transparent backgrounds
-        // so the ocean shows through subtly.
+        // z-index 0, no blend mode — the canvas paints directly on top of the body bg.
+        // Sections are transparent so the ocean shows through.
         zIndex: 0,
         opacity: 1,
       }}
