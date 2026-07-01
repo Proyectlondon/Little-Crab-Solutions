@@ -66,10 +66,10 @@ export default function Services() {
   return (
     <section
       id="servicios"
-      className="relative overflow-hidden bg-deep py-32 lg:py-44"
+      className="relative overflow-hidden bg-deep/25 py-32 lg:py-44 backdrop-blur-[1px]"
     >
-      <div className="absolute inset-0 grid-backdrop opacity-30" />
-      <div className="glow-blob left-[-200px] top-[20%] h-[500px] w-[500px] bg-crab/15" />
+      <div className="absolute inset-0 grid-backdrop opacity-15" />
+      <div className="glow-blob left-[-200px] top-[20%] h-[400px] w-[400px] bg-crab/10" />
 
       <div className="relative mx-auto max-w-[1400px] px-6 lg:px-10">
         {/* Header */}
@@ -111,7 +111,7 @@ export default function Services() {
                     `${((e.clientY - r.top) / r.height) * 100}%`
                   );
                 }}
-                className="service-card group relative bg-deep p-8 lg:p-12"
+                className="service-card group relative bg-deep/80 p-8 lg:p-12 backdrop-blur-sm"
                 data-hover
               >
                 {/* Top row */}

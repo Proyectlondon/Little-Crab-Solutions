@@ -24,10 +24,12 @@ export default function Hero() {
     <section
       id="top"
       ref={ref}
-      className="relative min-h-[100svh] w-full overflow-hidden"
+      className="relative min-h-[100svh] w-full overflow-hidden bg-transparent"
     >
-      {/* Background canvas */}
-      <ParticleBackground variant="hero" />
+      {/* Background canvas — local particles, behind global ocean ambient */}
+      <div className="absolute inset-0 z-0 opacity-70">
+        <ParticleBackground variant="hero" />
+      </div>
 
       {/* Glow blobs */}
       <div className="glow-blob -left-32 top-24 h-[420px] w-[420px] bg-crab/25" />
@@ -37,7 +39,7 @@ export default function Hero() {
       <div className="absolute inset-0 grid-backdrop opacity-60" />
 
       {/* Vignette */}
-      <div className="absolute inset-0 bg-gradient-to-b from-abyss/40 via-transparent to-abyss" />
+      <div className="absolute inset-0 bg-gradient-to-b from-abyss/40 via-transparent to-abyss/60" />
 
       <motion.div
         style={{ y, opacity, scale }}

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono, Space_Grotesk } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
+import OceanAmbient from "@/components/site/OceanAmbient";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -66,8 +67,10 @@ export default function RootLayout({
   return (
     <html lang="es" suppressHydrationWarning className="dark">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${spaceGrotesk.variable} antialiased bg-background text-foreground`}
+        className={`${geistSans.variable} ${geistMono.variable} ${spaceGrotesk.variable} antialiased bg-background text-foreground relative`}
       >
+        {/* Global ocean ambient — fixed canvas, sits behind ALL content but above body bg */}
+        <OceanAmbient />
         {children}
         <Toaster />
       </body>

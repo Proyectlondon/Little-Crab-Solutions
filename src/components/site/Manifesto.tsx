@@ -18,7 +18,7 @@ export default function Manifesto() {
   return (
     <section
       id="filosofia"
-      className="relative overflow-hidden bg-abyss py-32 lg:py-44"
+      className="relative overflow-hidden bg-abyss/25 py-32 lg:py-44 backdrop-blur-[1px]"
     >
       <div className="glow-blob right-[-200px] top-[-100px] h-[400px] w-[400px] bg-ocean/20" />
 

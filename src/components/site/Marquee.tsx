@@ -21,7 +21,7 @@ export default function Marquee() {
   return (
     <section
       aria-hidden
-      className="relative border-y border-white/10 bg-deep py-6 overflow-hidden"
+      className="relative border-y border-white/10 bg-deep/25 py-6 overflow-hidden backdrop-blur-[1px]"
     >
       <div className="marquee-track">
         {[...ITEMS, ...ITEMS].map((it, i) => (

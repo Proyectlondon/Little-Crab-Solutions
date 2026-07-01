@@ -66,9 +66,9 @@ export default function SwarmArchitecture() {
   return (
     <section
       id="swarm"
-      className="relative overflow-hidden bg-abyss py-32 lg:py-44"
+      className="relative overflow-hidden bg-abyss/25 py-32 lg:py-44 backdrop-blur-[1px]"
     >
-      <div className="glow-blob left-1/2 top-1/2 h-[600px] w-[600px] -translate-x-1/2 -translate-y-1/2 bg-crab/10" />
+      <div className="glow-blob left-1/2 top-1/2 h-[400px] w-[400px] -translate-x-1/2 -translate-y-1/2 bg-crab/8" />
 
       <div className="relative mx-auto max-w-[1400px] px-6 lg:px-10">
         {/* Header */}

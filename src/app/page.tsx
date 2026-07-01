@@ -1,4 +1,5 @@
-import Cursor from "@/components/site/Cursor";
+import CrabCursor from "@/components/site/CrabCursor";
+import AudioToggle from "@/components/site/AudioToggle";
 import Navigation from "@/components/site/Navigation";
 import Hero from "@/components/site/Hero";
 import Marquee from "@/components/site/Marquee";
@@ -12,19 +13,27 @@ import Footer from "@/components/site/Footer";
 
 export default function Home() {
   return (
-    <main className="relative min-h-screen bg-abyss">
-      <Cursor />
+    <main className="relative min-h-screen bg-transparent">
+      {/* Crab cursor (desktop only) + Audio toggle */}
+      <CrabCursor />
+      <AudioToggle />
+
+      {/* Noise overlay */}
       <div className="noise-overlay" aria-hidden />
-      <Navigation />
-      <Hero />
-      <Marquee />
-      <Manifesto />
-      <Services />
-      <SwarmArchitecture />
-      <Process />
-      <JJStack />
-      <Contact />
-      <Footer />
+
+      {/* All content sits above the ocean layer */}
+      <div className="relative z-10">
+        <Navigation />
+        <Hero />
+        <Marquee />
+        <Manifesto />
+        <Services />
+        <SwarmArchitecture />
+        <Process />
+        <JJStack />
+        <Contact />
+        <Footer />
+      </div>
     </main>
   );
 }

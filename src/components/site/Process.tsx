@@ -39,9 +39,9 @@ export default function Process() {
   return (
     <section
       id="proceso"
-      className="relative overflow-hidden bg-deep py-32 lg:py-44"
+      className="relative overflow-hidden bg-deep/25 py-32 lg:py-44 backdrop-blur-[1px]"
     >
-      <div className="absolute inset-0 grid-backdrop opacity-30" />
+      <div className="absolute inset-0 grid-backdrop opacity-15" />
 
       <div className="relative mx-auto max-w-[1400px] px-6 lg:px-10">
         {/* Header */}
@@ -70,10 +70,10 @@ export default function Process() {
             {STEPS.map((s, i) => (
               <motion.div
                 key={i}
-                initial={{ opacity: 0, y: 40 }}
+                initial={{ opacity: 1, y: 0 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-100px" }}
-                transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+                transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
                 className={`relative grid gap-6 md:grid-cols-2 ${
                   i % 2 === 0 ? "" : "md:[direction:rtl]"
                 }`}

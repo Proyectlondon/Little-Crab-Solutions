@@ -47,7 +47,7 @@ export default function Contact() {
   return (
     <section
       id="contacto"
-      className="relative overflow-hidden bg-deep py-32 lg:py-44"
+      className="relative overflow-hidden bg-deep/25 py-32 lg:py-44 backdrop-blur-[1px]"
     >
       <div className="glow-blob left-[-150px] bottom-[-150px] h-[500px] w-[500px] bg-crab/20" />
       <div className="absolute inset-0 grid-backdrop opacity-30" />

@@ -34,19 +34,25 @@ export default function Navigation() {
         }`}
       >
         <div className="mx-auto flex max-w-[1400px] items-center justify-between px-6 lg:px-10">
-          {/* Logo */}
+          {/* Logo — animated crab on hover */}
           <a href="#top" className="flex items-center gap-3 group" data-hover>
-            <div className="relative h-9 w-9 overflow-hidden rounded-md ring-1 ring-white/10 transition-transform duration-500 group-hover:rotate-[8deg]">
-              <Image
-                src="/logo.png"
-                alt="Little Crab Solutions"
-                fill
-                className="object-cover"
-                sizes="36px"
-              />
+            <div className="relative h-11 w-11 transition-transform duration-500 group-hover:-translate-y-0.5 group-hover:scale-105">
+              {/* Rotating ring on hover */}
+              <div className="absolute -inset-1 rounded-full border border-dashed border-crab/30 opacity-0 transition-opacity duration-500 group-hover:opacity-100 group-hover:spin-slow" />
+              <div className="relative h-full w-full overflow-hidden rounded-full ring-1 ring-white/10 transition-all duration-500 group-hover:ring-crab/60 group-hover:shadow-[0_0_24px_rgba(229,75,27,0.45)]">
+                <Image
+                  src="/logo.png"
+                  alt="Little Crab Solutions"
+                  fill
+                  className="object-cover transition-transform duration-700 group-hover:scale-110 group-hover:-rotate-6"
+                  sizes="44px"
+                />
+              </div>
+              {/* Tiny bubble ping on hover */}
+              <span className="pointer-events-none absolute -right-1 -top-1 h-2 w-2 rounded-full bg-crab/60 opacity-0 transition-all duration-500 group-hover:scale-150 group-hover:opacity-0" />
             </div>
             <div className="flex flex-col leading-tight">
-              <span className="text-sm font-semibold tracking-tight text-cream">
+              <span className="text-sm font-semibold tracking-tight text-cream transition-colors group-hover:text-crab">
                 Little Crab
               </span>
               <span className="text-[10px] uppercase tracking-[0.22em] text-mist">
