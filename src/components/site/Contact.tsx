@@ -75,7 +75,7 @@ export default function Contact() {
               {[
                 { k: "Calendly", v: "calendly.com/little-crab-solutions" },
                 { k: "Email", v: "hola@littlecrabsolutions.com" },
-                { k: "WhatsApp", v: "+57 3XX XXX XXXX" },
+                { k: "WhatsApp", v: "+57 310 432 8783" },
                 { k: "Discord", v: "JJ Agent#5950 — pruébalo" },
                 { k: "Ubicación", v: "Medellín, Colombia · Latam" },
               ].map((row) => (
