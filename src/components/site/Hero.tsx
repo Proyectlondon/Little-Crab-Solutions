@@ -41,6 +41,15 @@ export default function Hero() {
       {/* Vignette */}
       <div className="absolute inset-0 bg-gradient-to-b from-abyss/40 via-transparent to-abyss/60" />
 
+      {/* Bottom fade — feathers the hero's bottom edge into the submerge fog */}
+      <div
+        className="absolute bottom-0 left-0 right-0 h-48 pointer-events-none z-20"
+        style={{
+          background:
+            "linear-gradient(to bottom, transparent 0%, rgba(7, 9, 12, 0.4) 50%, rgba(7, 9, 12, 0.85) 100%)",
+        }}
+      />
+
       <motion.div
         style={{ y, opacity, scale }}
         className="relative z-10 mx-auto flex min-h-[100svh] max-w-[1400px] flex-col justify-center px-6 pt-32 pb-20 lg:px-10"

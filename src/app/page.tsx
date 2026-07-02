@@ -2,6 +2,7 @@ import CrabCursor from "@/components/site/CrabCursor";
 import AudioToggle from "@/components/site/AudioToggle";
 import Navigation from "@/components/site/Navigation";
 import Hero from "@/components/site/Hero";
+import SubmergeTransition from "@/components/site/SubmergeTransition";
 import Manifesto from "@/components/site/Manifesto";
 import Services from "@/components/site/Services";
 import SwarmArchitecture from "@/components/site/SwarmArchitecture";
@@ -24,6 +25,8 @@ export default function Home() {
       <div className="relative z-10">
         <Navigation />
         <Hero />
+        {/* Volumetric fog transition — hides the seam between hero (surface) and body (underwater) */}
+        <SubmergeTransition />
         <Manifesto />
         <Services />
         <SwarmArchitecture />
