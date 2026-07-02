@@ -169,12 +169,16 @@ export default function Services() {
                 </div>
 
                 {/* Title */}
-                <h3 className="mb-4 font-display text-3xl text-cream lg:text-4xl">
+                <RevealText
+                  as="h3"
+                  delay={0.15}
+                  className="mb-4 font-display text-3xl text-cream lg:text-4xl"
+                >
                   {s.title}
-                </h3>
+                </RevealText>
 
                 {/* Stack pills */}
-                <div className="mb-6 flex flex-wrap gap-2">
+                <RevealText as="div" delay={0.25} className="mb-6 flex flex-wrap gap-2">
                   {s.stack.map((t) => (
                     <span
                       key={t}
@@ -183,12 +187,16 @@ export default function Services() {
                       {t}
                     </span>
                   ))}
-                </div>
+                </RevealText>
 
                 {/* Description */}
-                <p className="mb-8 max-w-xl text-mist leading-relaxed">
+                <RevealText
+                  as="p"
+                  delay={0.35}
+                  className="mb-8 max-w-xl text-mist leading-relaxed"
+                >
                   {s.description}
-                </p>
+                </RevealText>
 
                 {/* Benefits */}
                 <ul className="grid gap-2 sm:grid-cols-2">

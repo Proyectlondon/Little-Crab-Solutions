@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import Image from "next/image";
+import RevealText from "./RevealText";
 
 const ECOSYSTEM = [
   {
@@ -42,18 +43,28 @@ export default function JJStack() {
         <div className="grid gap-16 lg:grid-cols-[1.1fr_1fr] lg:items-center">
           {/* Left: logo + headline */}
           <div>
-            <span className="kicker">Ecosistema JJ Stack</span>
-            <h2 className="mt-6 font-display text-[clamp(2rem,5.5vw,5rem)] uppercase leading-[0.95] text-cream">
+            <RevealText as="span" className="kicker inline-block">
+              Ecosistema JJ Stack
+            </RevealText>
+            <RevealText
+              as="h2"
+              delay={0.1}
+              className="mt-6 font-display text-[clamp(2rem,5.5vw,5rem)] uppercase leading-[0.95] text-cream"
+            >
               Stack técnico
               <br />
               <span className="text-gradient-ocean">100% local</span>
-            </h2>
-            <p className="mt-8 max-w-xl text-mist leading-relaxed">
+            </RevealText>
+            <RevealText
+              as="p"
+              delay={0.2}
+              className="mt-8 max-w-xl text-mist leading-relaxed"
+            >
               Todo corre en LOCAL (Windows 10, RTX 4060 8GB). Cero dependencias
               de cloud para inferencia. Arquitectura Lego Bricks — cada pieza
               es un módulo &lt;200 líneas, desacoplado, reemplazable. Solo tú
               decides qué sale.
-            </p>
+            </RevealText>
 
             <div className="mt-12 flex items-center gap-6">
               <div className="relative h-20 w-20 overflow-hidden rounded-2xl ring-1 ring-white/10 float-anim">
@@ -79,12 +90,10 @@ export default function JJStack() {
           {/* Right: ecosystem grid */}
           <div className="grid gap-px bg-white/10 sm:grid-cols-2 lg:grid-cols-3">
             {ECOSYSTEM.map((e, i) => (
-              <motion.div
+              <RevealText
                 key={i}
-                initial={{ opacity: 1, y: 0 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-80px" }}
-                transition={{ duration: 0.6, delay: i * 0.08 }}
+                as="div"
+                delay={i * 0.08}
                 className="group bg-abyss p-8 transition-colors hover:bg-deep"
               >
                 <div className="mb-6 font-display text-5xl text-crab/40 transition-colors group-hover:text-crab">
@@ -92,7 +101,7 @@ export default function JJStack() {
                 </div>
                 <h3 className="mb-3 font-display text-lg text-cream">{e.t}</h3>
                 <p className="text-sm text-mist leading-relaxed">{e.d}</p>
-              </motion.div>
+              </RevealText>
             ))}
           </div>
         </div>

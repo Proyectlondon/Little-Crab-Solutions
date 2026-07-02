@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import { useState } from "react";
 import { toast } from "sonner";
+import RevealText from "./RevealText";
 
 const SCOPES = [
   "Automatización Marketing (n8n)",
@@ -56,20 +57,30 @@ export default function Contact() {
         <div className="grid gap-16 lg:grid-cols-[1fr_1.1fr]">
           {/* Left: pitch */}
           <div>
-            <span className="kicker">Contacto</span>
-            <h2 className="mt-6 font-display text-[clamp(2.2rem,6vw,5.5rem)] uppercase leading-[0.92] text-cream">
+            <RevealText as="span" className="kicker inline-block">
+              Contacto
+            </RevealText>
+            <RevealText
+              as="h2"
+              delay={0.1}
+              className="mt-6 font-display text-[clamp(2.2rem,6vw,5.5rem)] uppercase leading-[0.92] text-cream"
+            >
               ¿Listo para tu
               <br />
               <span className="text-gradient-coral">ejército de IA</span>
               <br />
               local?
-            </h2>
-            <p className="mt-8 max-w-md text-mist leading-relaxed">
+            </RevealText>
+            <RevealText
+              as="p"
+              delay={0.2}
+              className="mt-8 max-w-md text-mist leading-relaxed"
+            >
               Agenda una llamada de 30 min sin compromiso. Revisamos tu stack
               actual, definimos el primer workflow de alto impacto, y te damos
               hoja de ruta clara. Garantía: si el piloto no mejora tu métrica
               objetivo en 30 días, devolvemos el 50%.
-            </p>
+            </RevealText>
 
             <div className="mt-12 space-y-6">
               {[

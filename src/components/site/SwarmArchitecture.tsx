@@ -3,6 +3,7 @@
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef, useEffect, useState } from "react";
 import { Brain, ListTree, Code2, ShieldCheck } from "lucide-react";
+import RevealText from "./RevealText";
 
 const NODES = [
   {
@@ -73,18 +74,28 @@ export default function SwarmArchitecture() {
       <div className="relative mx-auto max-w-[1400px] px-6 lg:px-10">
         {/* Header */}
         <div className="mb-20 text-center">
-          <span className="kicker justify-center">Arquitectura Swarm</span>
-          <h2 className="mx-auto mt-6 max-w-4xl font-display text-[clamp(2rem,5.5vw,5rem)] uppercase leading-[0.95] text-cream">
+          <RevealText as="span" className="kicker justify-center inline-flex">
+            Arquitectura Swarm
+          </RevealText>
+          <RevealText
+            as="h2"
+            delay={0.1}
+            className="mx-auto mt-6 max-w-4xl font-display text-[clamp(2rem,5.5vw,5rem)] uppercase leading-[0.95] text-cream"
+          >
             Un enjambre
             <br />
             <span className="text-gradient-coral">de especialistas</span>
-          </h2>
-          <p className="mx-auto mt-8 max-w-2xl text-mist leading-relaxed">
+          </RevealText>
+          <RevealText
+            as="p"
+            delay={0.2}
+            className="mx-auto mt-8 max-w-2xl text-mist leading-relaxed"
+          >
             No un único modelo monolítico. Cuatro roles con responsabilidades
             claras, orquestados en bucle cerrado. Hoy corren en tu hardware
             local; mañana, cuando tu infraestructura crezca, escalarán a un
             enjambre distribuido sin reescribir una sola línea de lógica.
-          </p>
+          </RevealText>
         </div>
 
         {/* Diagram + Side panel */}

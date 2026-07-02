@@ -1,6 +1,8 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, useScroll, useTransform } from "framer-motion";
+import { useRef } from "react";
+import RevealText from "./RevealText";
 
 const STEPS = [
   {
@@ -30,9 +32,18 @@ const STEPS = [
 ];
 
 export default function Process() {
+  const sectionRef = useRef<HTMLDivElement | null>(null);
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start 0.6", "end 0.4"],
+  });
+  // Line illumination — grows from 0% to 100% as user scrolls through the section
+  const lineScale = useTransform(scrollYProgress, [0, 1], [0, 1]);
+
   return (
     <section
       id="proceso"
+      ref={sectionRef}
       className="relative py-32 lg:py-44"
     >
       <div className="absolute inset-0 grid-backdrop opacity-15" />
@@ -41,24 +52,39 @@ export default function Process() {
         {/* Header */}
         <div className="mb-20 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
           <div>
-            <span className="kicker">Proceso</span>
-            <h2 className="mt-6 font-display text-[clamp(2rem,5.5vw,5rem)] uppercase leading-[0.95] text-cream">
+            <RevealText as="span" className="kicker inline-block">
+              Proceso
+            </RevealText>
+            <RevealText
+              as="h2"
+              delay={0.1}
+              className="mt-6 font-display text-[clamp(2rem,5.5vw,5rem)] uppercase leading-[0.95] text-cream"
+            >
               Del diagnóstico
               <br />
               al <span className="text-gradient-coral">ejército vivo</span>
-            </h2>
+            </RevealText>
           </div>
-          <p className="max-w-md text-mist leading-relaxed">
+          <RevealText
+            as="p"
+            delay={0.2}
+            className="max-w-md text-mist leading-relaxed"
+          >
             Cuatro fases en 12 semanas. No entregamos un demo y desaparecemos:
             dejamos infraestructura funcionando, equipo entrenado, y un
             ejército de micro-agentes que trabajan 24/7 en tu infraestructura.
-          </p>
+          </RevealText>
         </div>
 
         {/* Timeline */}
         <div className="relative">
-          {/* Vertical line */}
-          <div className="absolute left-0 top-0 h-full w-px bg-gradient-to-b from-crab via-white/10 to-transparent md:left-1/2" />
+          {/* Vertical line — base (dim) */}
+          <div className="absolute left-0 top-0 h-full w-px bg-white/10 md:left-1/2" />
+          {/* Vertical line — illuminated overlay that grows with scroll */}
+          <motion.div
+            style={{ scaleY: lineScale, transformOrigin: "top" }}
+            className="absolute left-0 top-0 h-full w-px bg-gradient-to-b from-crab via-crab/60 to-crab/20 md:left-1/2 shadow-[0_0_12px_rgba(229,75,27,0.6)]"
+          />
 
           <div className="space-y-16">
             {STEPS.map((s, i) => (
