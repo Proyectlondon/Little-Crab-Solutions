@@ -3,11 +3,12 @@
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
 import ParticleBackground from "./ParticleBackground";
+import TextWaveEffect from "./TextWaveEffect";
 
 const TITLE_LINES = [
-  ["IA", "privada."],
-  ["Automatización", "que"],
-  ["no", "se va", "a la nube."],
+  ["Marketing", "con IA"],
+  ["100%", "local."],
+  ["Cero", "nube."],
 ];
 
 export default function Hero() {
@@ -54,9 +55,9 @@ export default function Hero() {
         >
           <span className="tag-pill">
             <span className="dot" />
-            Boutique de Ingeniería IA · Local-First
+            Agencia Boutique de IA · Latam
           </span>
-          <span className="tag-pill">Parte del ecosistema JJ Stack</span>
+          <span className="tag-pill">Stack: n8n + ComfyUI + Ollama</span>
         </motion.div>
 
         {/* Title */}
@@ -97,9 +98,11 @@ export default function Hero() {
           transition={{ duration: 0.8, delay: 0.7, ease: [0.16, 1, 0.3, 1] }}
           className="mt-6 max-w-2xl text-balance text-base leading-relaxed text-mist sm:text-lg"
         >
-          Desplegamos modelos de lenguaje, automatización de workflows y generación
-          multimedia sobre tu propio hardware. Cero costo de tokens, cero fuga de
-          datos, cero dependencia de la nube.
+          <TextWaveEffect as="span" intensity="subtle">
+            Automatizamos tu marketing y ventas con IA 100% local. Sin APIs costosas,
+            sin datos en la nube, sin vendor lock-in. Funnels que convierten,
+            contenido que escala, control total.
+          </TextWaveEffect>
         </motion.p>
 
         {/* CTAs */}
@@ -110,11 +113,11 @@ export default function Hero() {
           className="mt-8 flex flex-wrap items-center gap-4"
         >
           <a href="#contacto" className="magnetic-btn" data-hover>
-            Iniciar proyecto
+            Agenda tu diagnóstico gratis
             <span aria-hidden>→</span>
           </a>
           <a href="#servicios" className="magnetic-btn outline" data-hover>
-            Explorar servicios
+            Ver cómo funciona
           </a>
         </motion.div>
 
@@ -126,10 +129,10 @@ export default function Hero() {
           className="mt-12 grid grid-cols-2 gap-6 border-t border-white/10 pt-8 sm:grid-cols-4"
         >
           {[
-            { k: "0", l: "Tokens facturados" },
-            { k: "100%", l: "Datos en tu hardware" },
-            { k: "4", l: "Roles Swarm orquestados" },
-            { k: "8GB+", l: "VRAM mínimo para difusión" },
+            { k: "$0", l: "Costo mensual en APIs" },
+            { k: "100%", l: "On-premise · tu red" },
+            { k: "RTX 4060", l: "8GB VRAM local" },
+            { k: "30d", l: "Garantía o 50% devuelto" },
           ].map((s, i) => (
             <div key={i} className="flex flex-col">
               <span className="font-display text-4xl text-cream sm:text-5xl">

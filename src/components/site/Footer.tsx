@@ -6,10 +6,11 @@ const COLS = [
   {
     title: "Servicios",
     links: [
-      { l: "Ollama local", h: "#servicios" },
-      { l: "n8n workflows", h: "#servicios" },
-      { l: "ComfyUI difusión", h: "#servicios" },
-      { l: "Swarm de agentes", h: "#swarm" },
+      { l: "Automatización Marketing", h: "#servicios" },
+      { l: "Contenido Visual", h: "#servicios" },
+      { l: "IA Conversacional & Voice", h: "#servicios" },
+      { l: "Desarrollo Web", h: "#servicios" },
+      { l: "Fine-tuning & LoRAs", h: "#servicios" },
     ],
   },
   {
@@ -24,10 +25,11 @@ const COLS = [
   {
     title: "Stack técnico",
     links: [
-      { l: "Qwen 2.5 Coder", h: "#servicios" },
-      { l: "Llama 3", h: "#servicios" },
-      { l: "Stable Diffusion / Flux", h: "#servicios" },
-      { l: "Nvidia local", h: "#ecosistema" },
+      { l: "n8n (Docker :5678)", h: "#servicios" },
+      { l: "ComfyUI (RTX 4060 :8188)", h: "#servicios" },
+      { l: "Ollama / Nemotron", h: "#servicios" },
+      { l: "Chatterbox TTS", h: "#servicios" },
+      { l: "Hyperframes", h: "#servicios" },
     ],
   },
 ];
@@ -62,8 +64,8 @@ export default function Footer() {
               </div>
             </div>
             <p className="mt-6 max-w-xs text-sm text-mist leading-relaxed">
-              Boutique de ingeniería en IA Local-First. Tu inteligencia,
-              tu hardware, tus reglas.
+              Agencia boutique de IA para PYMEs en Latam. Stack propio local:
+              tu inteligencia, tu hardware, tus reglas.
             </p>
           </div>
 
@@ -99,13 +101,12 @@ export default function Footer() {
         {/* Bottom row */}
         <div className="flex flex-col items-start justify-between gap-4 text-xs text-mist md:flex-row md:items-center">
           <div>
-            © {new Date().getFullYear()} Little Crab Solutions · Parte del
-            ecosistema JJ Stack
+            © {new Date().getFullYear()} Little Crab Solutions · Hecho en Medellín para Latam
           </div>
           <div className="flex flex-wrap items-center gap-6">
             <span className="flex items-center gap-2">
               <span className="h-1.5 w-1.5 rounded-full bg-crab shadow-[0_0_10px_#E54B1B]" />
-              Local-First · 100% privado
+              100% local · Sin vendor lock-in · Garantía 30d
             </span>
             <a href="#top" className="link-underline hover:text-cream">
               Volver arriba ↑

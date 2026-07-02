@@ -5,33 +5,27 @@ import { motion } from "framer-motion";
 const STEPS = [
   {
     n: "01",
-    t: "Diagnóstico de infraestructura",
-    d: "Auditamos tu hardware (GPU Nvidia, VRAM, almacenamiento), tu stack actual de sistemas y los flujos de trabajo repetitivos que están consumiendo horas humanas. El output es un mapa de oportunidades priorizadas por ROI.",
-    tags: ["Hardware audit", "Workflow mapping", "ROI scoring"],
+    t: "Diagnóstico & Arquitectura",
+    d: "Auditoría técnica de tu stack actual, definición de KPIs (CAC, LTV, ROAS, velocidad de lead), y diseño de la arquitectura Lego Bricks — qué piezas activar y en qué orden de prioridad. Entregable: documento ARCHITECTURE.md + diagrama C4 + backlog.",
+    tags: ["Auditoría técnica", "KPIs: CAC, LTV, ROAS", "Arquitectura Lego", "ARCHITECTURE.md"],
   },
   {
     n: "02",
-    t: "Diseño de arquitectura Swarm",
-    d: "Modelamos el problema como un enjambre: definimos los roles (Orchestrator, Analyst, Coder, QA), las interfaces entre ellos, los puntos de validación y los bucles de retroalimentación. Todo documentado antes de escribir una línea de código.",
-    tags: ["Role design", "Interface contracts", "Validation gates"],
+    t: "Build & Integración",
+    d: "Setup de infraestructura local (n8n Docker, ComfyUI en RTX 4060, Ollama), integración con tus herramientas vía 400+ nodos nativos de n8n (HubSpot, Notion, Slack, Meta Ads, GA4), y primer workflow prioritario en producción.",
+    tags: ["n8n Docker :5678", "ComfyUI :8188", "400+ nodos nativos", "Workflow en producción"],
   },
   {
     n: "03",
-    t: "Despliegue local y privado",
-    d: "Instalamos Ollama con los modelos seleccionados (Qwen 2.5 Coder, Llama 3, Hermes), configuramos n8n sobre tu infraestructura, y dejamos ComfyUI listo sobre tu GPU. Nada sale a la nube en ningún momento del proceso.",
-    tags: ["Ollama setup", "n8n deploy", "ComfyUI on GPU"],
+    t: "Escalamiento & Autonomía",
+    d: "Automatización completa de todos los workflows prioritarios, entrenamiento de tu equipo en 3 sesiones hands-on (n8n, ComfyUI, prompting), y handover total: código, credenciales (Bitwarden), docs, runbooks. Soporte 30 días post-lanzamiento.",
+    tags: ["Workflows en producción", "3 sesiones hands-on", "Handover total", "Soporte 30d"],
   },
   {
     n: "04",
-    t: "Orquestación de pipelines",
-    d: "Conectamos los flujos: webhooks entrantes, bases de datos internas, CRM, WhatsApp, generación multimedia. Cada pipeline queda versionado, monitoreable y reversible. Puedes pausar, editar o auditar cualquier paso.",
-    tags: ["Webhooks", "CRM sync", "WhatsApp bots"],
-  },
-  {
-    n: "05",
-    t: "Bucle de QA y mejora continua",
-    d: "El agente QA valida cada ejecución contra criterios de aceptación. Los fallos vuelven al Coder automáticamente. Tu equipo recibe reportes periódicos de cobertura, latencia y ahorro de horas.",
-    tags: ["Auto-validation", "Coverage reports", "Time-saved metrics"],
+    t: "Partner Continuo",
+    d: "Retainer mensual opcional: nuevos workflows, LoRAs estacionales, optimización de modelos, monitoreo y soporte prioritario. Seguimos mejorando tu ejército de micro-agentes que trabajan 24/7 en tu infraestructura.",
+    tags: ["Retainer mensual", "Nuevos workflows", "LoRAs estacionales", "Monitoreo 24/7"],
   },
 ];
 
@@ -49,15 +43,15 @@ export default function Process() {
           <div>
             <span className="kicker">Proceso</span>
             <h2 className="mt-6 font-display text-[clamp(2rem,5.5vw,5rem)] uppercase leading-[0.95] text-cream">
-              Del audit
+              Del diagnóstico
               <br />
-              al <span className="text-gradient-coral">bucle vivo</span>
+              al <span className="text-gradient-coral">ejército vivo</span>
             </h2>
           </div>
           <p className="max-w-md text-mist leading-relaxed">
-            Cinco fases, ninguna opcional. No entregamos un demo y
-            desaparecemos: dejamos infraestructura funcionando, pipelines
-            orquestados y un sistema que se mejora solo.
+            Cuatro fases en 12 semanas. No entregamos un demo y desaparecemos:
+            dejamos infraestructura funcionando, equipo entrenado, y un
+            ejército de micro-agentes que trabajan 24/7 en tu infraestructura.
           </p>
         </div>
 

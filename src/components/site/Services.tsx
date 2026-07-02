@@ -8,58 +8,72 @@ import TriangleAccent from "./TriangleAccent";
 const SERVICES = [
   {
     n: "01",
-    icon: Cpu,
-    title: "Modelos Locales con Ollama",
-    stack: ["Qwen 2.5 Coder", "Llama 3", "Hermes"],
+    icon: Workflow,
+    title: "Automatización de Marketing & Ventas",
+    stack: ["n8n", "Lead Gen V5", "CRM", "WhatsApp"],
     description:
-      "Desplegamos modelos avanzados de lenguaje que corren de forma nativa en tu propio hardware Nvidia. Procesamiento ilimitado de documentos corporativos, correos y código sin costo de tokens.",
+      "Lead Gen V5 con scoring determinista, funnels completos de formularios a secuencias email/SMS con notificación voz (Chatterbox TTS), y Social Media Autopilot que publica en LinkedIn, Twitter e IG sin horas manuales.",
     benefits: [
-      "Cero fuga de información confidencial",
-      "Sin suscripción a APIs externas",
-      "Procesamiento ilimitado de documentos",
-      "Latencia local, respuestas inmediatas",
+      "Lead Gen: Google Alerts → Scoring JS → Outreach",
+      "Funnels: Form → Enriquecimiento → CRM → Email/SMS",
+      "Social Autopilot: Calendar → Copy + Imagen → Video → Buffer",
+      "Reporting: GA4 + Meta Ads → Dashboard cada lunes 9am",
     ],
   },
   {
     n: "02",
-    icon: Workflow,
-    title: "Automatización con n8n",
-    stack: ["Workflows", "CRM", "WhatsApp", "Webhooks"],
+    icon: ImageIcon,
+    title: "Contenido Visual · ComfyUI + Hyperframes",
+    stack: ["SDXL", "LoRAs", "ControlNet", "Hyperframes"],
     description:
-      "Diseñamos e implementamos flujos de automatización locales seguros que conectan bases de datos, sistemas internos, CRM, envíos de WhatsApp y webhooks en pipelines autónomos de bucle cerrado.",
+      "Imágenes de marca con estilo consistente vía LoRAs entrenadas a tu negocio, video vertical (Reels/TikTok/Shorts) de script a MP4 1080x1920 con TTS local y subtítulos animados, y avatares parlantes para demos y onboarding.",
     benefits: [
-      "Reemplazo de tareas repetitivas humanas",
-      "Pipelines lógicos en bucle cerrado",
-      "Integración nativa con tu stack interno",
-      "Orquestación visual y monitoreable",
+      "Product shots, lifestyle, hero sections — LoRA de marca",
+      "Video vertical: Script → Hyperframes → TTS → Subtítulos",
+      "Avatares parlantes con voice cloning",
+      "Consistencia visual garantizada en cada asset",
     ],
   },
   {
     n: "03",
-    icon: ImageIcon,
-    title: "Generación Multimedia · ComfyUI",
-    stack: ["Stable Diffusion", "Flux", "8GB+ VRAM"],
+    icon: Network,
+    title: "IA Conversacional & Voice",
+    stack: ["Ollama", "Chatterbox", "JARVIS HUD", "Whisper"],
     description:
-      "Configuramos flujos automatizados de generación y edición de imágenes y videos sobre tu GPU local. Assets de marketing y diseño web a demanda, sin depender de servicios externos.",
+      "Chatbots especializados fine-tuned en tu dominio, voice agents con JARVIS HUD (WebSocket TLS + mic navegador) que van de STT a LLM a TTS en bucle, e integración con Discord/Telegram/Slack vía MCP.",
     benefits: [
-      "Assets instantáneos a demanda",
-      "Edición y variación automatizada",
-      "Sin costos por imagen generada",
-      "Modelos fine-tuned a tu marca",
+      "Chatbots fine-tuned (LoRA) en tu nicho",
+      "Voice agents: Whisper → Nemotron/Ollama → Chatterbox",
+      "JARVIS HUD con WebSocket TLS seguro",
+      "Bots en Discord/Telegram/Slack con acceso a tu FS",
     ],
   },
   {
     n: "04",
-    icon: Network,
-    title: "Arquitectura Swarm de Agentes",
-    stack: ["Orchestrator", "Analyst", "Coder", "QA"],
+    icon: Cpu,
+    title: "Desarrollo Web & Landing Pages",
+    stack: ["Next.js", "Tailwind", "Shadcn", "PWA"],
     description:
-      "Aunque las ejecuciones son locales por restricciones de hardware, estructuramos tus flujos con la lógica de un enjambre: un Orchestrator que analiza la meta, un Analyst que estructura subtareas, un Coder que escribe scripts, y un QA que valida en bucles lógicos.",
+      "Landing pages de alta conversión con estructura Hero → Beneficios → Prueba social → FAQ → CTA sticky. Design System propio con 67 estilos visuales y 161 industrias. Performance first: Core Web Vitals verdes, PWA, SEO técnico.",
     benefits: [
-      "Separación clara de responsabilidades",
-      "Bucles de validación automáticos",
-      "Trazabilidad de cada decisión",
-      "Escalable a futuro multi-agente",
+      "Landings de alta conversión listas para producción",
+      "Design System: 67 estilos, 161 industrias",
+      "Core Web Vitals verdes, PWA, SEO técnico",
+      "Schema.org, sitemap, robots — todo configurado",
+    ],
+  },
+  {
+    n: "05",
+    icon: ImageIcon,
+    title: "Entrenamiento & Fine-tuning",
+    stack: ["Kohya", "LoRA", "QLoRA 4-bit", "Qwen3.5"],
+    description:
+      "LoRAs de marca con 50-100 imágenes para consistencia visual garantizada en ComfyUI, y modelos de dominio con QLoRA 4-bit en Qwen3.5/Hermes3 para especialistas en tu nicho: legal, inmobiliario, contable, SaaS.",
+    benefits: [
+      "LoRA de marca: 50-100 imgs → 1.5-3GB → consistencia total",
+      "Modelos de dominio: QLoRA 4-bit en Qwen3.5/Hermes3",
+      "Especialistas en legal, inmobiliario, contable, SaaS",
+      "Pesos y modelos son tuyos para siempre",
     ],
   },
 ];
@@ -103,7 +117,7 @@ export default function Services() {
               delay={0.1}
               className="mt-6 font-display text-[clamp(2rem,5.5vw,5rem)] uppercase leading-[0.95] text-cream"
             >
-              Cuatro capas
+              Cinco capas
               <br />
               de <span className="text-gradient-coral">ingeniería</span>
             </RevealText>
@@ -113,9 +127,9 @@ export default function Services() {
             delay={0.2}
             className="max-w-md text-mist leading-relaxed"
           >
-            Una stack completa de IA privada, modular y desplegable sobre
-            infraestructura local. Cada capa resuelve un problema de negocio
-            concreto, sin renunciar a la soberanía de tus datos.
+            Stack propio: n8n + ComfyUI + Hyperframes + Ollama. Cada servicio
+            entrega código, workflows y modelos que tú posees. Arquitectura
+            Lego Bricks — cada pieza reemplazable, nada te ata a un vendor.
           </RevealText>
         </div>
 
@@ -150,7 +164,7 @@ export default function Services() {
                     <Icon className="h-6 w-6" strokeWidth={1.5} />
                   </div>
                   <span className="font-mono text-xs tracking-[0.3em] text-mist">
-                    {s.n} / 04
+                    {s.n} / 05
                   </span>
                 </div>
 

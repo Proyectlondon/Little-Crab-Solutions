@@ -5,15 +5,15 @@ import { useState } from "react";
 import { toast } from "sonner";
 
 const SCOPES = [
-  "Modelos locales (Ollama)",
-  "Automatización (n8n)",
-  "Multimedia (ComfyUI)",
-  "Arquitectura Swarm",
-  "Auditoría completa",
+  "Automatización Marketing (n8n)",
+  "Contenido Visual (ComfyUI)",
+  "IA Conversacional & Voice",
+  "Desarrollo Web & Landings",
+  "Fine-tuning & LoRAs",
 ];
 
 export default function Contact() {
-  const [scope, setScope] = useState<string[]>(["Auditoría completa"]);
+  const [scope, setScope] = useState<string[]>(["Automatización Marketing (n8n)"]);
   const [sending, setSending] = useState(false);
 
   const toggleScope = (s: string) => {
@@ -58,23 +58,26 @@ export default function Contact() {
           <div>
             <span className="kicker">Contacto</span>
             <h2 className="mt-6 font-display text-[clamp(2.2rem,6vw,5.5rem)] uppercase leading-[0.92] text-cream">
-              Construye
+              ¿Listo para tu
               <br />
-              <span className="text-gradient-coral">tu IA privada</span>
+              <span className="text-gradient-coral">ejército de IA</span>
               <br />
-              esta semana.
+              local?
             </h2>
             <p className="mt-8 max-w-md text-mist leading-relaxed">
-              Cuéntanos qué quieres automatizar. En menos de 24 horas
-              hábiles te enviamos un diagnóstico inicial con la arquitectura
-              Swarm propuesta y los modelos recomendados para tu hardware.
+              Agenda una llamada de 30 min sin compromiso. Revisamos tu stack
+              actual, definimos el primer workflow de alto impacto, y te damos
+              hoja de ruta clara. Garantía: si el piloto no mejora tu métrica
+              objetivo en 30 días, devolvemos el 50%.
             </p>
 
             <div className="mt-12 space-y-6">
               {[
-                { k: "Email", v: "hola@littlecrab.solutions" },
-                { k: "Ecosistema", v: "JJ Stack · Latam" },
-                { k: "Cobertura", v: "Remoto · On-site en clientes clave" },
+                { k: "Calendly", v: "calendly.com/little-crab-solutions" },
+                { k: "Email", v: "hola@littlecrabsolutions.com" },
+                { k: "WhatsApp", v: "+57 3XX XXX XXXX" },
+                { k: "Discord", v: "JJ Agent#5950 — pruébalo" },
+                { k: "Ubicación", v: "Medellín, Colombia · Latam" },
               ].map((row) => (
                 <div
                   key={row.k}

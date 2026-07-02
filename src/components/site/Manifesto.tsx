@@ -4,9 +4,10 @@ import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
 import RevealText from "./RevealText";
 import TriangleAccent from "./TriangleAccent";
+import TextWaveEffect from "./TextWaveEffect";
 
 const MANIFESTO =
-  "No alquilamos tu inteligencia a la nube. La instalamos en tu propio hardware, la orquestamos como un enjambre de agentes especializados, y la dejamos correr sin límite de tokens ni ojos externos sobre tus datos.";
+  "No alquilamos tu inteligencia a la nube. La instalamos en tu propio hardware, la orquestamos con n8n, ComfyUI y Ollama, y la dejamos correr sin suscripciones, sin fugas de datos, sin vendor lock-in.";
 
 export default function Manifesto() {
   const ref = useRef<HTMLDivElement | null>(null);
@@ -72,9 +73,12 @@ export default function Manifesto() {
             delay={0.2}
             className="max-w-md text-mist leading-relaxed"
           >
-            Little Crab Solutions es la boutique de ingeniería del ecosistema{" "}
-            <span className="text-cream">JJ Stack</span>. Construimos
-            infraestructura de IA que pertenece al cliente, no a un proveedor.
+            <TextWaveEffect as="span" intensity="subtle">
+              Agencia boutique de IA para PYMEs en Latam/Colombia. Stack propio:{" "}
+              <span className="text-cream">n8n + ComfyUI + Hyperframes + Ollama</span>.
+              Resultado: funnels que convierten, contenido que escala, cero
+              dependencias de terceros.
+            </TextWaveEffect>
           </RevealText>
         </div>
 
@@ -93,18 +97,18 @@ export default function Manifesto() {
           {[
             {
               n: "01",
-              t: "Privacidad por diseño",
-              d: "Tus documentos, correos y código nunca salen de tus servidores. Cero APIs externas, cero fugas de información confidencial.",
+              t: "Costo $0/mes",
+              d: "Modelos locales en tu hardware (RTX 4060 8GB). Sin APIs de OpenAI, Anthropic o ElevenLabs. Procesamiento ilimitado, facturación cero.",
             },
             {
               n: "02",
-              t: "Costo cero en tokens",
-              d: "Procesamiento ilimitado sobre tu propia GPU. Sin facturación por uso, sin sorpresas a fin de mes, sin depender del humor de un proveedor.",
+              t: "100% on-premise",
+              d: "Tus leads, tus prompts, tus modelos no salen de tu red. Privacidad total, latencia <200ms, funciona offline. Tú controlas las versiones.",
             },
             {
               n: "03",
-              t: "Soberanía operativa",
-              d: "El modelo, los pesos, los datos y la lógica viven dentro de tu perímetro. Si apagas el internet, la IA sigue funcionando.",
+              t: "Arquitectura Lego",
+              d: "Cada pieza es reemplazable: n8n orquesta, ComfyUI genera, Hyperframes anima, Ollama razona. Nada te ata a un vendor. Escalas sin reescribir.",
             },
           ].map((p, i) => (
             <RevealText

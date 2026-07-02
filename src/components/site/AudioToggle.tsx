@@ -59,7 +59,7 @@ export default function AudioToggle() {
     drone2.type = "sine";
     drone2.frequency.value = 82.41; // E2 (fifth)
     const droneGain = ctx.createGain();
-    droneGain.gain.value = 0.5;
+    droneGain.gain.value = 0.4;
     drone1.connect(droneGain);
     drone2.connect(droneGain);
     droneGain.connect(master);
@@ -70,12 +70,12 @@ export default function AudioToggle() {
     const lfo = ctx.createOscillator();
     lfo.frequency.value = 0.08;
     const lfoGain = ctx.createGain();
-    lfoGain.gain.value = 0.25;
+    lfoGain.gain.value = 0.2;
     lfo.connect(lfoGain);
     lfoGain.connect(droneGain.gain);
     lfo.start();
 
-    // ---- Filtered noise (waves) ----
+    // ---- Filtered noise (waves) — louder for more immersion ----
     const noiseBuffer = ctx.createBuffer(1, ctx.sampleRate * 4, ctx.sampleRate);
     const data = noiseBuffer.getChannelData(0);
     for (let i = 0; i < data.length; i++) {
@@ -86,14 +86,29 @@ export default function AudioToggle() {
     noise.loop = true;
     const noiseFilter = ctx.createBiquadFilter();
     noiseFilter.type = "bandpass";
-    noiseFilter.frequency.value = 280;
-    noiseFilter.Q.value = 1.2;
+    noiseFilter.frequency.value = 320;
+    noiseFilter.Q.value = 0.8;
     const noiseGain = ctx.createGain();
-    noiseGain.gain.value = 0.12;
+    noiseGain.gain.value = 0.18; // louder
     noise.connect(noiseFilter);
     noiseFilter.connect(noiseGain);
     noiseGain.connect(master);
     noise.start();
+
+    // ---- Second noise layer (high shimmer — water surface) ----
+    const noise2 = ctx.createBufferSource();
+    noise2.buffer = noiseBuffer;
+    noise2.loop = true;
+    const noiseFilter2 = ctx.createBiquadFilter();
+    noiseFilter2.type = "bandpass";
+    noiseFilter2.frequency.value = 2400;
+    noiseFilter2.Q.value = 0.5;
+    const noiseGain2 = ctx.createGain();
+    noiseGain2.gain.value = 0.04;
+    noise2.connect(noiseFilter2);
+    noiseFilter2.connect(noiseGain2);
+    noiseGain2.connect(master);
+    noise2.start();
 
     // Slow LFO on noise filter — creates wave-like movement
     const waveLFO = ctx.createOscillator();
@@ -142,6 +157,7 @@ export default function AudioToggle() {
           lfo.stop();
           waveLFO.stop();
           noise.stop();
+          noise2.stop();
           window.clearTimeout(pingTimer);
         } catch {}
       },

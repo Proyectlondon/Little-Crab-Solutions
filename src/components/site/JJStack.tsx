@@ -5,20 +5,28 @@ import Image from "next/image";
 
 const ECOSYSTEM = [
   {
-    t: "Stack de IA privado",
-    d: "Cuatro capas — modelos, workflows, multimedia, agentes — corriendo sobre tu hardware.",
+    t: "Orquestación · n8n",
+    d: "Docker :5678. Workflows versionados en Git. 400+ nodos nativos: HubSpot, Notion, Slack, Meta Ads, GA4.",
   },
   {
-    t: "Infraestructura Nvidia",
-    d: "GPUs locales con 8GB+ VRAM listas para difusión y para inferencia de LLMs sin latencia de red.",
+    t: "Imágenes · ComfyUI",
+    d: "RTX 4060 :8188. SDXL + LoRAs + ControlNet. Assets de marca con consistencia visual garantizada.",
   },
   {
-    t: "Integración con tu negocio",
-    d: "WhatsApp, CRM, bases de datos internas y webhooks conectados por n8n en pipelines de bucle cerrado.",
+    t: "Video · Hyperframes",
+    d: "Python :5555. HTML/CSS → MP4 vertical 1080x1920. Reels y TikToks de script a publicación automática.",
   },
   {
-    t: "Soberanía operativa",
-    d: "Sin suscripciones a APIs externas. Sin costo por token. Sin depender de la disponibilidad de un proveedor.",
+    t: "LLM · Nemotron + Ollama",
+    d: "NVIDIA API con fallback a Ollama local :11434. Modelos: Qwen3.5, Hermes3, Gemma4. Razonamiento en tu hardware.",
+  },
+  {
+    t: "Voice · Chatterbox TTS",
+    d: ":8888. Turbo (EN) + Multilingual V3 (ES). Voice cloning cross-lingual para avatares y agentes de voz.",
+  },
+  {
+    t: "Interfaz · JARVIS HUD",
+    d: ":8766 TLS. WebSocket + mic navegador + Whisper STT. Voice agents en tiempo real, 100% local.",
   },
 ];
 
@@ -36,15 +44,15 @@ export default function JJStack() {
           <div>
             <span className="kicker">Ecosistema JJ Stack</span>
             <h2 className="mt-6 font-display text-[clamp(2rem,5.5vw,5rem)] uppercase leading-[0.95] text-cream">
-              Una pieza
+              Stack técnico
               <br />
-              de un <span className="text-gradient-ocean">sistema mayor</span>
+              <span className="text-gradient-ocean">100% local</span>
             </h2>
             <p className="mt-8 max-w-xl text-mist leading-relaxed">
-              Little Crab Solutions es la boutique de IA del ecosistema JJ
-              Stack. Donde el resto del ecosistema construye producto, Little
-              Crab construye la infraestructura de inteligencia que lo
-              alimenta — privada, local y sin ataduras a la nube.
+              Todo corre en LOCAL (Windows 10, RTX 4060 8GB). Cero dependencias
+              de cloud para inferencia. Arquitectura Lego Bricks — cada pieza
+              es un módulo &lt;200 líneas, desacoplado, reemplazable. Solo tú
+              decides qué sale.
             </p>
 
             <div className="mt-12 flex items-center gap-6">
@@ -69,7 +77,7 @@ export default function JJStack() {
           </div>
 
           {/* Right: ecosystem grid */}
-          <div className="grid gap-px bg-white/10 sm:grid-cols-2">
+          <div className="grid gap-px bg-white/10 sm:grid-cols-2 lg:grid-cols-3">
             {ECOSYSTEM.map((e, i) => (
               <motion.div
                 key={i}
