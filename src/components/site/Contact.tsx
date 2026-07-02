@@ -88,7 +88,7 @@ export default function Contact() {
                 { k: "Email", v: "hola@littlecrabsolutions.com" },
                 { k: "WhatsApp", v: "+57 310 432 8783" },
                 { k: "Discord", v: "JJ Agent#5950 — pruébalo" },
-                { k: "Ubicación", v: "Medellín, Colombia · Latam" },
+                { k: "Ubicación", v: "Tocancipá, Cundinamarca · Latam" },
               ].map((row) => (
                 <div
                   key={row.k}

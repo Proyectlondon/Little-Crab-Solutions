@@ -60,6 +60,20 @@ export default function JJStack() {
               eternas.
             </RevealText>
 
+            <RevealText
+              as="p"
+              delay={0.3}
+              className="mt-4 max-w-xl text-mist leading-relaxed"
+            >
+              Esta empresa está construida sobre tres fundamentos:{" "}
+              <span className="text-cream">Dios</span> como nuestro motor y
+              guía, <span className="text-cream">la familia</span> como
+              prioridad sobre cualquier negocio, y{" "}
+              <span className="text-cream">la IA</span> como herramienta para
+              servir a otros con excelencia. Tratamos a cada cliente como nos
+              gustaría ser tratados — con honestidad, transparencia y respeto.
+            </RevealText>
+
             <div className="mt-8 flex items-center gap-6">
               <div className="relative h-20 w-20 overflow-hidden rounded-2xl ring-1 ring-white/10 float-anim">
                 <Image
@@ -75,7 +89,7 @@ export default function JJStack() {
                   Little Crab Solutions
                 </div>
                 <div className="text-sm text-mist">
-                  Medellín, Colombia · Atendemos Latam
+                  Tocancipá, Cundinamarca · Atendemos Latam
                 </div>
               </div>
             </div>

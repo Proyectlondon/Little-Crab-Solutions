@@ -101,7 +101,7 @@ export default function Footer() {
         {/* Bottom row */}
         <div className="flex flex-col items-start justify-between gap-4 text-xs text-mist md:flex-row md:items-center">
           <div>
-            © {new Date().getFullYear()} Little Crab Solutions · Hecho en Medellín para Latam · Con fe y propósito
+            © {new Date().getFullYear()} Little Crab Solutions · Hecho en Tocancipá, Cundinamarca para Latam · Con fe y propósito
           </div>
           <div className="flex flex-wrap items-center gap-6">
             <span className="flex items-center gap-2">
