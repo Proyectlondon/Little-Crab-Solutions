@@ -2,6 +2,8 @@
 
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
+import RevealText from "./RevealText";
+import TriangleAccent from "./TriangleAccent";
 
 const MANIFESTO =
   "No alquilamos tu inteligencia a la nube. La instalamos en tu propio hardware, la orquestamos como un enjambre de agentes especializados, y la dejamos correr sin límite de tokens ni ojos externos sobre tus datos.";
@@ -18,33 +20,62 @@ export default function Manifesto() {
   return (
     <section
       id="filosofia"
-      className="relative py-32 lg:py-44"
+      className="relative py-32 lg:py-44 overflow-hidden"
     >
-      {/* Top fade — blends the manifesto's top edge into the submerge fog above */}
-      <div
-        className="absolute top-0 left-0 right-0 h-48 pointer-events-none z-0"
-        style={{
-          background:
-            "linear-gradient(to bottom, rgba(7, 9, 12, 0.95) 0%, rgba(7, 9, 12, 0.5) 50%, transparent 100%)",
-        }}
-      />
       <div className="glow-blob right-[-200px] top-[-100px] h-[400px] w-[400px] bg-ocean/20" />
 
-      <div className="mx-auto max-w-[1400px] px-6 lg:px-10">
+      {/* Decorative blue triangle accents */}
+      <TriangleAccent
+        position={{ top: "15%", left: "5%" }}
+        variant="up"
+        size={36}
+        opacity={0.3}
+        floatDelay={0}
+      />
+      <TriangleAccent
+        position={{ top: "60%", right: "8%" }}
+        variant="down"
+        size={48}
+        color="#56A0D2"
+        opacity={0.22}
+        delay={0.2}
+        floatDelay={1.5}
+      />
+      <TriangleAccent
+        position={{ bottom: "10%", left: "12%" }}
+        variant="right"
+        size={28}
+        color="#2E6E9E"
+        opacity={0.2}
+        delay={0.4}
+        floatDelay={3}
+      />
+
+      <div className="relative mx-auto max-w-[1400px] px-6 lg:px-10">
         <div className="mb-14 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
           <div>
-            <span className="kicker">Filosofía</span>
-            <h2 className="mt-6 font-display text-[clamp(2rem,5vw,4.5rem)] uppercase leading-[0.95] text-cream">
+            <RevealText as="span" className="kicker inline-block">
+              Filosofía
+            </RevealText>
+            <RevealText
+              as="h2"
+              delay={0.1}
+              className="mt-6 font-display text-[clamp(2rem,5vw,4.5rem)] uppercase leading-[0.95] text-cream"
+            >
               Local-First.
               <br />
               <span className="text-gradient-coral">Siempre.</span>
-            </h2>
+            </RevealText>
           </div>
-          <p className="max-w-md text-mist leading-relaxed">
+          <RevealText
+            as="p"
+            delay={0.2}
+            className="max-w-md text-mist leading-relaxed"
+          >
             Little Crab Solutions es la boutique de ingeniería del ecosistema{" "}
             <span className="text-cream">JJ Stack</span>. Construimos
             infraestructura de IA que pertenece al cliente, no a un proveedor.
-          </p>
+          </RevealText>
         </div>
 
         <div ref={ref} className="max-w-5xl">
@@ -76,12 +107,10 @@ export default function Manifesto() {
               d: "El modelo, los pesos, los datos y la lógica viven dentro de tu perímetro. Si apagas el internet, la IA sigue funcionando.",
             },
           ].map((p, i) => (
-            <motion.div
+            <RevealText
               key={i}
-              initial={{ opacity: 1, y: 0 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-100px" }}
-              transition={{ duration: 0.7, delay: i * 0.1, ease: [0.16, 1, 0.3, 1] }}
+              as="div"
+              delay={i * 0.12}
               className="group relative border-t border-white/10 pt-8"
             >
               <div className="mb-4 font-mono text-xs tracking-[0.3em] text-crab">
@@ -89,7 +118,7 @@ export default function Manifesto() {
               </div>
               <h3 className="mb-3 font-display text-2xl text-cream">{p.t}</h3>
               <p className="text-mist leading-relaxed">{p.d}</p>
-            </motion.div>
+            </RevealText>
           ))}
         </div>
       </div>

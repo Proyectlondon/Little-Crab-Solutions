@@ -39,14 +39,14 @@ export default function Hero() {
       <div className="absolute inset-0 grid-backdrop opacity-60" />
 
       {/* Vignette */}
-      <div className="absolute inset-0 bg-gradient-to-b from-abyss/40 via-transparent to-abyss/60" />
+      <div className="absolute inset-0 bg-gradient-to-b from-abyss/40 via-transparent to-transparent" />
 
-      {/* Bottom fade — feathers the hero's bottom edge into the submerge fog */}
+      {/* Smooth transition to next section — gentle gradient, no hard edge */}
       <div
-        className="absolute bottom-0 left-0 right-0 h-64 pointer-events-none z-20"
+        className="absolute bottom-0 left-0 right-0 h-40 pointer-events-none z-20"
         style={{
           background:
-            "linear-gradient(to bottom, transparent 0%, rgba(7, 9, 12, 0.5) 40%, rgba(7, 9, 12, 0.95) 100%)",
+            "linear-gradient(to bottom, transparent 0%, rgba(7, 9, 12, 0.6) 70%, rgba(7, 9, 12, 0.9) 100%)",
         }}
       />
 

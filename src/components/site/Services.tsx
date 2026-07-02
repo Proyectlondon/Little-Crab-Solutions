@@ -2,6 +2,8 @@
 
 import { motion } from "framer-motion";
 import { Cpu, Workflow, Image as ImageIcon, Network } from "lucide-react";
+import RevealText from "./RevealText";
+import TriangleAccent from "./TriangleAccent";
 
 const SERVICES = [
   {
@@ -71,22 +73,50 @@ export default function Services() {
       <div className="absolute inset-0 grid-backdrop opacity-15" />
       <div className="glow-blob left-[-200px] top-[20%] h-[400px] w-[400px] bg-crab/10" />
 
+      {/* Decorative blue triangle accents */}
+      <TriangleAccent
+        position={{ top: "8%", right: "10%" }}
+        variant="up"
+        size={42}
+        opacity={0.22}
+        floatDelay={0.5}
+      />
+      <TriangleAccent
+        position={{ bottom: "15%", left: "6%" }}
+        variant="left"
+        size={32}
+        color="#56A0D2"
+        opacity={0.2}
+        delay={0.3}
+        floatDelay={2}
+      />
+
       <div className="relative mx-auto max-w-[1400px] px-6 lg:px-10">
         {/* Header */}
         <div className="mb-20 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
           <div>
-            <span className="kicker">Servicios</span>
-            <h2 className="mt-6 font-display text-[clamp(2rem,5.5vw,5rem)] uppercase leading-[0.95] text-cream">
+            <RevealText as="span" className="kicker inline-block">
+              Servicios
+            </RevealText>
+            <RevealText
+              as="h2"
+              delay={0.1}
+              className="mt-6 font-display text-[clamp(2rem,5.5vw,5rem)] uppercase leading-[0.95] text-cream"
+            >
               Cuatro capas
               <br />
               de <span className="text-gradient-coral">ingeniería</span>
-            </h2>
+            </RevealText>
           </div>
-          <p className="max-w-md text-mist leading-relaxed">
+          <RevealText
+            as="p"
+            delay={0.2}
+            className="max-w-md text-mist leading-relaxed"
+          >
             Una stack completa de IA privada, modular y desplegable sobre
             infraestructura local. Cada capa resuelve un problema de negocio
             concreto, sin renunciar a la soberanía de tus datos.
-          </p>
+          </RevealText>
         </div>
 
         {/* Grid */}
