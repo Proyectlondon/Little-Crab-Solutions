@@ -16,9 +16,11 @@ export default function Hero() {
     target: ref,
     offset: ["start start", "end start"],
   });
-  const y = useTransform(scrollYProgress, [0, 1], ["0%", "30%"]);
-  const opacity = useTransform(scrollYProgress, [0, 0.8], [1, 0]);
-  const scale = useTransform(scrollYProgress, [0, 1], [1, 0.96]);
+  // Gentle parallax — content moves up only slightly and stays mostly visible
+  // until the user has scrolled well past the hero.
+  const y = useTransform(scrollYProgress, [0, 1], ["0%", "12%"]);
+  const opacity = useTransform(scrollYProgress, [0, 0.6, 1], [1, 1, 0.3]);
+  const scale = useTransform(scrollYProgress, [0, 1], [1, 0.98]);
 
   return (
     <section
@@ -41,14 +43,14 @@ export default function Hero() {
 
       <motion.div
         style={{ y, opacity, scale }}
-        className="relative z-10 mx-auto flex min-h-[100svh] max-w-[1400px] flex-col justify-center px-6 pt-32 pb-20 lg:px-10"
+        className="relative z-10 mx-auto flex min-h-[100svh] max-w-[1400px] flex-col justify-center px-6 pt-24 pb-12 lg:px-10"
       >
         {/* Eyebrow */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-          className="mb-8 flex flex-wrap items-center gap-3"
+          className="mb-6 flex flex-wrap items-center gap-3"
         >
           <span className="tag-pill">
             <span className="dot" />
@@ -58,7 +60,7 @@ export default function Hero() {
         </motion.div>
 
         {/* Title */}
-        <h1 className="font-display text-[clamp(2.6rem,8.2vw,8.5rem)] uppercase">
+        <h1 className="font-display text-[clamp(2.2rem,7vw,7rem)] uppercase">
           {TITLE_LINES.map((line, li) => (
             <div key={li} className="overflow-hidden">
               <motion.div
@@ -93,7 +95,7 @@ export default function Hero() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.7, ease: [0.16, 1, 0.3, 1] }}
-          className="mt-10 max-w-2xl text-balance text-lg leading-relaxed text-mist sm:text-xl"
+          className="mt-6 max-w-2xl text-balance text-base leading-relaxed text-mist sm:text-lg"
         >
           Desplegamos modelos de lenguaje, automatización de workflows y generación
           multimedia sobre tu propio hardware. Cero costo de tokens, cero fuga de
@@ -105,7 +107,7 @@ export default function Hero() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.9, ease: [0.16, 1, 0.3, 1] }}
-          className="mt-12 flex flex-wrap items-center gap-4"
+          className="mt-8 flex flex-wrap items-center gap-4"
         >
           <a href="#contacto" className="magnetic-btn" data-hover>
             Iniciar proyecto
@@ -121,7 +123,7 @@ export default function Hero() {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 1.1, ease: [0.16, 1, 0.3, 1] }}
-          className="mt-20 grid grid-cols-2 gap-6 border-t border-white/10 pt-10 sm:grid-cols-4"
+          className="mt-12 grid grid-cols-2 gap-6 border-t border-white/10 pt-8 sm:grid-cols-4"
         >
           {[
             { k: "0", l: "Tokens facturados" },
