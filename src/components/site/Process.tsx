@@ -8,26 +8,26 @@ const STEPS = [
   {
     n: "01",
     t: "Diagnóstico & Arquitectura",
-    d: "Auditoría técnica de tu stack actual, definición de KPIs (CAC, LTV, ROAS, velocidad de lead), y diseño de la arquitectura Lego Bricks — qué piezas activar y en qué orden de prioridad. Entregable: documento ARCHITECTURE.md + diagrama C4 + backlog.",
-    tags: ["Auditoría técnica", "KPIs: CAC, LTV, ROAS", "Arquitectura Lego", "ARCHITECTURE.md"],
+    d: "Entendemos tu negocio: qué te duele, qué procesos consumen tiempo, dónde pierdes dinero. Definimos KPIs claros (CAC, LTV, ROAS, velocidad de lead) y diseñamos la arquitectura de soluciones que los va a mover. Entregable: hoja de ruta clara y priorizada.",
+    tags: ["Análisis de negocio", "KPIs medibles", "Hoja de ruta", "Sin compromiso"],
   },
   {
     n: "02",
     t: "Build & Integración",
-    d: "Setup de infraestructura local (n8n Docker, ComfyUI en RTX 4060, Ollama), integración con tus herramientas vía 400+ nodos nativos de n8n (HubSpot, Notion, Slack, Meta Ads, GA4), y primer workflow prioritario en producción.",
-    tags: ["n8n Docker :5678", "ComfyUI :8188", "400+ nodos nativos", "Workflow en producción"],
+    d: "Construimos las soluciones prioritarias en tu infraestructura. Integramos con las herramientas que ya usas (CRM, Slack, WhatsApp, Meta Ads) para que todo hable el mismo idioma. Tu primer workflow en producción, no un demo.",
+    tags: ["Integración con tu stack", "Workflow en producción", "Tú posees el código", "Sin vendor lock-in"],
   },
   {
     n: "03",
     t: "Escalamiento & Autonomía",
-    d: "Automatización completa de todos los workflows prioritarios, entrenamiento de tu equipo en 3 sesiones hands-on (n8n, ComfyUI, prompting), y handover total: código, credenciales (Bitwarden), docs, runbooks. Soporte 30 días post-lanzamiento.",
-    tags: ["Workflows en producción", "3 sesiones hands-on", "Handover total", "Soporte 30d"],
+    d: "Automatizamos los procesos restantes, entrenamos a tu equipo en 3 sesiones hands-on para que puedan mantener y escalar sin nosotros. Handover total: código, documentación, credenciales, runbooks. Soporte 30 días post-lanzamiento incluido.",
+    tags: ["Equipo capacitado", "Documentación completa", "Handover total", "Soporte 30d"],
   },
   {
     n: "04",
     t: "Partner Continuo",
-    d: "Retainer mensual opcional: nuevos workflows, LoRAs estacionales, optimización de modelos, monitoreo y soporte prioritario. Seguimos mejorando tu ejército de micro-agentes que trabajan 24/7 en tu infraestructura.",
-    tags: ["Retainer mensual", "Nuevos workflows", "LoRAs estacionales", "Monitoreo 24/7"],
+    d: "Si quieres seguir creciendo, ofrecemos retainer mensual opcional: nuevos workflows, optimización de modelos, monitoreo y soporte prioritario. Seguimos mejorando tus soluciones de IA que trabajan 24/7 por ti.",
+    tags: ["Retainer opcional", "Nuevas soluciones", "Optimización continua", "Soporte prioritario"],
   },
 ];
 
@@ -62,7 +62,7 @@ export default function Process() {
             >
               Del diagnóstico
               <br />
-              al <span className="text-gradient-coral">ejército vivo</span>
+              al <span className="text-gradient-coral">resultado</span>
             </RevealText>
           </div>
           <RevealText
@@ -71,8 +71,8 @@ export default function Process() {
             className="max-w-md text-mist leading-relaxed"
           >
             Cuatro fases en 12 semanas. No entregamos un demo y desaparecemos:
-            dejamos infraestructura funcionando, equipo entrenado, y un
-            ejército de micro-agentes que trabajan 24/7 en tu infraestructura.
+            dejamos soluciones funcionando, equipo capacitado, y resultados
+            medibles. Tu IA trabajando 24/7, sin que tengas que entenderla.
           </RevealText>
         </div>
 

@@ -6,15 +6,15 @@ import { toast } from "sonner";
 import RevealText from "./RevealText";
 
 const SCOPES = [
-  "Automatización Marketing (n8n)",
-  "Contenido Visual (ComfyUI)",
-  "IA Conversacional & Voice",
-  "Desarrollo Web & Landings",
-  "Fine-tuning & LoRAs",
+  "Marketing & Ventas",
+  "Contenido Visual",
+  "Atención al Cliente 24/7",
+  "Sitios Web",
+  "Modelos por Nicho",
 ];
 
 export default function Contact() {
-  const [scope, setScope] = useState<string[]>(["Automatización Marketing (n8n)"]);
+  const [scope, setScope] = useState<string[]>(["Marketing & Ventas"]);
   const [sending, setSending] = useState(false);
 
   const toggleScope = (s: string) => {

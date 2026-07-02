@@ -4,32 +4,32 @@ import Image from "next/image";
 
 const COLS = [
   {
-    title: "Servicios",
+    title: "Soluciones",
     links: [
-      { l: "Automatización Marketing", h: "#servicios" },
+      { l: "Marketing & Ventas", h: "#servicios" },
       { l: "Contenido Visual", h: "#servicios" },
-      { l: "IA Conversacional & Voice", h: "#servicios" },
-      { l: "Desarrollo Web", h: "#servicios" },
-      { l: "Fine-tuning & LoRAs", h: "#servicios" },
+      { l: "Atención al Cliente 24/7", h: "#servicios" },
+      { l: "Sitios Web", h: "#servicios" },
+      { l: "Modelos por Nicho", h: "#servicios" },
     ],
   },
   {
     title: "Compañía",
     links: [
-      { l: "Filosofía Local-First", h: "#filosofia" },
+      { l: "Filosofía", h: "#filosofia" },
       { l: "Proceso", h: "#proceso" },
-      { l: "Ecosistema JJ Stack", h: "#ecosistema" },
+      { l: "Sobre Nosotros", h: "#ecosistema" },
       { l: "Contacto", h: "#contacto" },
     ],
   },
   {
-    title: "Stack técnico",
+    title: "Por qué Local-First",
     links: [
-      { l: "n8n (Docker :5678)", h: "#servicios" },
-      { l: "ComfyUI (RTX 4060 :8188)", h: "#servicios" },
-      { l: "Ollama / Nemotron", h: "#servicios" },
-      { l: "Chatterbox TTS", h: "#servicios" },
-      { l: "Hyperframes", h: "#servicios" },
+      { l: "Tú posees el código", h: "#filosofia" },
+      { l: "Sin suscripciones", h: "#filosofia" },
+      { l: "Datos privados", h: "#filosofia" },
+      { l: "Funciona offline", h: "#filosofia" },
+      { l: "Garantía 30 días", h: "#contacto" },
     ],
   },
 ];
@@ -64,8 +64,8 @@ export default function Footer() {
               </div>
             </div>
             <p className="mt-6 max-w-xs text-sm text-mist leading-relaxed">
-              Agencia boutique de IA para PYMEs en Latam. Stack propio local:
-              tu inteligencia, tu hardware, tus reglas.
+              Soluciones de IA para PYMEs en Latam. Tu negocio potenciado,
+              tu infraestructura, tus reglas.
             </p>
           </div>
 
@@ -101,7 +101,7 @@ export default function Footer() {
         {/* Bottom row */}
         <div className="flex flex-col items-start justify-between gap-4 text-xs text-mist md:flex-row md:items-center">
           <div>
-            © {new Date().getFullYear()} Little Crab Solutions · Hecho en Medellín para Latam
+            © {new Date().getFullYear()} Little Crab Solutions · Hecho en Medellín para Latam · Con fe y propósito
           </div>
           <div className="flex flex-wrap items-center gap-6">
             <span className="flex items-center gap-2">

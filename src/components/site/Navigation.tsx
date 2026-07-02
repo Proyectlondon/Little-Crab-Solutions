@@ -6,10 +6,10 @@ import { motion, AnimatePresence } from "framer-motion";
 
 const LINKS = [
   { label: "Filosofía", href: "#filosofia" },
-  { label: "Servicios", href: "#servicios" },
+  { label: "Soluciones", href: "#servicios" },
   { label: "Swarm", href: "#swarm" },
   { label: "Proceso", href: "#proceso" },
-  { label: "Ecosistema", href: "#ecosistema" },
+  { label: "Nosotros", href: "#ecosistema" },
   { label: "Contacto", href: "#contacto" },
 ];
 

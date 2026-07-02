@@ -9,71 +9,71 @@ const SERVICES = [
   {
     n: "01",
     icon: Workflow,
-    title: "Automatización de Marketing & Ventas",
-    stack: ["n8n", "Lead Gen V5", "CRM", "WhatsApp"],
+    title: "Marketing & Ventas que Convierten",
+    stack: ["Automatización", "Lead Gen", "Funnels", "CRM"],
     description:
-      "Lead Gen V5 con scoring determinista, funnels completos de formularios a secuencias email/SMS con notificación voz (Chatterbox TTS), y Social Media Autopilot que publica en LinkedIn, Twitter e IG sin horas manuales.",
+      "Más leads cualificados, menos tareas manuales. Diseñamos pipelines que captan, califican y nutren prospectos automáticamente — desde el primer contacto hasta la venta, con seguimientos que ningún equipo humano podría sostener 24/7.",
     benefits: [
-      "Lead Gen: Google Alerts → Scoring JS → Outreach",
-      "Funnels: Form → Enriquecimiento → CRM → Email/SMS",
-      "Social Autopilot: Calendar → Copy + Imagen → Video → Buffer",
-      "Reporting: GA4 + Meta Ads → Dashboard cada lunes 9am",
+      "Captación automática de leads con scoring inteligente",
+      "Funnels completos: formulario → CRM → email/SMS → cierre",
+      "Social Media Autopilot: contenido programado sin horas manuales",
+      "Dashboards de conversión que entiende cualquier dueño de negocio",
     ],
   },
   {
     n: "02",
     icon: ImageIcon,
-    title: "Contenido Visual · ComfyUI + Hyperframes",
-    stack: ["SDXL", "LoRAs", "ControlNet", "Hyperframes"],
+    title: "Contenido Visual que Escala",
+    stack: ["Imágenes", "Video", "Brand", "Avatares"],
     description:
-      "Imágenes de marca con estilo consistente vía LoRAs entrenadas a tu negocio, video vertical (Reels/TikTok/Shorts) de script a MP4 1080x1920 con TTS local y subtítulos animados, y avatares parlantes para demos y onboarding.",
+      "Assets de marca consistentes a demanda: imágenes de producto, videos verticales para Reels y TikTok, avatares parlantes para demos y onboarding. Tu marca con presencia profesional en cada canal, sin dependencias de diseñadores externos.",
     benefits: [
-      "Product shots, lifestyle, hero sections — LoRA de marca",
-      "Video vertical: Script → Hyperframes → TTS → Subtítulos",
-      "Avatares parlantes con voice cloning",
-      "Consistencia visual garantizada en cada asset",
+      "Imágenes de producto y lifestyle con estilo de marca consistente",
+      "Videos verticales listos para Reels, TikTok y Shorts",
+      "Avatares parlantes para demos, onboarding y FAQs",
+      "Calidad de agencia, velocidad de IA, costo de cero",
     ],
   },
   {
     n: "03",
     icon: Network,
-    title: "IA Conversacional & Voice",
-    stack: ["Ollama", "Chatterbox", "JARVIS HUD", "Whisper"],
+    title: "Atención al Cliente 24/7",
+    stack: ["Chatbots", "Voice Agents", "WhatsApp", "Soporte"],
     description:
-      "Chatbots especializados fine-tuned en tu dominio, voice agents con JARVIS HUD (WebSocket TLS + mic navegador) que van de STT a LLM a TTS en bucle, e integración con Discord/Telegram/Slack vía MCP.",
+      "Chatbots y agentes de voz que atienden a tus clientes en cualquier momento, en su idioma, conociendo tu negocio. Resuelven consultas comunes, agendan citas y escalan a humano solo cuando es necesario — tus clientes nunca esperan.",
     benefits: [
-      "Chatbots fine-tuned (LoRA) en tu nicho",
-      "Voice agents: Whisper → Nemotron/Ollama → Chatterbox",
-      "JARVIS HUD con WebSocket TLS seguro",
-      "Bots en Discord/Telegram/Slack con acceso a tu FS",
+      "Chatbots que conocen tu negocio y tu tono de marca",
+      "Agentes de voz que atienden WhatsApp y llamadas 24/7",
+      "Integración con Discord, Telegram y Slack",
+      "Los modelos se entrenan con tu conocimiento, no genéricos",
     ],
   },
   {
     n: "04",
     icon: Cpu,
-    title: "Desarrollo Web & Landing Pages",
-    stack: ["Next.js", "Tailwind", "Shadcn", "PWA"],
+    title: "Sitios Web que Venden",
+    stack: ["Landings", "E-commerce", "PWA", "SEO"],
     description:
-      "Landing pages de alta conversión con estructura Hero → Beneficios → Prueba social → FAQ → CTA sticky. Design System propio con 67 estilos visuales y 161 industrias. Performance first: Core Web Vitals verdes, PWA, SEO técnico.",
+      "Landing pages y sitios web de alta conversión, optimizados para velocidad y SEO. Diseñamos experiencias que cargan rápido, se ven increíbles y guían al visitante hacia la acción. Performance first: Core Web Vitals verdes desde el día uno.",
     benefits: [
-      "Landings de alta conversión listas para producción",
-      "Design System: 67 estilos, 161 industrias",
-      "Core Web Vitals verdes, PWA, SEO técnico",
-      "Schema.org, sitemap, robots — todo configurado",
+      "Landings optimizadas para conversión desde el diseño",
+      "Carga ultrarrápida: Core Web Vitals en verde",
+      "SEO técnico: schema, sitemap, robots configurados",
+      "PWA: tu sitio funciona incluso offline",
     ],
   },
   {
     n: "05",
     icon: ImageIcon,
-    title: "Entrenamiento & Fine-tuning",
-    stack: ["Kohya", "LoRA", "QLoRA 4-bit", "Qwen3.5"],
+    title: "Modelos Entrenados para Tu Nicho",
+    stack: ["LoRA", "Fine-tuning", "Dominio", "Marca"],
     description:
-      "LoRAs de marca con 50-100 imágenes para consistencia visual garantizada en ComfyUI, y modelos de dominio con QLoRA 4-bit en Qwen3.5/Hermes3 para especialistas en tu nicho: legal, inmobiliario, contable, SaaS.",
+      "No usamos modelos genéricos. Entrenamos IA especializada en tu industria — legal, inmobiliario, contable, SaaS — para que entienda tu jerga, tus procesos y tus clientes. La IA trabaja para ti, no para todos.",
     benefits: [
-      "LoRA de marca: 50-100 imgs → 1.5-3GB → consistencia total",
-      "Modelos de dominio: QLoRA 4-bit en Qwen3.5/Hermes3",
-      "Especialistas en legal, inmobiliario, contable, SaaS",
-      "Pesos y modelos son tuyos para siempre",
+      "Modelos que hablan el lenguaje de tu industria",
+      "Consistencia visual de marca en cada asset generado",
+      "Conocimiento empresarial que no se va a la competencia",
+      "Los pesos y modelos son tuyos, para siempre",
     ],
   },
 ];
@@ -117,9 +117,9 @@ export default function Services() {
               delay={0.1}
               className="mt-6 font-display text-[clamp(2rem,5.5vw,5rem)] uppercase leading-[0.95] text-cream"
             >
-              Cinco capas
+              Soluciones
               <br />
-              de <span className="text-gradient-coral">ingeniería</span>
+              de <span className="text-gradient-coral">impacto real</span>
             </RevealText>
           </div>
           <RevealText
@@ -127,9 +127,9 @@ export default function Services() {
             delay={0.2}
             className="max-w-md text-mist leading-relaxed"
           >
-            Stack propio: n8n + ComfyUI + Hyperframes + Ollama. Cada servicio
-            entrega código, workflows y modelos que tú posees. Arquitectura
-            Lego Bricks — cada pieza reemplazable, nada te ata a un vendor.
+            No vendemos tecnología, vendemos resultados. Cada solución está
+            diseñada para resolver un problema concreto de tu negocio — y tú
+            posees todo al final. Sin cajas cerradas, sin dependencias.
           </RevealText>
         </div>
 

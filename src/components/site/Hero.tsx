@@ -5,9 +5,9 @@ import { useRef } from "react";
 import ParticleBackground from "./ParticleBackground";
 
 const TITLE_LINES = [
-  ["Marketing", "con IA"],
-  ["100%", "local."],
-  ["Cero", "nube."],
+  ["IA", "que trabaja"],
+  ["por ti,"],
+  ["no", "por", "la nube."],
 ];
 
 export default function Hero() {
@@ -54,9 +54,9 @@ export default function Hero() {
         >
           <span className="tag-pill">
             <span className="dot" />
-            Agencia Boutique de IA · Latam
+            Soluciones de IA para PYMEs · Latam
           </span>
-          <span className="tag-pill">Stack: n8n + ComfyUI + Ollama</span>
+          <span className="tag-pill">Sin suscripciones · Sin nube</span>
         </motion.div>
 
         {/* Title */}
@@ -97,9 +97,9 @@ export default function Hero() {
           transition={{ duration: 0.8, delay: 0.7, ease: [0.16, 1, 0.3, 1] }}
           className="mt-6 max-w-2xl text-balance text-base leading-relaxed text-mist sm:text-lg"
         >
-          Automatizamos tu marketing y ventas con IA 100% local. Sin APIs costosas,
-          sin datos en la nube, sin vendor lock-in. Funnels que convierten,
-          contenido que escala, control total.
+          Más leads, menos costo, contenido que escala y atención 24/7. Diseñamos
+          soluciones de IA que viven en tu infraestructura — tú posees todo, tú
+          controlas todo. Sin depender de proveedores externos.
         </motion.p>
 
         {/* CTAs */}
@@ -127,8 +127,8 @@ export default function Hero() {
         >
           {[
             { k: "$0", l: "Costo mensual en APIs" },
-            { k: "100%", l: "On-premise · tu red" },
-            { k: "RTX 4060", l: "8GB VRAM local" },
+            { k: "24/7", l: "Tu IA trabajando" },
+            { k: "100%", l: "Tú posees el código" },
             { k: "30d", l: "Garantía o 50% devuelto" },
           ].map((s, i) => (
             <div key={i} className="flex flex-col">

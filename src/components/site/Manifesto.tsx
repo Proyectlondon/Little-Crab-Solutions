@@ -6,7 +6,7 @@ import RevealText from "./RevealText";
 import TriangleAccent from "./TriangleAccent";
 
 const MANIFESTO =
-  "No alquilamos tu inteligencia a la nube. La instalamos en tu propio hardware, la orquestamos con n8n, ComfyUI y Ollama, y la dejamos correr sin suscripciones, sin fugas de datos, sin vendor lock-in.";
+  "No vendemos suscripciones a la nube. Construimos soluciones de IA que son tuyas: las instalamos en tu infraestructura, las orquestamos para tu negocio, y te entregamos el control total. Sin fugas de datos, sin dependencias, sin ataduras.";
 
 export default function Manifesto() {
   const ref = useRef<HTMLDivElement | null>(null);
@@ -72,10 +72,10 @@ export default function Manifesto() {
             delay={0.2}
             className="max-w-md text-mist leading-relaxed"
           >
-            Agencia boutique de IA para PYMEs en Latam/Colombia. Stack propio:{" "}
-            <span className="text-cream">n8n + ComfyUI + Hyperframes + Ollama</span>.
-            Resultado: funnels que convierten, contenido que escala, cero
-            dependencias de terceros.
+            Construimos soluciones de IA para PYMEs en Latam que{" "}
+            <span className="text-cream">tú posees y controlas</span>. Más leads,
+            contenido que escala, atención 24/7 — todo en tu infraestructura,
+            sin depender de proveedores externos.
           </RevealText>
         </div>
 
@@ -94,18 +94,18 @@ export default function Manifesto() {
           {[
             {
               n: "01",
-              t: "Costo $0/mes",
-              d: "Modelos locales en tu hardware (RTX 4060 8GB). Sin APIs de OpenAI, Anthropic o ElevenLabs. Procesamiento ilimitado, facturación cero.",
+              t: "Tú posees todo",
+              d: "El código, los workflows, los modelos y los datos viven en tu infraestructura. Nada alquilado, nada en la nube de terceros. Si mañana dejas de pagar, sigues teniendo todo funcionando.",
             },
             {
               n: "02",
-              t: "100% on-premise",
-              d: "Tus leads, tus prompts, tus modelos no salen de tu red. Privacidad total, latencia <200ms, funciona offline. Tú controlas las versiones.",
+              t: "Costo operativo cero",
+              d: "Sin facturas mensuales de APIs. Sin sorpresas a fin de mes. Procesamiento ilimitado sobre tu hardware. Lo que inviertes es en construir, no en mantener suscripciones.",
             },
             {
               n: "03",
-              t: "Arquitectura Lego",
-              d: "Cada pieza es reemplazable: n8n orquesta, ComfyUI genera, Hyperframes anima, Ollama razona. Nada te ata a un vendor. Escalas sin reescribir.",
+              t: "Soluciones a tu medida",
+              d: "No vendemos cajas cerradas. Diseñamos pipelines que se adaptan a tu flujo de negocio: marketing, ventas, soporte, contenido. Cada pieza es reemplazable y escalable.",
             },
           ].map((p, i) => (
             <RevealText

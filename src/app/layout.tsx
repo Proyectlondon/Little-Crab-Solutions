@@ -21,9 +21,9 @@ const spaceGrotesk = Space_Grotesk({
 });
 
 export const metadata: Metadata = {
-  title: "Little Crab Solutions — Private Local-First AI Engineering",
+  title: "Little Crab Solutions — Soluciones de IA para PYMEs en Latam",
   description:
-    "Boutique de ingeniería tecnológica especializada en automatización con Inteligencia Artificial Local-First. Ollama, n8n, ComfyUI y arquitectura Swarm sobre tu propio hardware. 100% privado, seguro y sin suscripciones a la nube.",
+    "Soluciones de IA que trabajan 24/7 por tu negocio: marketing automatizado, contenido que escala, atención al cliente 24/7 y sitios web que venden. Todo en tu infraestructura, sin suscripciones a la nube, sin vendor lock-in.",
   keywords: [
     "Little Crab Solutions",
     "JJ Stack",

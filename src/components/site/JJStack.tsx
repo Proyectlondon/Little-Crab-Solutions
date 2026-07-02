@@ -4,30 +4,22 @@ import { motion } from "framer-motion";
 import Image from "next/image";
 import RevealText from "./RevealText";
 
-const ECOSYSTEM = [
+const VALUES = [
   {
-    t: "Orquestación · n8n",
-    d: "Docker :5678. Workflows versionados en Git. 400+ nodos nativos: HubSpot, Notion, Slack, Meta Ads, GA4.",
+    t: "Soluciones sobre herramientas",
+    d: "No te vendemos un stack técnico, te entregamos resultados. La tecnología es el medio, tu negocio es el fin.",
   },
   {
-    t: "Imágenes · ComfyUI",
-    d: "RTX 4060 :8188. SDXL + LoRAs + ControlNet. Assets de marca con consistencia visual garantizada.",
+    t: "Determinismo sobre magia",
+    d: "Preferimos lógica verificable sobre prompts impredecibles. Si algo se puede codear, se codea. Si no, se automatiza con trazabilidad.",
   },
   {
-    t: "Video · Hyperframes",
-    d: "Python :5555. HTML/CSS → MP4 vertical 1080x1920. Reels y TikToks de script a publicación automática.",
+    t: "Autonomía operativa",
+    d: "Verificamos, ejecutamos, auto-corregimos y reportamos concreto. Tu equipo queda capacitado para mantener y escalar sin nosotros.",
   },
   {
-    t: "LLM · Nemotron + Ollama",
-    d: "NVIDIA API con fallback a Ollama local :11434. Modelos: Qwen3.5, Hermes3, Gemma4. Razonamiento en tu hardware.",
-  },
-  {
-    t: "Voice · Chatterbox TTS",
-    d: ":8888. Turbo (EN) + Multilingual V3 (ES). Voice cloning cross-lingual para avatares y agentes de voz.",
-  },
-  {
-    t: "Interfaz · JARVIS HUD",
-    d: ":8766 TLS. WebSocket + mic navegador + Whisper STT. Voice agents en tiempo real, 100% local.",
+    t: "Veracidad sobre assumptions",
+    d: "Antes de afirmar algo, lo verificamos en código, configuración o documentación. Cero humo, cero promesas vacías.",
   },
 ];
 
@@ -44,29 +36,31 @@ export default function JJStack() {
           {/* Left: logo + headline */}
           <div>
             <RevealText as="span" className="kicker inline-block">
-              Ecosistema JJ Stack
+              Sobre Nosotros
             </RevealText>
             <RevealText
               as="h2"
               delay={0.1}
               className="mt-6 font-display text-[clamp(2rem,5.5vw,5rem)] uppercase leading-[0.95] text-cream"
             >
-              Stack técnico
+              Construido con
               <br />
-              <span className="text-gradient-ocean">100% local</span>
+              <span className="text-gradient-ocean">propósito</span>
             </RevealText>
             <RevealText
               as="p"
               delay={0.2}
               className="mt-8 max-w-xl text-mist leading-relaxed"
             >
-              Todo corre en LOCAL (Windows 10, RTX 4060 8GB). Cero dependencias
-              de cloud para inferencia. Arquitectura Lego Bricks — cada pieza
-              es un módulo &lt;200 líneas, desacoplado, reemplazable. Solo tú
-              decides qué sale.
+              Little Crab Solutions nació de{" "}
+              <span className="text-cream">John Esteban</span> y su esposa,
+              con una convicción simple: la IA debe servir al negocio, no
+              viceversa. Construimos soluciones que tus equipos pueden mantener,
+              escalar y poseer — sin ataduras a proveedores, sin suscripciones
+              eternas.
             </RevealText>
 
-            <div className="mt-12 flex items-center gap-6">
+            <div className="mt-8 flex items-center gap-6">
               <div className="relative h-20 w-20 overflow-hidden rounded-2xl ring-1 ring-white/10 float-anim">
                 <Image
                   src="/logo.png"
@@ -81,15 +75,15 @@ export default function JJStack() {
                   Little Crab Solutions
                 </div>
                 <div className="text-sm text-mist">
-                  · Parte del ecosistema JJ Stack
+                  Medellín, Colombia · Atendemos Latam
                 </div>
               </div>
             </div>
           </div>
 
-          {/* Right: ecosystem grid */}
-          <div className="grid gap-px bg-white/10 sm:grid-cols-2 lg:grid-cols-3">
-            {ECOSYSTEM.map((e, i) => (
+          {/* Right: values grid */}
+          <div className="grid gap-px bg-white/10 sm:grid-cols-2">
+            {VALUES.map((e, i) => (
               <RevealText
                 key={i}
                 as="div"
@@ -105,6 +99,24 @@ export default function JJStack() {
             ))}
           </div>
         </div>
+
+        {/* Faith line — subtle, at the bottom */}
+        <RevealText
+          as="div"
+          delay={0.3}
+          className="mt-20 border-t border-white/10 pt-8 text-center"
+        >
+          <p className="mx-auto max-w-2xl text-sm italic leading-relaxed text-mist">
+            "No por fuerza, ni por poder, sino por mi Espíritu." —{" "}
+            <span className="text-cream">Zacarías 4:6</span>
+            <br />
+            <span className="text-mist">
+              Nuestra fe es el motor que nos impulsa, no lo que vendemos.
+              Tratamos a cada cliente con honestidad, excelencia y respeto —
+              porque es lo correcto, no porque sea buena estrategia.
+            </span>
+          </p>
+        </RevealText>
       </div>
     </section>
   );
