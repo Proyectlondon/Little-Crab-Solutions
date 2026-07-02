@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import { useEffect, useId, useRef, useState, type ReactNode } from "react";
 
 /**
  * TextWaveEffect — wraps text and applies an underwater wave distortion
@@ -13,13 +13,12 @@ import { useEffect, useRef, useState, type ReactNode } from "react";
  *  - A radial gradient overlay follows the mouse with a bright shimmer
  *    (screen blend mode) that fades out quickly.
  *  - The effect is subtle by default — scales up briefly then settles.
+ *  - Uses React's useId() for stable filter IDs across SSR/CSR (no hydration errors).
  *
  * Usage:
  *  <TextWaveEffect>My heading text</TextWaveEffect>
  *  <TextWaveEffect intensity="strong">Important text</TextWaveEffect>
  */
-
-let filterIdCounter = 0;
 
 export default function TextWaveEffect({
   children,
@@ -33,7 +32,9 @@ export default function TextWaveEffect({
   as?: "span" | "h1" | "h2" | "h3" | "p" | "div";
 }) {
   const ref = useRef<HTMLDivElement | null>(null);
-  const [filterId] = useState(() => `wave-filter-${filterIdCounter++}`);
+  // useId() generates a stable ID across server and client — prevents hydration errors
+  const rawId = useId();
+  const filterId = `wave-filter-${rawId.replace(/:/g, "")}`;
   const [hovering, setHovering] = useState(false);
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
   const [rippleKey, setRippleKey] = useState(0);
