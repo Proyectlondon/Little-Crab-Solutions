@@ -13,6 +13,9 @@ const SCOPES = [
   "Modelos por Nicho",
 ];
 
+// Formspree endpoint — Reemplaza con tu Form ID real
+const FORMSPREE_ENDPOINT = "https://formspree.io/f/mzdlkjqv";
+
 export default function Contact() {
   const [scope, setScope] = useState<string[]>(["Marketing & Ventas"]);
   const [sending, setSending] = useState(false);
@@ -26,30 +29,49 @@ export default function Contact() {
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setSending(true);
+
     const fd = new FormData(e.currentTarget);
     const payload = {
       name: fd.get("name"),
       email: fd.get("email"),
       company: fd.get("company"),
       message: fd.get("message"),
-      scopes: scope,
+      scopes: scope.join(", "),
     };
-    // Simulate async — no backend required for this deliverable
-    await new Promise((r) => setTimeout(r, 900));
-    setSending(false);
-    toast.success("Solicitud recibida", {
-      description:
-        "Te contactaremos en menos de 24h hábiles para agendar el diagnóstico.",
-    });
-    (e.target as HTMLFormElement).reset();
-    setScope([]);
+
+    try {
+      const res = await fetch(FORMSPREE_ENDPOINT, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
+
+      if (res.ok) {
+        toast.success("Solicitud recibida", {
+          description:
+            "Te contactaremos en menos de 24h hábiles para agendar el diagnóstico.",
+        });
+        (e.target as HTMLFormElement).reset();
+        setScope([]);
+      } else {
+        const data = await res.json();
+        throw new Error(data.error || "Error al enviar");
+      }
+    } catch (err) {
+      toast.error("Error al enviar", {
+        description:
+          "Intenta de nuevo o escríbenos directo a littlecrabsolutions@gmail.com",
+      });
+    } finally {
+      setSending(false);
+    }
   };
 
   return (
-    <section
-      id="contacto"
-      className="relative py-32 lg:py-44"
-    >
+    <section id="contacto" className="relative py-32 lg:py-44">
       <div className="glow-blob left-[-150px] bottom-[-150px] h-[500px] w-[500px] bg-crab/20" />
       <div className="absolute inset-0 grid-backdrop opacity-30" />
 
@@ -108,6 +130,8 @@ export default function Contact() {
             viewport={{ once: true, margin: "-80px" }}
             transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
             onSubmit={onSubmit}
+            action={FORMSPREE_ENDPOINT}
+            method="POST"
             className="rounded-2xl border border-white/10 bg-abyss/60 p-8 backdrop-blur-xl lg:p-12"
           >
             <div className="grid gap-8 sm:grid-cols-2">
