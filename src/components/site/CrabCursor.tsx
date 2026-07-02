@@ -123,7 +123,11 @@ export default function CrabCursor() {
         }
       }
 
-      container.style.transform = `translate(${cx}px, ${cy}px) translate(-50%, -50%) rotate(${tilt}deg) scaleX(var(--facing, 1))`;
+      // Offset so the LEFT CLAW TIP is the pointer hotspot (not the body center).
+      // The left claw tip is at ~(15, 22) in a 56x52 viewBox → 27% x, 42% y.
+      // translate(-27%, -42%) places that point exactly at (cx, cy).
+      // When flipped (facing left), the RIGHT claw becomes the hotspot via scaleX(-1).
+      container.style.transform = `translate(${cx}px, ${cy}px) translate(-27%, -42%) rotate(${tilt}deg) scaleX(var(--facing, 1))`;
 
       raf = requestAnimationFrame(tick);
     };
