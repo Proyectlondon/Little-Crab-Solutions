@@ -20,6 +20,14 @@ export default function Manifesto() {
       id="filosofia"
       className="relative py-32 lg:py-44"
     >
+      {/* Top fade — blends the manifesto's top edge into the submerge fog above */}
+      <div
+        className="absolute top-0 left-0 right-0 h-48 pointer-events-none z-0"
+        style={{
+          background:
+            "linear-gradient(to bottom, rgba(7, 9, 12, 0.95) 0%, rgba(7, 9, 12, 0.5) 50%, transparent 100%)",
+        }}
+      />
       <div className="glow-blob right-[-200px] top-[-100px] h-[400px] w-[400px] bg-ocean/20" />
 
       <div className="mx-auto max-w-[1400px] px-6 lg:px-10">

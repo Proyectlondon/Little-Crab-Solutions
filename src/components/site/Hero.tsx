@@ -43,10 +43,10 @@ export default function Hero() {
 
       {/* Bottom fade — feathers the hero's bottom edge into the submerge fog */}
       <div
-        className="absolute bottom-0 left-0 right-0 h-48 pointer-events-none z-20"
+        className="absolute bottom-0 left-0 right-0 h-64 pointer-events-none z-20"
         style={{
           background:
-            "linear-gradient(to bottom, transparent 0%, rgba(7, 9, 12, 0.4) 50%, rgba(7, 9, 12, 0.85) 100%)",
+            "linear-gradient(to bottom, transparent 0%, rgba(7, 9, 12, 0.5) 40%, rgba(7, 9, 12, 0.95) 100%)",
         }}
       />
 
