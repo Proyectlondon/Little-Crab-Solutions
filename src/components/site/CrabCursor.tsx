@@ -10,8 +10,16 @@ import { useEffect, useRef, useState } from "react";
  *  - State machine: idle / walking / clicking
  *  - Horizontal flip based on movement direction
  *
- * Smaller, cleaner, more professional than the sprite version.
+ * The SVG viewBox has generous padding around the crab so that
+ * rotations, tilts, and walk animations never clip the artwork.
  */
+
+// SVG dimensions — larger than the crab artwork to prevent clipping
+const SVG_W = 56;
+const SVG_H = 52;
+// Offset to center the crab in the larger viewBox (crab was designed for 48x44)
+const OX = 4;
+const OY = 4;
 
 export default function CrabCursor() {
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -58,10 +66,6 @@ export default function CrabCursor() {
 
     const onDown = () => {
       setSnapping(true);
-      // Create a ripple at click position
-      if (leftClawRef.current && rightClawRef.current) {
-        // Animation handled by CSS via state class
-      }
     };
 
     const onUp = () => {
@@ -85,8 +89,8 @@ export default function CrabCursor() {
         container.style.setProperty("--facing", facing.toString());
       }
 
-      // Subtle body tilt on vertical movement
-      const tilt = Math.max(-10, Math.min(10, dy * 0.6));
+      // Subtle body tilt on vertical movement (reduced to avoid clipping)
+      const tilt = Math.max(-6, Math.min(6, dy * 0.4));
 
       prevX = mx;
       prevY = my;
@@ -162,8 +166,8 @@ export default function CrabCursor() {
         position: "fixed",
         top: 0,
         left: 0,
-        width: 48,
-        height: 44,
+        width: SVG_W,
+        height: SVG_H,
         pointerEvents: "none",
         zIndex: 9999,
         willChange: "transform",
@@ -203,24 +207,27 @@ function CrabSVG({
   const SHELL_DARK = "#0F5A6B";   // shadow
   const CLAW = "#E54B1B";         // orange claws
   const CLAW_LIGHT = "#FF7A4D";   // claw highlight
-  const CLAW_DARK = "#9C2A0E";    // claw shadow
   const OUTLINE = "#0A2E38";      // dark outline
   const EYE = "#0A0E14";          // eye black
   const EYE_WHITE = "#FFFFFF";    // eye highlight
 
+  // All crab coordinates are offset by (OX, OY) to center in the larger viewBox
+  const o = (n: number) => n + OX;
+  const oy = (n: number) => n + OY;
+
   return (
     <svg
-      width="48"
-      height="44"
-      viewBox="0 0 48 44"
+      width={SVG_W}
+      height={SVG_H}
+      viewBox={`0 0 ${SVG_W} ${SVG_H}`}
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
     >
       {/* Left claw group - rotates on snap */}
-      <g ref={leftClawRef} className="claw-left" style={{ transformOrigin: "11px 18px" }}>
+      <g ref={leftClawRef} className="claw-left" style={{ transformOrigin: `${o(11)}px ${oy(18)}px` }}>
         {/* Claw arm */}
         <path
-          d="M11 18 Q6 16 4 12 Q2 8 6 6 Q10 4 13 8"
+          d={`M${o(11)} ${oy(18)} Q${o(6)} ${oy(16)} ${o(4)} ${oy(12)} Q${o(2)} ${oy(8)} ${o(6)} ${oy(6)} Q${o(10)} ${oy(4)} ${o(13)} ${oy(8)}`}
           stroke={OUTLINE}
           strokeWidth="1.4"
           strokeLinecap="round"
@@ -228,57 +235,57 @@ function CrabSVG({
         />
         {/* Claw pincer (upper) */}
         <path
-          d="M4 8 Q2 4 6 3 Q10 3 11 7 Q10 9 7 9 Q5 9 4 8 Z"
+          d={`M${o(4)} ${oy(8)} Q${o(2)} ${oy(4)} ${o(6)} ${oy(3)} Q${o(10)} ${oy(3)} ${o(11)} ${oy(7)} Q${o(10)} ${oy(9)} ${o(7)} ${oy(9)} Q${o(5)} ${oy(9)} ${o(4)} ${oy(8)} Z`}
           fill={CLAW}
           stroke={OUTLINE}
           strokeWidth="1.1"
         />
         {/* Claw pincer (lower) */}
         <path
-          d="M6 10 Q4 13 8 14 Q12 14 12 11 Q11 9 9 9 Q7 9 6 10 Z"
+          d={`M${o(6)} ${oy(10)} Q${o(4)} ${oy(13)} ${o(8)} ${oy(14)} Q${o(12)} ${oy(14)} ${o(12)} ${oy(11)} Q${o(11)} ${oy(9)} ${o(9)} ${oy(9)} Q${o(7)} ${oy(9)} ${o(6)} ${oy(10)} Z`}
           fill={CLAW}
           stroke={OUTLINE}
           strokeWidth="1.1"
         />
         {/* Claw highlight */}
-        <ellipse cx="7" cy="6" rx="1.5" ry="0.8" fill={CLAW_LIGHT} opacity="0.7" />
+        <ellipse cx={o(7)} cy={oy(6)} rx="1.5" ry="0.8" fill={CLAW_LIGHT} opacity="0.7" />
       </g>
 
       {/* Right claw group - mirrors left */}
-      <g ref={rightClawRef} className="claw-right" style={{ transformOrigin: "37px 18px" }}>
+      <g ref={rightClawRef} className="claw-right" style={{ transformOrigin: `${o(37)}px ${oy(18)}px` }}>
         <path
-          d="M37 18 Q42 16 44 12 Q46 8 42 6 Q38 4 35 8"
+          d={`M${o(37)} ${oy(18)} Q${o(42)} ${oy(16)} ${o(44)} ${oy(12)} Q${o(46)} ${oy(8)} ${o(42)} ${oy(6)} Q${o(38)} ${oy(4)} ${o(35)} ${oy(8)}`}
           stroke={OUTLINE}
           strokeWidth="1.4"
           strokeLinecap="round"
           fill="none"
         />
         <path
-          d="M44 8 Q46 4 42 3 Q38 3 37 7 Q38 9 41 9 Q43 9 44 8 Z"
+          d={`M${o(44)} ${oy(8)} Q${o(46)} ${oy(4)} ${o(42)} ${oy(3)} Q${o(38)} ${oy(3)} ${o(37)} ${oy(7)} Q${o(38)} ${oy(9)} ${o(41)} ${oy(9)} Q${o(43)} ${oy(9)} ${o(44)} ${oy(8)} Z`}
           fill={CLAW}
           stroke={OUTLINE}
           strokeWidth="1.1"
         />
         <path
-          d="M42 10 Q44 13 40 14 Q36 14 36 11 Q37 9 39 9 Q41 9 42 10 Z"
+          d={`M${o(42)} ${oy(10)} Q${o(44)} ${oy(13)} ${o(40)} ${oy(14)} Q${o(36)} ${oy(14)} ${o(36)} ${oy(11)} Q${o(37)} ${oy(9)} ${o(39)} ${oy(9)} Q${o(41)} ${oy(9)} ${o(42)} ${oy(10)} Z`}
           fill={CLAW}
           stroke={OUTLINE}
           strokeWidth="1.1"
         />
-        <ellipse cx="41" cy="6" rx="1.5" ry="0.8" fill={CLAW_LIGHT} opacity="0.7" />
+        <ellipse cx={o(41)} cy={oy(6)} rx="1.5" ry="0.8" fill={CLAW_LIGHT} opacity="0.7" />
       </g>
 
       {/* Legs group - wiggles when walking */}
-      <g ref={legsRef} className="legs" style={{ transformOrigin: "24px 28px" }}>
-        <g className="leg-left" style={{ transformOrigin: "24px 28px" }}>
-          <path d="M16 28 Q12 32 10 38" stroke={OUTLINE} strokeWidth="1.3" strokeLinecap="round" fill="none" />
-          <path d="M19 30 Q15 34 13 40" stroke={OUTLINE} strokeWidth="1.3" strokeLinecap="round" fill="none" />
-          <path d="M22 31 Q19 35 17 41" stroke={OUTLINE} strokeWidth="1.3" strokeLinecap="round" fill="none" />
+      <g ref={legsRef} className="legs" style={{ transformOrigin: `${o(24)}px ${oy(28)}px` }}>
+        <g className="leg-left" style={{ transformOrigin: `${o(24)}px ${oy(28)}px` }}>
+          <path d={`M${o(16)} ${oy(28)} Q${o(12)} ${oy(32)} ${o(10)} ${oy(38)}`} stroke={OUTLINE} strokeWidth="1.3" strokeLinecap="round" fill="none" />
+          <path d={`M${o(19)} ${oy(30)} Q${o(15)} ${oy(34)} ${o(13)} ${oy(40)}`} stroke={OUTLINE} strokeWidth="1.3" strokeLinecap="round" fill="none" />
+          <path d={`M${o(22)} ${oy(31)} Q${o(19)} ${oy(35)} ${o(17)} ${oy(41)}`} stroke={OUTLINE} strokeWidth="1.3" strokeLinecap="round" fill="none" />
         </g>
-        <g className="leg-right" style={{ transformOrigin: "24px 28px" }}>
-          <path d="M32 28 Q36 32 38 38" stroke={OUTLINE} strokeWidth="1.3" strokeLinecap="round" fill="none" />
-          <path d="M29 30 Q33 34 35 40" stroke={OUTLINE} strokeWidth="1.3" strokeLinecap="round" fill="none" />
-          <path d="M26 31 Q29 35 31 41" stroke={OUTLINE} strokeWidth="1.3" strokeLinecap="round" fill="none" />
+        <g className="leg-right" style={{ transformOrigin: `${o(24)}px ${oy(28)}px` }}>
+          <path d={`M${o(32)} ${oy(28)} Q${o(36)} ${oy(32)} ${o(38)} ${oy(38)}`} stroke={OUTLINE} strokeWidth="1.3" strokeLinecap="round" fill="none" />
+          <path d={`M${o(29)} ${oy(30)} Q${o(33)} ${oy(34)} ${o(35)} ${oy(40)}`} stroke={OUTLINE} strokeWidth="1.3" strokeLinecap="round" fill="none" />
+          <path d={`M${o(26)} ${oy(31)} Q${o(29)} ${oy(35)} ${o(31)} ${oy(41)}`} stroke={OUTLINE} strokeWidth="1.3" strokeLinecap="round" fill="none" />
         </g>
       </g>
 
@@ -286,8 +293,8 @@ function CrabSVG({
       <g ref={bodyRef} className="body">
         {/* Main shell */}
         <ellipse
-          cx="24"
-          cy="24"
+          cx={o(24)}
+          cy={oy(24)}
           rx="13"
           ry="10"
           fill={SHELL}
@@ -296,8 +303,8 @@ function CrabSVG({
         />
         {/* Shell highlight (top) */}
         <ellipse
-          cx="21"
-          cy="20"
+          cx={o(21)}
+          cy={oy(20)}
           rx="5"
           ry="3"
           fill={SHELL_LIGHT}
@@ -305,32 +312,32 @@ function CrabSVG({
         />
         {/* Shell shadow (bottom) */}
         <path
-          d="M13 26 Q24 32 35 26 Q33 30 24 31 Q15 30 13 26 Z"
+          d={`M${o(13)} ${oy(26)} Q${o(24)} ${oy(32)} ${o(35)} ${oy(26)} Q${o(33)} ${oy(30)} ${o(24)} ${oy(31)} Q${o(15)} ${oy(30)} ${o(13)} ${oy(26)} Z`}
           fill={SHELL_DARK}
           opacity="0.5"
         />
         {/* Shell texture lines */}
-        <path d="M18 18 Q20 16 22 18" stroke={SHELL_DARK} strokeWidth="0.6" fill="none" opacity="0.4" />
-        <path d="M26 18 Q28 16 30 18" stroke={SHELL_DARK} strokeWidth="0.6" fill="none" opacity="0.4" />
+        <path d={`M${o(18)} ${oy(18)} Q${o(20)} ${oy(16)} ${o(22)} ${oy(18)}`} stroke={SHELL_DARK} strokeWidth="0.6" fill="none" opacity="0.4" />
+        <path d={`M${o(26)} ${oy(18)} Q${o(28)} ${oy(16)} ${o(30)} ${oy(18)}`} stroke={SHELL_DARK} strokeWidth="0.6" fill="none" opacity="0.4" />
       </g>
 
       {/* Eyes on stalks */}
       <g className="eyes">
         {/* Left eye stalk */}
-        <line x1="20" y1="16" x2="18" y2="11" stroke={OUTLINE} strokeWidth="1.3" strokeLinecap="round" />
-        <circle cx="18" cy="10" r="2.2" fill={EYE} stroke={OUTLINE} strokeWidth="0.8" />
-        <circle cx="18.6" cy="9.4" r="0.7" fill={EYE_WHITE} />
+        <line x1={o(20)} y1={oy(16)} x2={o(18)} y2={oy(11)} stroke={OUTLINE} strokeWidth="1.3" strokeLinecap="round" />
+        <circle cx={o(18)} cy={oy(10)} r="2.2" fill={EYE} stroke={OUTLINE} strokeWidth="0.8" />
+        <circle cx={o(18.6)} cy={oy(9.4)} r="0.7" fill={EYE_WHITE} />
 
         {/* Right eye stalk */}
-        <line x1="28" y1="16" x2="30" y2="11" stroke={OUTLINE} strokeWidth="1.3" strokeLinecap="round" />
-        <circle cx="30" cy="10" r="2.2" fill={EYE} stroke={OUTLINE} strokeWidth="0.8" />
-        <circle cx="30.6" cy="9.4" r="0.7" fill={EYE_WHITE} />
+        <line x1={o(28)} y1={oy(16)} x2={o(30)} y2={oy(11)} stroke={OUTLINE} strokeWidth="1.3" strokeLinecap="round" />
+        <circle cx={o(30)} cy={oy(10)} r="2.2" fill={EYE} stroke={OUTLINE} strokeWidth="0.8" />
+        <circle cx={o(30.6)} cy={oy(9.4)} r="0.7" fill={EYE_WHITE} />
       </g>
 
       {/* Mouth — smiles when snapping */}
       <path
         className="mouth"
-        d={snapping ? "M21 27 Q24 30 27 27" : "M22 27 Q24 28 26 27"}
+        d={snapping ? `M${o(21)} ${oy(27)} Q${o(24)} ${oy(30)} ${o(27)} ${oy(27)}` : `M${o(22)} ${oy(27)} Q${o(24)} ${oy(28)} ${o(26)} ${oy(27)}`}
         stroke={OUTLINE}
         strokeWidth="1.2"
         strokeLinecap="round"

@@ -188,11 +188,11 @@
 /* Claw idle animation - subtle breathing */
 .crab-cursor-svg .claw-left {
   animation: clawIdleL 5s ease-in-out infinite;
-  transform-origin: 11px 18px;
+  transform-origin: 15px 22px;
 }
 .crab-cursor-svg .claw-right {
   animation: clawIdleR 5s ease-in-out infinite;
-  transform-origin: 37px 18px;
+  transform-origin: 41px 22px;
 }
 @keyframes clawIdleL {
   0%, 100% { transform: rotate(0deg); }
