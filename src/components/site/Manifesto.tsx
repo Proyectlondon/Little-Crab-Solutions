@@ -4,7 +4,6 @@ import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
 import RevealText from "./RevealText";
 import TriangleAccent from "./TriangleAccent";
-import TextWaveEffect from "./TextWaveEffect";
 
 const MANIFESTO =
   "No alquilamos tu inteligencia a la nube. La instalamos en tu propio hardware, la orquestamos con n8n, ComfyUI y Ollama, y la dejamos correr sin suscripciones, sin fugas de datos, sin vendor lock-in.";
@@ -73,12 +72,10 @@ export default function Manifesto() {
             delay={0.2}
             className="max-w-md text-mist leading-relaxed"
           >
-            <TextWaveEffect as="span" intensity="subtle">
-              Agencia boutique de IA para PYMEs en Latam/Colombia. Stack propio:{" "}
-              <span className="text-cream">n8n + ComfyUI + Hyperframes + Ollama</span>.
-              Resultado: funnels que convierten, contenido que escala, cero
-              dependencias de terceros.
-            </TextWaveEffect>
+            Agencia boutique de IA para PYMEs en Latam/Colombia. Stack propio:{" "}
+            <span className="text-cream">n8n + ComfyUI + Hyperframes + Ollama</span>.
+            Resultado: funnels que convierten, contenido que escala, cero
+            dependencias de terceros.
           </RevealText>
         </div>
 

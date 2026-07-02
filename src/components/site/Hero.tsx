@@ -3,7 +3,6 @@
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
 import ParticleBackground from "./ParticleBackground";
-import TextWaveEffect from "./TextWaveEffect";
 
 const TITLE_LINES = [
   ["Marketing", "con IA"],
@@ -98,11 +97,9 @@ export default function Hero() {
           transition={{ duration: 0.8, delay: 0.7, ease: [0.16, 1, 0.3, 1] }}
           className="mt-6 max-w-2xl text-balance text-base leading-relaxed text-mist sm:text-lg"
         >
-          <TextWaveEffect as="span" intensity="subtle">
-            Automatizamos tu marketing y ventas con IA 100% local. Sin APIs costosas,
-            sin datos en la nube, sin vendor lock-in. Funnels que convierten,
-            contenido que escala, control total.
-          </TextWaveEffect>
+          Automatizamos tu marketing y ventas con IA 100% local. Sin APIs costosas,
+          sin datos en la nube, sin vendor lock-in. Funnels que convierten,
+          contenido que escala, control total.
         </motion.p>
 
         {/* CTAs */}
