@@ -84,10 +84,8 @@ export default function Contact() {
 
             <div className="mt-12 space-y-6">
               {[
-                { k: "Calendly", v: "calendly.com/little-crab-solutions" },
-                { k: "Email", v: "hola@littlecrabsolutions.com" },
+                { k: "Email", v: "littlecrabsolutions@gmail.com" },
                 { k: "WhatsApp", v: "+57 310 432 8783" },
-                { k: "Discord", v: "JJ Agent#5950 — pruébalo" },
                 { k: "Ubicación", v: "Tocancipá, Cundinamarca · Latam" },
               ].map((row) => (
                 <div
