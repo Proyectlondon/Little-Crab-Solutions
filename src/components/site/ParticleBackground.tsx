@@ -55,12 +55,10 @@ export default function ParticleBackground({
     };
     window.addEventListener("mousemove", onMouse, { passive: true });
 
-    // Wave layers
-    const waves = [
-      { amp: 22, len: 0.008, speed: 0.012, yOff: 0.65, color: "rgba(229, 75, 27, 0.10)" },
-      { amp: 16, len: 0.011, speed: 0.018, yOff: 0.72, color: "rgba(46, 110, 158, 0.12)" },
-      { amp: 12, len: 0.014, speed: 0.024, yOff: 0.80, color: "rgba(232, 185, 116, 0.08)" },
-    ];
+    // Wave layers — REMOVED. They filled to the bottom of the canvas and
+    // created a dark band at the hero/body boundary. The global OceanAmbient
+    // already provides water motion, so these are no longer needed.
+    const waves: any[] = [];
     let t = 0;
 
     const draw = () => {

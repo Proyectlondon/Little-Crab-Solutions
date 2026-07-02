@@ -31,24 +31,13 @@ export default function Hero() {
         <ParticleBackground variant="hero" />
       </div>
 
-      {/* Glow blobs */}
+      {/* Glow blobs — soft ambient color, no hard edges */}
       <div className="glow-blob -left-32 top-24 h-[420px] w-[420px] bg-crab/25" />
       <div className="glow-blob -right-32 bottom-0 h-[520px] w-[520px] bg-ocean/30" />
 
-      {/* Grid backdrop */}
-      <div className="absolute inset-0 grid-backdrop opacity-60" />
-
-      {/* Vignette */}
-      <div className="absolute inset-0 bg-gradient-to-b from-abyss/40 via-transparent to-transparent" />
-
-      {/* Smooth transition to next section — gentle gradient, no hard edge */}
-      <div
-        className="absolute bottom-0 left-0 right-0 h-40 pointer-events-none z-20"
-        style={{
-          background:
-            "linear-gradient(to bottom, transparent 0%, rgba(7, 9, 12, 0.6) 70%, rgba(7, 9, 12, 0.9) 100%)",
-        }}
-      />
+      {/* Subtle top vignette only — NO bottom gradient, so the hero blends
+          seamlessly into the next section without a shadow band */}
+      <div className="absolute inset-0 bg-gradient-to-b from-abyss/30 via-transparent to-transparent" />
 
       <motion.div
         style={{ y, opacity, scale }}
