@@ -106,8 +106,8 @@ export default function Contact() {
 
             <div className="mt-12 space-y-6">
               {[
-                { k: "Email", v: "littlecrabsolutions@gmail.com" },
-                { k: "WhatsApp", v: "+57 310 432 8783" },
+                { k: "Email", v: "littlecrabsolutions@gmail.com", href: "mailto:littlecrabsolutions@gmail.com" },
+                { k: "WhatsApp", v: "+57 310 432 8783", href: "https://wa.me/573104328783?text=Hola%20Little%20Crab" },
                 { k: "Ubicación", v: "Tocancipá, Cundinamarca · Latam" },
               ].map((row) => (
                 <div
@@ -117,7 +117,15 @@ export default function Contact() {
                   <span className="text-xs uppercase tracking-[0.22em] text-mist">
                     {row.k}
                   </span>
-                  <span className="text-cream">{row.v}</span>
+                  <span className="text-cream">
+                    {row.href ? (
+                      <a href={row.href} target="_blank" rel="noopener noreferrer" className="hover:text-crab underline">
+                        {row.v}
+                      </a>
+                    ) : (
+                      row.v
+                    )}
+                  </span>
                 </div>
               ))}
             </div>
