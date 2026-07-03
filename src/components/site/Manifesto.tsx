@@ -23,7 +23,7 @@ export default function Manifesto() {
 
   const { scrollYProgress } = useScroll({
     target: ref,
-    offset: offset,
+    offset: isMobile ? ["start 1", "end 0.3"] : ["start 0.8", "end 0.4"],
   });
 
   const words = MANIFESTO.split(" ");
