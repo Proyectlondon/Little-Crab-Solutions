@@ -1,14 +1,15 @@
-User-agent: Googlebot
-Allow: /
-
-User-agent: Bingbot
-Allow: /
-
-User-agent: Twitterbot
-Allow: /
-
-User-agent: facebookexternalhit
-Allow: /
-
+# *
 User-agent: *
 Allow: /
+
+# *
+User-agent: *
+Disallow: /api/
+Disallow: /_next/
+Disallow: /static/
+
+# Host
+Host: https://little-crab-solutions.vercel.app
+
+# Sitemaps
+Sitemap: https://little-crab-solutions.vercel.app/sitemap.xml
