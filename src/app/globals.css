@@ -134,12 +134,19 @@
     scroll-behavior: smooth;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
+    max-width: 100vw;
   }
   body {
     background-color: #07090C;
     color: #F5EFE6;
     overflow-x: hidden;
+    max-width: 100vw;
     font-feature-settings: "ss01", "cv11";
+  }
+  #__next {
+    overflow-x: hidden;
+    max-width: 100vw;
   }
   ::selection {
     background-color: #E54B1B;
