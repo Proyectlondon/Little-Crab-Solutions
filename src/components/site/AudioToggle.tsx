@@ -82,7 +82,7 @@ export default function AudioToggle() {
       aria-pressed={on}
       aria-label={on ? "Silenciar océano" : "Reproducir sonido oceánico"}
       data-hover
-      className="audio-toggle group fixed bottom-6 right-6 z-[70] flex h-12 w-12 items-center justify-center rounded-full border border-white/15 bg-deep/70 backdrop-blur-xl transition-all hover:border-crab hover:bg-crab/10"
+      className="audio-toggle group fixed bottom-6 right-6 z-[70] flex h-12 w-12 items-center justify-center rounded-full border border-white/15 bg-deep/70 backdrop-blur-xl transition-all hover:border-crab hover:bg-crab/10 pb-[env(safe-area-inset-bottom)] pr-[env(safe-area-inset-right)]"
     >
       {on ? <EqualizerIcon /> : <MutedIcon />}
       <span className="pointer-events-none absolute right-full mr-3 whitespace-nowrap rounded-md border border-white/10 bg-deep/90 px-3 py-1.5 text-xs text-cream opacity-0 transition-opacity group-hover:opacity-100">

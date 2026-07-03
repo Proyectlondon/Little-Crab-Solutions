@@ -88,7 +88,7 @@ export default function Navigation() {
             {/* Mobile menu button */}
             <button
               onClick={() => setOpen(true)}
-              className="flex h-10 w-10 items-center justify-center rounded-full border border-white/15 lg:hidden"
+              className="flex h-10 w-10 items-center justify-center rounded-full border border-white/15 lg:hidden fixed top-4 right-4 top-[env(safe-area-inset-top)] right-[env(safe-area-inset-right)]"
               aria-label="Abrir menú"
               data-hover
             >

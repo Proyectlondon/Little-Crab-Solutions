@@ -1,7 +1,7 @@
 "use client";
 
 import { motion, useScroll, useTransform } from "framer-motion";
-import { useRef } from "react";
+import { useRef, useEffect, useState } from "react";
 import RevealText from "./RevealText";
 import TriangleAccent from "./TriangleAccent";
 
@@ -10,9 +10,20 @@ const MANIFESTO =
 
 export default function Manifesto() {
   const ref = useRef<HTMLDivElement | null>(null);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
+
+  const offset = isMobile ? ["start 0.95", "end 0.15"] : ["start 0.8", "end 0.4"];
+
   const { scrollYProgress } = useScroll({
     target: ref,
-    offset: ["start 0.8", "end 0.4"],
+    offset: offset,
   });
 
   const words = MANIFESTO.split(" ");
@@ -136,8 +147,9 @@ function Word({
   progress: any;
   range: [number, number];
 }) {
-  const opacity = useTransform(progress, range, [0.15, 1]);
-  const y = useTransform(progress, range, [8, 0]);
+  const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
+  const opacity = useTransform(progress, range, [isMobile ? 0.4 : 0.15, 1]);
+  const y = useTransform(progress, range, [isMobile ? 4 : 8, 0]);
   return (
     <motion.span style={{ opacity, y }} className="inline-block">
       {children}
