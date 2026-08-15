@@ -1,0 +1,224 @@
+{
+  "name": "Generate Learning Path Video Demo",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "value": "0 3 * * 0"
+            }
+          ]
+        }
+      },
+      "name": "Weekly Video Generation",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        250,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://hermes-api.local/v1/tools/hyperframe_text_to_video",
+        "method": "POST",
+        "jsonParameters": true,
+        "options": {
+          "headers": {
+            "Authorization": "Bearer {{$env.HERMES_API_KEY}}",
+            "Content-Type": "application/json"
+          }
+        },
+        "bodyParametersJson": "{\n  \"script\": \"{{ $json.script }}\",\n  \"tts_voice\": \"gloria\",\n  \"tts_provider\": \"deepgram\",\n  \"tts_model\": \"aura-hera-es\",\n  \"resolution\": \"1080x1920\",\n  \"fps\": 30,\n  \"max_duration\": 60,\n  \"output_format\": \"mp4\",\n  \"subtitles\": true,\n  \"subtitle_language\": \"es\"\n}"
+      },
+      "name": "Call Hyperframes API",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        450,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "command": "curl -o /workspace/learning-path-ia/assets/video/learning-path-demo.mp4 \"{{ $json.video_url }}\" && curl -o /workspace/learning-path-ia/assets/video/learning-path-demo.vtt \"{{ $json.subtitles_url }}\" && ffmpeg -i /workspace/learning-path-ia/assets/video/learning-path-demo.mp4 -vframes 1 -ss 00:00:02 /workspace/learning-path-ia/assets/video/poster.jpg",
+        "options": {
+          "cwd": "/workspace"
+        }
+      },
+      "name": "Download Video + Poster",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        650,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "command": "git add learning-path-ia/assets/video/ && git commit -m \"chore: update video demo $(date -u +'%Y-%m-%d')\" && git push origin main",
+        "options": {
+          "cwd": "/workspace"
+        }
+      },
+      "name": "Git Commit Video",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        850,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "url": "{{$env.DISCORD_WEBHOOK_URL}}",
+        "method": "POST",
+        "jsonParameters": true,
+        "options": {},
+        "bodyParametersJson": "{\n  \"embeds\": [\n    {\n      \"title\": \"🎬 Video Demo Actualizado\",\n      \"description\": \"Nuevo video demo generado con Hyperframes + Gloria TTS\",\n      \"color\": 3066993,\n      \"fields\": [\n        {\n          \"name\": \"Duración\",\n          \"value\": \"{{ $json.duration }}s\",\n          \"inline\": true\n        },\n        {\n          \"name\": \"Tamaño\",\n          \"value\": \"{{ $json.size_mb }} MB\",\n          \"inline\": true\n        },\n        {\n          \"name\": \"URL\",\n          \"value\": \"https://littlecrabsolutions.github.io/learning-path-ia/assets/video/learning-path-demo.mp4\",\n          \"inline\": false\n        }\n      ],\n      \"timestamp\": \"{{ new Date().toISOString() }}\"\n    }\n  ]\n}"
+      },
+      "name": "Notify Discord Success",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        1050,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.error }}",
+              "operation": "isNotEmpty"
+            }
+          ]
+        }
+      },
+      "name": "Generation Failed?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        650,
+        500
+      ]
+    },
+    {
+      "parameters": {
+        "url": "{{$env.DISCORD_WEBHOOK_URL}}",
+        "method": "POST",
+        "jsonParameters": true,
+        "options": {},
+        "bodyParametersJson": "{\n  \"embeds\": [\n    {\n      \"title\": \"❌ Video Generation FAILED\",\n      \"description\": \"Error generando video demo con Hyperframes\",\n      \"color\": 15158332,\n      \"fields\": [\n        {\n          \"name\": \"Error\",\n          \"value\": \"{{ $json.error?.message || 'Unknown error' }}\",\n          \"inline\": false\n        }\n      ],\n      \"timestamp\": \"{{ new Date().toISOString() }}\"\n    }\n  ]\n}"
+      },
+      "name": "Notify Discord Failure",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        850,
+        500
+      ]
+    },
+    {
+      "parameters": {
+        "script": "const fs = require('fs');\nconst scriptPath = '/workspace/learning-path-ia/assets/video/video-script.md';\nlet script = fs.readFileSync(scriptPath, 'utf8');\n// Extract just the Gloria TTS lines from the script\nconst ttsLines = script.match(/Gloria \\(TTS\\): \"([^\"]+)\"/g);\nconst fullScript = ttsLines ? ttsLines.map(l => l.replace('Gloria (TTS): ', '').replace(/^\"|\"$/g, '')).join(' ') : 'De brief a plan automático en sesenta segundos. El cliente rellena su brief. Un webhook lo envía directo a n8n. n8n orquesta el flujo. Ollama genera el plan estructurado con el patrón Prompt-to-Action. Notion crea la página y los tasks automáticamente. Discord notifica al equipo con el resumen. Y aquí estoy yo, Gloria, leyendo el intake en español natural. ¿Quieres automatizar tu proceso de intake? Agenda tu diagnóstico gratuito en little crab solutions punto com.';\nreturn [{ script: fullScript }];"
+      },
+      "name": "Prepare Script",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [
+        250,
+        500
+      ]
+    }
+  ],
+  "connections": {
+    "Weekly Video Generation": {
+      "main": [
+        [
+          {
+            "node": "Prepare Script",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Script": {
+      "main": [
+        [
+          {
+            "node": "Call Hyperframes API",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Call Hyperframes API": {
+      "main": [
+        [
+          {
+            "node": "Download Video + Poster",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Generation Failed?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download Video + Poster": {
+      "main": [
+        [
+          {
+            "node": "Git Commit Video",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Git Commit Video": {
+      "main": [
+        [
+          {
+            "node": "Notify Discord Success",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generation Failed?": {
+      "main": [
+        [
+          {
+            "node": "Notify Discord Failure",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "id": "generate-learning-path-video",
+  "tags": [
+    "video",
+    "hyperframes",
+    "gloria-tts",
+    "learning-path",
+    "automation"
+  ]
+}

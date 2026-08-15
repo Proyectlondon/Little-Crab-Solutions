@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ruta de Aprendizaje IA — Little Crab Solutions</title>
+<meta name="description" content="Learning Path IA: ruta estructurada de 7 módulos para crear agentes de IA sin ser desarrollador. Incluye ejercicios prácticos, recursos verificados y video demo.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="learning-path-ia/assets/css/learning-path.css">
+<style>
+  /* Landing-specific styles (hero stats, path overview, etc.) */
+  .stat-strip .stat b { font-size: clamp(22px, 4vw, 28px); }
+  .video-wrapper { max-width: 360px; margin: 0 auto 32px; }
+  .path-overview { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; margin-top: 32px; }
+  .path-step { background: var(--panel); border: 1px solid var(--panel-border); border-radius: 16px; padding: 28px; position: relative; transition: border-color 0.3s ease, transform 0.3s ease; }
+  .path-step:hover { border-color: rgba(127, 217, 196, 0.4); transform: translateY(-4px); }
+  .path-step::before { content: attr(data-step); position: absolute; top: -12px; left: 24px; background: var(--coral); color: #1A0A05; font-family: 'Space Grotesk'; font-size: 14px; font-weight: 600; padding: 4px 12px; border-radius: 100px; }
+  .path-step h3 { font-size: 18px; margin-bottom: 12px; }
+  .path-step p { font-size: 14px; color: var(--text-dim); line-height: 1.6; margin-bottom: 16px; }
+  .path-step .duration { font-family: 'JetBrains Mono'; font-size: 12px; color: var(--teal); display: inline-block; margin-bottom: 16px; }
+  .path-step .step-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+  .path-step .step-tags span { font-size: 10px; padding: 4px 8px; border-radius: 100px; background: rgba(255,255,255,0.04); color: var(--text-dim); }
+  .section-head-centered { text-align: center; max-width: 100%; }
+  .section-head-centered h2 { font-size: clamp(1.5rem, 3vw, 2.2rem); }
+  .section-head-centered p { color: var(--text-dim); }
+  .contact-section { max-width: 640px; margin: 0 auto; text-align: center; }
+  @media (max-width: 860px) { .video-wrapper { max-width: 100%; } }
+</style>
+</head>
+<body>
+<a href="#main" class="skip-link">Saltar al contenido principal</a>
+
+<div class="bg-glow"></div>
+
+<nav>
+  <div class="brand">
+    <svg class="brand-mark" viewBox="0 0 24 24" fill="none"><path d="M12 8c-3 0-5 2-5 5.5S9 20 12 20s5-3 5-6.5S15 8 12 8Z" stroke="#E8623D" stroke-width="1.6"/><path d="M7 10 4 6M17 10l3-4M7 12 3 11M17 12l4-1" stroke="#7FD9C4" stroke-width="1.6" stroke-linecap="round"/></svg>
+    Little Crab Solutions
+  </div>
+  <div class="links">
+    <a href="#services">Servicios</a>
+    <a href="#process">Proceso</a>
+    <a href="#stack">Stack</a>
+    <a href="learning-path-ia.html">Ruta IA</a>
+  </div>
+  <a href="#contact" class="nav-cta">Hablemos</a>
+</nav>
+
+<main id="main">
+  <section id="introduccion" class="reveal">
+    <div class="hero-inner">
+      <div>
+        <div class="eyebrow mono">TOCANCIPÁ, COLOMBIA — IT & AUTOMATIZACIÓN</div>
+        <h1 class="headline">Dominá la inteligencia artificial <em>aplicada a negocios</em>.</h1>
+        <p class="sub">Construimos agentes de IA que automatizan procesos repetitivos, integran herramientas de su stack y entregan valor real sin depender de desarrolladores especializados.</p>
+        <div class="hero-actions">
+          <a href="#contact" class="btn-primary">Agendar diagnóstico gratuito</a>
+          <a href="#path" class="btn-ghost">Ver contenido</a>
+        </div>
+      </div>
+      <div class="claw-stage">
+        <svg class="claw-svg" viewBox="0 0 420 340" aria-hidden="true">
+          <ellipse cx="210" cy="290" rx="120" ry="18" fill="rgba(0,0,0,0.3)"/>
+          <g class="claw-top" id="clawTop">
+            <path d="M120 90 Q150 40 220 55 Q280 68 300 120 Q260 100 220 100 Q170 98 140 130 Z" fill="#16302C" stroke="#7FD9C4" stroke-width="1.5" stroke-opacity="0.5"/>
+          </g>
+          <g class="claw-bottom" id="clawBottom">
+            <path d="M120 150 Q150 200 220 185 Q280 172 300 120 Q260 140 220 140 Q170 142 140 110 Z" fill="#1E3833" stroke="#E8623D" stroke-width="1.5" stroke-opacity="0.5"/>
+          </g>
+          <circle cx="210" cy="120" r="46" fill="none" stroke="rgba(127,217,196,0.15)" stroke-width="1" stroke-dasharray="3 5"/>
+        </svg>
+        <div class="task-chip" aria-hidden="true"><span class="dot"></span>Tu primer agente en 4 semanas</div>
+      </div>
+    </div>
+    <div class="stat-strip">
+      <div class="stat"><b>+3×</b><span>productividad en tareas operativas</span></div>
+      <div class="stat"><b>0</b><span>código de backend obligatorio</span></div>
+      <div class="stat"><b>24/7</b><span>agentes en producción</span></div>
+    </div>
+  </section>
+
+  <!-- VIDEO DEMO PLACEHOLDER -->
+  <section id="video-demo" class="reveal" aria-labelledby="video-title">
+    <div class="section-head section-head-centered">
+      <h2 id="video-title">Demo: Agente de Intake en 60s</h2>
+      <p>Mira cómo se construye el agente final del módulo 7: formulario → plan → Notion → Discord con voz de Gloria</p>
+    </div>
+    <div class="video-wrapper" role="region" aria-label="Video demo del proyecto final">
+      <video poster="assets/video/poster.jpg" preload="metadata" muted playsinline aria-label="Demo del agente de intake">
+        <source src="assets/video/learning-path-demo.mp4" type="video/mp4">
+        Tu navegador no soporta video HTML5.
+      </video>
+      <div class="video-poster">
+        <button class="video-play-btn" aria-label="Reproducir video demo" type="button">
+          <svg viewBox="0 0 24 24" fill="#1A0A05" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
+        </button>
+        <p class="mono">Demo vertical — 60s</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="path" class="reveal">
+    <div class="section-head">
+      <div class="section-tag mono">// ruta estructurada</div>
+      <h2>Ruta de Aprendizaje Paso a Paso</h2>
+      <p>Diseñada para analistas de IT y diseñadores visuales que quieren crear agentes sin ser desarrolladores.</p>
+    </div>
+    <div class="path-overview">
+      <article class="path-step reveal" data-step="01">
+        <span class="duration">4‑6 h</span>
+        <h3>Fundamentos de IA aplicada</h3>
+        <p>Cursos cortos de DeepLearning.AI + Hugging Face sobre prompts, RAG y agentes. Bases conceptuales sólidas sin jerga innecesaria.</p>
+        <div class="step-tags"><span>Prompting</span><span>RAG</span><span>Agentes</span></div>
+      </article>
+      <article class="path-step reveal" data-step="02">
+        <span class="duration">8 h</span>
+        <h3>Stack técnico básico</h3>
+        <p>n8n, Ollama, Docker, Git. Ejercicios de integración con Google Workspace. Entorno local funcionando en < 30 min.</p>
+        <div class="step-tags"><span>n8n</span><span>Ollama</span><span>Docker</span><span>Git</span></div>
+      </article>
+      <article class="path-step reveal" data-step="03">
+        <span class="duration">12 h</span>
+        <h3>Primer agente: Prompt-to-Action</h3>
+        <p>Pattern "Prompt-to-Action" con OpenWebUI + n8n. Agente que responde a lead-gen en WhatsApp. De 0 a producción.</p>
+        <div class="step-tags"><span>OpenWebUI</span><span>n8n</span><span>WhatsApp</span></div>
+      </article>
+      <article class="path-step reveal" data-step="04">
+        <span class="duration">10 h</span>
+        <h3>Automatización flujos n8n</h3>
+        <p>Google Forms → clasificación → Slack/Telegram. Credenciales seguras, versionado Git, manejo de errores.</p>
+        <div class="step-tags"><span>Forms</span><span>Clasificación</span><span>Slack/Telegram</span></div>
+      </article>
+      <article class="path-step reveal" data-step="05">
+        <span class="duration">6 h</span>
+        <h3>Testing y observabilidad</h3>
+        <p>LangSmith o Weights & Biases para latencia, costos, tasa de caída. Alertas y dashboards operativos.</p>
+        <div class="step-tags"><span>LangSmith</span><span>W&B</span><span>Métricas</span></div>
+      </article>
+      <article class="path-step reveal" data-step="06">
+        <span class="duration">6 h</span>
+        <h3>Despliegue y escalado</h3>
+        <p>Docker Compose local → Railway/Render. Dominio custom, SSL, endpoints TTS (Gloria) expuestos.</p>
+        <div class="step-tags"><span>Docker Compose</span><span>Railway</span><span>Dominio</span></div>
+      </article>
+      <article class="path-step reveal" data-step="07">
+        <span class="duration">Proyecto final</span>
+        <h3>Agente de Intake</h3>
+        <p>Brief vía formulario → agente genera plan → tickets en Notion → notifica en Discord con voz de Gloria (Deepgram). Entregas: video demo + docs.</p>
+        <div class="step-tags"><span>Integración completa</span><span>Gloria TTS</span><span>Notion</span><span>Discord</span></div>
+      </article>
+    </div>
+  </section>
+
+  <section id="hermes" class="reveal">
+    <div class="section-head">
+      <div class="section-tag mono">// hermes</div>
+      <h2>Hermes & JJ — Tu control plane local</h2>
+      <p>El ecosistema que usamos en Little Crab está basado en <strong>Hermes Desktop</strong> (control panel) y <strong>JJ</strong> (orquestador). Aquí tienes los recursos oficiales:</p>
+      <ul>
+        <li><a href="https://hermes-agent.nousresearch.com/docs" target="_blank" rel="noopener noreferrer">Documentación oficial de Hermes Agent</a></li>
+        <li><a href="https://github.com/NousResearch/hermes-agent" target="_blank" rel="noopener noreferrer">Repositorio de código abierto</a></li>
+        <li><a href="#kanban">Kanban‑style task tracking (via kanban_* tools)</a></li>
+        <li><a href="#skills">Gestor de skills (creación/actualización de workflows)</a></li>
+      </ul>
+      <p>Con esto puedes:</p>
+      <ol>
+        <li>Levantar automáticamente Ollama, Hermes y ComfyUI al iniciar sesión (script <code>INSTALAR_AUTOSTART_JJ.ps1</code>).</li>
+        <li>Verificar salud de cada servicio con <code>ecosystem_status</code>.</li>
+        <li>Crear flujos de trabajo mediante <code>n8n</code> o <code>comfyui_txt2img_simple</code> sin tocar JSON.</li>
+        <li>Generar videos verticales con <code>hyperframe_text_to_video</code> y añadir voz de <strong>Gloria</strong>.</li>
+      </ol>
+    </div>
+  </section>
+
+  <section id="tools" class="reveal">
+    <div class="section-head">
+      <div class="section-tag mono">// herramientas</div>
+      <h2>Herramientas clave del stack</h2>
+      <p>Seleccionamos opciones que ya dominas (visual, analítica) y que se integran sin fricción.</p>
+    </div>
+    <div class="service-grid">
+      <div class="service-card reveal">
+        <div class="service-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 2v4M12 18v4M4.9 4.9l2.8 2.8M16.3 16.3l2.8 2.8M2 12h4M18 12h4M4.9 19.1l2.8-2.8M16.3 7.7l2.8-2.8" stroke="#7FD9C4" stroke-width="1.6" stroke-linecap="round"/><circle cx="12" cy="12" r="3.5" stroke="#7FD9C4" stroke-width="1.6"/></svg></div>
+        <h3>n8n</h3>
+        <p>Orquestación visual de flujos (lead‑gen, tickets, envío de audio).</p>
+        <div class="service-tags"><span>Workflows</span><span>Webhooks</span><span>Google Sheets</span></div>
+      </div>
+      <div class="service-card reveal">
+        <div class="service-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M4 7h16M4 12h10M4 17h13" stroke="#E8623D" stroke-width="1.6" stroke-linecap="round"/><circle cx="20" cy="7" r="1.6" fill="#E8623D"/><circle cx="17" cy="17" r="1.6" fill="#E8623D"/></svg></div>
+        <h3>Ollama</h3>
+        <p>Modelos LLM locales (Qwen3.5, Llama 3, etc.) con API compatible OpenAI.</p>
+        <div class="service-tags"><span>Embeddings</span><span>Chat</span><span>RAG</span></div>
+      </div>
+      <div class="service-card reveal">
+        <div class="service-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M9 3h6l1 4h4l-2 5 2 5h-4l-1 4H9l-1-4H4l2-5-2-5h4l1-4Z" stroke="#7FD9C4" stroke-width="1.5" stroke-linejoin="round"/></svg></div>
+        <h3>Hyperframes</h3>
+        <p>Renderizado de videos verticales y animaciones ligeras (Reels/TikTok).</p>
+        <div class="service-tags"><span>Text‑to‑Video</span><span>Animation</span><span>Audio Sync</span></div>
+      </div>
+      <div class="service-card reveal">
+        <div class="service-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 2v4M12 18v4M4.9 4.9l2.8 2.8M16.3 16.3l2.8 2.8M2 12h4M18 12h4M4.9 19.1l2.8-2.8M16.3 7.7l2.8-2.8" stroke="#7FD9C4" stroke-width="1.5" stroke-linecap="round"/><circle cx="12" cy="12" r="3.5" stroke="#7FD9C4" stroke-width="1.6"/></svg></div>
+        <h3>ComfyUI</h3>
+        <p>Generación de imágenes con Stable Diffusion mediante nodos visuales.</p>
+        <div class="service-tags"><span>Stable Diffusion</span><span>LoRAs</span><span>Custom Nodes</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="contact" class="reveal">
+    <div class="contact-section">
+      <div class="section-tag mono">// contacto</div>
+      <h2>¿Listo para soltar la primera tarea?</h2>
+      <p>Agenda una llamada de diagnóstico sin costo. Analizaremos tu proceso actual y diseñaremos el agente que lo automatice.</p>
+      <a href="mailto:contacto@littlecrabsolutions.com" class="btn-primary">Escribir a Little Crab Solutions</a>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <svg class="brand-mark" viewBox="0 0 24 24" fill="none"><path d="M12 8c-3 0-5 2-5 5.5S9 20 12 20s5-3 5-6.5S15 8 12 8Z" stroke="#E8623D" stroke-width="1.6"/><path d="M7 10 4 6M17 10l3-4M7 12 3 11M17 12l4-1" stroke="#7FD9C4" stroke-width="1.6" stroke-linecap="round"/></svg>
+      <span>Little Crab Solutions</span>
+      <p class="mono">IT & automatización — Tocancipá, Colombia</p>
+    </div>
+    <div class="footer-col">
+      <h4>Servicios</h4>
+      <ul>
+        <li><a href="#services">Agentes de IA</a></li>
+        <li><a href="#services">Automatización n8n</a></li>
+        <li><a href="#services">Consultoría técnica</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Recursos</h4>
+      <ul>
+        <li><a href="learning-path-ia.html">Ruta IA — Learning Path</a></li>
+        <li><a href="#stack">Stack & herramientas</a></li>
+        <li><a href="#process">Cómo trabajamos</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Contacto</h4>
+      <ul>
+        <li><a href="mailto:contacto@littlecrabsolutions.com">contacto@littlecrabsolutions.com</a></li>
+        <li><a href="#contact">Agendar diagnóstico</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2026 Little Crab Solutions</span>
+    <span class="mono">Hecho con precisión de cangrejo</span>
+  </div>
+</footer>
+
+<script src="learning-path-ia/assets/js/learning-path.js"></script>
+</body>
+</html>

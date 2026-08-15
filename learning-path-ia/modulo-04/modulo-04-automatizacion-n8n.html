@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Módulo 04: Automatización Flujos n8n — Learning Path IA</title>
+<meta name="description" content="Módulo 4 del Learning Path IA: Automatización de flujos con n8n - Google Forms → Clasificación → Slack/Telegram. Credenciales seguras, versionado Git.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/learning-path.css">
+</head>
+<body>
+<a href="#main" class="skip-link">Saltar al contenido principal</a>
+<div class="bg-glow"></div>
+<nav>
+  <div class="brand">
+    <svg class="brand-mark" viewBox="0 0 24 24" fill="none"><path d="M12 8c-3 0-5 2-5 5.5S9 20 12 20s5-3 5-6.5S15 8 12 8Z" stroke="#E8623D" stroke-width="1.6"/><path d="M7 10 4 6M17 10l3-4M7 12 3 11M17 12l4-1" stroke="#7FD9C4" stroke-width="1.6" stroke-linecap="round"/></svg>
+    Little Crab Solutions
+  </div>
+  <div class="links">
+    <a href="#services">Servicios</a>
+    <a href="#process">Proceso</a>
+    <a href="#stack">Stack</a>
+    <a href="learning-path-ia.html">Ruta IA</a>
+  </div>
+  <a href="#contact" class="nav-cta">Hablemos</a>
+</nav>
+
+<main id="main">
+  <header class="module-header reveal">
+    <div class="module-meta">
+      <span class="module-badge mono">Módulo 04 de 7</span>
+      <span class="module-duration mono">~10 h</span>
+    </div>
+    <h1 class="headline">Automatización de Flujos con n8n</h1>
+    <p class="sub">Google Forms → Clasificación automática → Notificaciones Slack/Telegram. Credenciales seguras, versionado Git, manejo de errores.</p>
+    <div class="module-progress">
+      <div class="progress-bar" role="progressbar" aria-valuenow="57" aria-valuemin="1" aria-valuemax="7" aria-label="Progreso del módulo">
+        <div class="progress-fill" style="width: calc(100% * 4 / 7);"></div>
+      </div>
+      <p class="progress-text mono">Paso 4 de 7</p>
+    </div>
+  </header>
+
+  <section id="objetivos" class="reveal">
+    <div class="section-head">
+      <div class="section-tag mono">// objetivos</div>
+      <h2>Qué vas a lograr</h2>
+    </div>
+    <ul class="objectives-list">
+      <li><strong>Crear formulario Google Forms</strong> conectado a n8n vía webhook</li>
+      <li><strong>Clasificar respuestas</strong> con LLM (Ollama) o reglas deterministas</li>
+      <li><strong>Enrutar notificaciones</strong> a Slack, Telegram, Email según categoría</li>
+      <li><strong>Gestionar credenciales</strong> de forma segura (n8n credentials, variables de entorno)</li>
+      <li><strong>Versionar workflows</strong> con Git (export JSON, commits semánticos)</li>
+      <li><strong>Implementar retry/error handling</strong> para flujos robustos</li>
+    </ul>
+  </section>
+
+  <section id="teoria" class="reveal">
+    <div class="section-head">
+      <div class="section-tag mono">// teoría</div>
+      <h2>Conceptos clave</h2>
+    </div>
+    <article class="theory-content">
+      <h3>Arquitectura del flujo</h3>
+      <pre><code class="mono">Google Forms → Webhook n8n → [Clasificar: LLM o Reglas] → Router → 
+  ├─ Slack (ventas)
+  ├─ Telegram (soporte)
+  ├─ Email (admin)
+  └─ Sheets (log histórico)</code></pre>
+      
+      <h3>Credenciales en n8n</h3>
+      <ul>
+        <li><strong>n8n Credentials UI:</strong> Encriptadas en BD, reutilizables, separadas del workflow JSON</li>
+        <li><strong>Variables de entorno:</strong> Para keys de API en Docker (<code>N8N_ENCRYPTION_KEY</code>)</li>
+        <li><strong>NO hardcodear</strong> tokens en nodos Function ni HTTP Request</li>
+      </ul>
+      
+      <h3>Versionado de workflows</h3>
+      <p>Exportar workflow → JSON → commit a Git. Permite: history, rollback, code review, CI/CD futuro.</p>
+      <pre><code class="mono"># En n8n UI: Workflow → Export → workflow.json
+git add workflows/automatizacion-forms.json
+git commit -m "feat: add forms classification workflow with slack/telegram routing"</code></pre>
+      
+      <h3>Manejo de errores (Error Trigger)</h3>
+      <p>Nodo <strong>Error Trigger</strong> captura fallos → notifica a canal #alertas → reintento automático (configurable) → dead letter queue si persiste.</p>
+    </article>
+  </section>
+
+  <section id="ejercicio" class="reveal">
+    <div class="section-head">
+      <div class="section-tag mono">// práctica</div>
+      <h2>Ejercicio guiado: Pipeline Forms → Clasificación → Notificaciones</h2>
+      <p>Tiempo estimado: 2-3 horas. Nivel: Intermedio.</p>
+    </div>
+    <div class="exercise-wrapper">
+      <div class="exercise-meta">
+        <div class="exercise-prep">
+          <h4>Antes de empezar</h4>
+          <ul>
+            <li>Entorno M02/M03 funcionando (n8n + Ollama)</li>
+            <li>Cuenta Google (Forms + Sheets)</li>
+            <li>Workspace Slack (o usa webhook.site para testing)</li>
+            <li>Bot Telegram creado (<code>@BotFather</code>)</li>
+          </ul>
+        </div>
+      </div>
+      <ol class="exercise-steps">
+        <li>
+          <h4>Paso 1: Google Forms + Webhook</h4>
+          <p>Crea Form con campos: Nombre, Email, Empresa, Tipo consulta (venta/soporte/otro), Mensaje.</p>
+          <p>En n8n: Webhook node → Path <code>/webhook/forms-lead</code> → Method POST</p>
+          <p>En Forms: Configuración → Scripts → Apps Script para POST a webhook n8n (ver recursos)</p>
+        </li>
+        <li>
+          <h4>Paso 2: Nodo de Clasificación (LLM o Reglas)</h4>
+          <p><strong>Opción A — Reglas deterministas (rápido, gratis):</strong></p>
+          <pre><code class="mono">// Function node
+const tipo = $json["Tipo consulta"];
+if (tipo === "venta") return [{...$json, ruta: "slack-ventas"}];
+if (tipo === "soporte") return [{...$json, ruta: "telegram-soporte"}];
+return [{...$json, ruta: "email-admin"}];</code></pre>
+          <p><strong>Opción B — LLM (Ollama) para clasificación semántica:</strong></p>
+          <p>HTTP Request a <code>http://ollama:11434/api/chat</code> con system prompt de clasificación → parse JSON → router.</p>
+        </li>
+        <li>
+          <h4>Paso 3: Credenciales Slack y Telegram</h4>
+          <p>En n8n → Credentials → New:</p>
+          <ul>
+            <li>Slack API: Bot Token (xoxb-...) → scopes: chat:write, channels:read</li>
+            <li>Telegram API: Bot Token (de @BotFather)</li>
+          </ul>
+        </li>
+        <li>
+          <h4>Paso 4: Nodos de Notificación + Router</h4>
+          <p>Switch node (ruta) → 3 ramas:</p>
+          <ol>
+            <li>Slack: Post message a <code>#leads-ventas</code> con bloques formateados</li>
+            <li>Telegram: Send message a chat_id de soporte</li>
+            <li>Email (Send Email node): Resumen a admin</li>
+          </ol>
+        </li>
+        <li>
+          <h4>Paso 5: Error Handling + Log a Sheets</h4>
+          <p>Añade nodo <strong>Google Sheets</strong> (Append) en cada rama para log histórico.</p>
+          <p>Añade <strong>Error Trigger</strong> workflow aparte: Webhook → Slack <code>#alertas-n8n</code> con <code>{{ $error.message }}</code>.</p>
+        </li>
+        <li>
+          <h4>Paso 6: Exportar y versionar</h4>
+          <div class="step-detail">
+            <pre><code class="mono"># En n8n: Workflow → Export → guardar en workflows/forms-automation.json
+git add workflows/forms-automation.json
+git commit -m "feat: add forms → classification → slack/telegram/email pipeline with error handling"</code></pre>
+          </div>
+        </li>
+      </ol>
+      <div class="exercise-checkpoint">
+        <h4>✅ Checkpoint: ¿Todo listo?</h4>
+        <ul class="checklist">
+          <li><label><input type="checkbox" disabled> Form envía datos a webhook n8n correctamente</label></li>
+          <li><label><input type="checkbox" disabled> Clasificación (reglas o LLM) enruta a canal correcto</label></li>
+          <li><label><input type="checkbox" disabled> Notificaciones llegan a Slack/Telegram/Email</label></li>
+          <li><label><input type="checkbox" disabled> Error Trigger captura fallo y notifica</label></li>
+          <li><label><input type="checkbox" disabled> Workflow exportado y commit en Git</label></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section id="recursos" class="reveal">
+    <div class="section-head">
+      <div class="section-tag mono">// recursos</div>
+      <h2>Recursos verificados</h2>
+      <p>Enlaces validados el <time datetime="2026-08-15">15 de agosto de 2026</time> (HTTP 200 OK).</p>
+    </div>
+    <ul class="resources-list">
+      <li><a href="https://docs.n8n.io/integrations/builtin/credentials/" target="_blank" rel="noopener noreferrer"><strong>n8n Credentials Management</strong> — Gestión segura de secrets</a><span class="resource-meta mono">Validado: 2026-08-15</span></li>
+      <li><a href="https://docs.n8n.io/integrations/builtin/core-nodes/n8n-nodes-base.googleforms/" target="_blank" rel="noopener noreferrer"><strong>n8n Google Forms Trigger</strong> — Alternativa nativa al webhook</a><span class="resource-meta mono">Validado: 2026-08-15</span></li>
+      <li><a href="https://api.slack.com/messaging/webhooks" target="_blank" rel="noopener noreferrer"><strong>Slack Incoming Webhooks</strong> — Setup rápido sin OAuth</a><span class="resource-meta mono">Validado: 2026-08-15</span></li>
+      <li><a href="https://core.telegram.org/bots/api" target="_blank" rel="noopener noreferrer"><strong>Telegram Bot API</strong> — Referencia completa</a><span class="resource-meta mono">Validado: 2026-08-15</span></li>
+      <li><a href="https://docs.n8n.io/workflows/error-handling/" target="_blank" rel="noopener noreferrer"><strong>n8n Error Handling</strong> — Error Trigger, retry, continue on fail</a><span class="resource-meta mono">Validado: 2026-08-15</span></li>
+    </ul>
+    <p class="resources-disclaimer mono">⚠️ Los enlaces externos pueden cambiar. Si encuentras uno roto, <a href="mailto:contacto@littlecrabsolutions.com?subject=Enlace roto Learning Path M04">repórtalo</a>.</p>
+  </section>
+
+  <section id="autoevaluacion" class="reveal">
+    <div class="section-head">
+      <div class="section-tag mono">// checkpoint</div>
+      <h2>Autoevaluación</h2>
+    </div>
+    <form class="assessment-form" aria-label="Autoevaluación del módulo 04">
+      <fieldset>
+        <legend>Pregunta 1: ¿Dónde se guardan las credenciales en n8n de forma segura?</legend>
+        <div class="radio-group">
+          <label><input type="radio" name="q1" value="a"> En el JSON del workflow (campo credentials)</label>
+          <label><input type="radio" name="q1" value="b"> En la base de datos encriptada de n8n (Credentials UI), separadas del workflow</label>
+          <label><input type="radio" name="q1" value="c"> En variables de entorno del contenedor únicamente</label>
+        </div>
+      </fieldset>
+      <fieldset>
+        <legend>Pregunta 2: ¿Para qué sirve el nodo Error Trigger?</legend>
+        <div class="radio-group">
+          <label><input type="radio" name="q2" value="a"> Validar datos de entrada antes de procesar</label>
+          <label><input type="radio" name="q2" value="b"> Capturar errores de cualquier workflow y ejecutar flujo de alerta/reintento</label>
+          <label><input type="radio" name="q2" value="c"> Hacer retry automático de nodos HTTP fallidos</label>
+        </div>
+      </fieldset>
+      <fieldset>
+        <legend>Pregunta 3: ¿Cómo se versiona un workflow n8n en Git?</legend>
+        <div class="radio-group">
+          <label><input type="radio" name="q3" value="a"> n8n tiene integración Git nativa automática</label>
+          <label><input type="radio" name="q3" value="b"> Exportar workflow a JSON → commit manual (o CI) al repo</label>
+          <label><input type="radio" name="q3" value="c"> Copiar el ID interno del workflow al README</label>
+        </div>
+      </fieldset>
+      <button type="button" class="btn-primary assess-btn">Verificar respuestas</button>
+      <div class="assessment-feedback" aria-live="polite"></div>
+    </form>
+  </section>
+
+  <nav class="module-nav reveal" aria-label="Navegación entre módulos">
+    <div class="progress"><span class="mono">Módulo 04 de 7 completado</span></div>
+    <div class="nav-actions">
+      <a href="../modulo-03/modulo-03-primer-agente.html" class="nav-btn prev" data-module="03"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="15 18 9 12 15 6"></polyline></svg> Módulo anterior</a>
+      <a href="../learning-path-ia.html" class="nav-btn overview"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg> Volver al overview</a>
+      <a href="../modulo-05/modulo-05-testing-observabilidad.html" class="nav-btn next" data-module="05">Siguiente módulo <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"></polyline></svg></a>
+    </div>
+  </nav>
+</main>
+
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <svg class="brand-mark" viewBox="0 0 24 24" fill="none"><path d="M12 8c-3 0-5 2-5 5.5S9 20 12 20s5-3 5-6.5S15 8 12 8Z" stroke="#E8623D" stroke-width="1.6"/><path d="M7 10 4 6M17 10l3-4M7 12 3 11M17 12l4-1" stroke="#7FD9C4" stroke-width="1.6" stroke-linecap="round"/></svg>
+      <span>Little Crab Solutions</span>
+      <p class="mono">IT & automatización — Tocancipá, Colombia</p>
+    </div>
+    <div class="footer-col">
+      <h4>Servicios</h4>
+      <ul>
+        <li><a href="#services">Agentes de IA</a></li>
+        <li><a href="#services">Automatización n8n</a></li>
+        <li><a href="#services">Consultoría técnica</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Recursos</h4>
+      <ul>
+        <li><a href="learning-path-ia.html">Ruta IA — Learning Path</a></li>
+        <li><a href="#stack">Stack & herramientas</a></li>
+        <li><a href="#process">Cómo trabajamos</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Contacto</h4>
+      <ul>
+        <li><a href="mailto:contacto@littlecrabsolutions.com">contacto@littlecrabsolutions.com</a></li>
+        <li><a href="#contact">Agendar diagnóstico</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2026 Little Crab Solutions</span>
+    <span class="mono">Hecho con precisión de cangrejo</span>
+  </div>
+</footer>
+
+<style>
+footer {
+  padding: 48px 6vw 24px;
+  border-top: 1px solid rgba(255,255,255,0.06);
+  font-size: 13px;
+  color: var(--text-dim);
+}
+.footer-grid {
+  display: grid;
+  grid-template-columns: 1.5fr repeat(3, 1fr);
+  gap: 32px;
+  max-width: 1280px;
+  margin: 0 auto 32px;
+}
+.footer-brand {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.footer-brand .brand-mark {
+  width: 24px;
+  height: 24px;
+}
+.footer-brand p {
+  margin-top: 4px;
+}
+.footer-col h4 {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text);
+  margin-bottom: 16px;
+  text-transform: lowercase;
+}
+.footer-col ul {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.footer-col a:hover {
+  color: var(--teal);
+}
+.footer-bottom {
+  display: flex;
+  justify-content: space-between;
+  padding-top: 24px;
+  border-top: 1px solid rgba(255,255,255,0.04);
+  max-width: 1280px;
+  margin: 0 auto;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+@media (max-width: 860px) {
+  .footer-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+@media (max-width: 560px) {
+  .footer-grid {
+    grid-template-columns: 1fr;
+  }
+}
+</style>
+
+<style>
+footer {
+  padding: 48px 6vw 24px;
+  border-top: 1px solid rgba(255,255,255,0.06);
+  font-size: 13px;
+  color: var(--text-dim);
+}
+.footer-grid {
+  display: grid;
+  grid-template-columns: 1.5fr repeat(3, 1fr);
+  gap: 32px;
+  max-width: 1280px;
+  margin: 0 auto 32px;
+}
+.footer-brand {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.footer-brand .brand-mark {
+  width: 24px;
+  height: 24px;
+}
+.footer-brand p {
+  margin-top: 4px;
+}
+.footer-col h4 {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text);
+  margin-bottom: 16px;
+  text-transform: lowercase;
+}
+.footer-col ul {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.footer-col a:hover {
+  color: var(--teal);
+}
+.footer-bottom {
+  display: flex;
+  justify-content: space-between;
+  padding-top: 24px;
+  border-top: 1px solid rgba(255,255,255,0.04);
+  max-width: 1280px;
+  margin: 0 auto;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+@media (max-width: 860px) {
+  .footer-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+@media (max-width: 560px) {
+  .footer-grid {
+    grid-template-columns: 1fr;
+  }
+}
+</style>
+
+<style>
+footer {
+  padding: 48px 6vw 24px;
+  border-top: 1px solid rgba(255,255,255,0.06);
+  font-size: 13px;
+  color: var(--text-dim);
+}
+.footer-grid {
+  display: grid;
+  grid-template-columns: 1.5fr repeat(3, 1fr);
+  gap: 32px;
+  max-width: 1280px;
+  margin: 0 auto 32px;
+}
+.footer-brand {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.footer-brand .brand-mark {
+  width: 24px;
+  height: 24px;
+}
+.footer-brand p {
+  margin-top: 4px;
+}
+.footer-col h4 {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text);
+  margin-bottom: 16px;
+  text-transform: lowercase;
+}
+.footer-col ul {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.footer-col a:hover {
+  color: var(--teal);
+}
+.footer-bottom {
+  display: flex;
+  justify-content: space-between;
+  padding-top: 24px;
+  border-top: 1px solid rgba(255,255,255,0.04);
+  max-width: 1280px;
+  margin: 0 auto;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+@media (max-width: 860px) {
+  .footer-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+@media (max-width: 560px) {
+  .footer-grid {
+    grid-template-columns: 1fr;
+  }
+}
+</style>
+<script src="../assets/js/learning-path.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const assessBtn = document.querySelector('.assess-btn');
+  const feedback = document.querySelector('.assessment-feedback');
+  const correctAnswers = { q1: 'b', q2: 'b', q3: 'b' };
+  const explanations = {
+    q1: 'n8n almacena credenciales en su BD encriptada (configurable con N8N_ENCRYPTION_KEY). El workflow JSON solo referencia el nombre/ID de la credencial, nunca el secret.',
+    q2: 'Error Trigger es un workflow separado que se ejecuta cuando otro workflow falla. Permite alertar (Slack, email), reintentar, o mover a dead letter queue.',
+    q3: 'n8n no tiene Git nativo. El patrón estándar: UI → Export → workflow.json → git add/commit. Para equipos: CI que valida JSON y hace deploy a instancia staging.'
+  };
+  if (assessBtn && feedback) {
+    assessBtn.addEventListener('click', () => {
+      const form = document.querySelector('.assessment-form');
+      const formData = new FormData(form);
+      let score = 0;
+      let html = '<h4>Resultados:</h4><ul>';
+      Object.keys(correctAnswers).forEach(q => {
+        const userAnswer = formData.get(q);
+        const isCorrect = userAnswer === correctAnswers[q];
+        if (isCorrect) score++;
+        html += `<li class="${isCorrect ? 'correct' : 'incorrect'}"><strong>${q.toUpperCase()}</strong>: ${isCorrect ? '✅ Correcta' : '❌ Incorrecta'} — ${explanations[q]}</li>`;
+      });
+      html += `</ul><p>Puntuación: ${score}/${Object.keys(correctAnswers).length}</p>`;
+      feedback.innerHTML = html;
+      feedback.classList.add('visible');
+      if (score === Object.keys(correctAnswers).length && window.LearningPath) {
+        window.LearningPath.markComplete('04');
+      }
+    });
+  }
+});
+</script>
+</body>
+</html>

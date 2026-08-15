@@ -1,0 +1,101 @@
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <svg class="brand-mark" viewBox="0 0 24 24" fill="none"><path d="M12 8c-3 0-5 2-5 5.5S9 20 12 20s5-3 5-6.5S15 8 12 8Z" stroke="#E8623D" stroke-width="1.6"/><path d="M7 10 4 6M17 10l3-4M7 12 3 11M17 12l4-1" stroke="#7FD9C4" stroke-width="1.6" stroke-linecap="round"/></svg>
+      <span>Little Crab Solutions</span>
+      <p class="mono">IT & automatización — Tocancipá, Colombia</p>
+    </div>
+    <div class="footer-col">
+      <h4>Servicios</h4>
+      <ul>
+        <li><a href="#services">Agentes de IA</a></li>
+        <li><a href="#services">Automatización n8n</a></li>
+        <li><a href="#services">Consultoría técnica</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Recursos</h4>
+      <ul>
+        <li><a href="learning-path-ia.html">Ruta IA — Learning Path</a></li>
+        <li><a href="#stack">Stack & herramientas</a></li>
+        <li><a href="#process">Cómo trabajamos</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Contacto</h4>
+      <ul>
+        <li><a href="mailto:contacto@littlecrabsolutions.com">contacto@littlecrabsolutions.com</a></li>
+        <li><a href="#contact">Agendar diagnóstico</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2026 Little Crab Solutions</span>
+    <span class="mono">Hecho con precisión de cangrejo</span>
+  </div>
+</footer>
+
+<style>
+footer {
+  padding: 48px 6vw 24px;
+  border-top: 1px solid rgba(255,255,255,0.06);
+  font-size: 13px;
+  color: var(--text-dim);
+}
+.footer-grid {
+  display: grid;
+  grid-template-columns: 1.5fr repeat(3, 1fr);
+  gap: 32px;
+  max-width: 1280px;
+  margin: 0 auto 32px;
+}
+.footer-brand {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.footer-brand .brand-mark {
+  width: 24px;
+  height: 24px;
+}
+.footer-brand p {
+  margin-top: 4px;
+}
+.footer-col h4 {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text);
+  margin-bottom: 16px;
+  text-transform: lowercase;
+}
+.footer-col ul {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.footer-col a:hover {
+  color: var(--teal);
+}
+.footer-bottom {
+  display: flex;
+  justify-content: space-between;
+  padding-top: 24px;
+  border-top: 1px solid rgba(255,255,255,0.04);
+  max-width: 1280px;
+  margin: 0 auto;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+@media (max-width: 860px) {
+  .footer-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+@media (max-width: 560px) {
+  .footer-grid {
+    grid-template-columns: 1fr;
+  }
+}
+</style>

@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Módulo 03: Primer Agente — Learning Path IA</title>
+<meta name="description" content="Módulo 3 del Learning Path IA: Construye tu primer agente con el pattern Prompt-to-Action usando OpenWebUI + n8n. Responde a lead-gen en WhatsApp.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/learning-path.css">
+</head>
+<body>
+<a href="#main" class="skip-link">Saltar al contenido principal</a>
+<div class="bg-glow"></div>
+<nav>
+  <div class="brand">
+    <svg class="brand-mark" viewBox="0 0 24 24" fill="none"><path d="M12 8c-3 0-5 2-5 5.5S9 20 12 20s5-3 5-6.5S15 8 12 8Z" stroke="#E8623D" stroke-width="1.6"/><path d="M7 10 4 6M17 10l3-4M7 12 3 11M17 12l4-1" stroke="#7FD9C4" stroke-width="1.6" stroke-linecap="round"/></svg>
+    Little Crab Solutions
+  </div>
+  <div class="links">
+    <a href="#services">Servicios</a>
+    <a href="#process">Proceso</a>
+    <a href="#stack">Stack</a>
+    <a href="learning-path-ia.html">Ruta IA</a>
+  </div>
+  <a href="#contact" class="nav-cta">Hablemos</a>
+</nav>
+
+<main id="main">
+  <header class="module-header reveal">
+    <div class="module-meta">
+      <span class="module-badge mono">Módulo 03 de 7</span>
+      <span class="module-duration mono">~12 h</span>
+    </div>
+    <h1 class="headline">Construcción de tu Primer Agente</h1>
+    <p class="sub">Pattern "Prompt-to-Action" con OpenWebUI + n8n. Agente que clasifica y responde leads de WhatsApp.</p>
+    <div class="module-progress">
+      <div class="progress-bar" role="progressbar" aria-valuenow="43" aria-valuemin="1" aria-valuemax="7" aria-label="Progreso del módulo">
+        <div class="progress-fill" style="width: calc(100% * 3 / 7);"></div>
+      </div>
+      <p class="progress-text mono">Paso 3 de 7</p>
+    </div>
+  </header>
+
+  <section id="objetivos" class="reveal">
+    <div class="section-head">
+      <div class="section-tag mono">// objetivos</div>
+      <h2>Qué vas a lograr</h2>
+    </div>
+    <ul class="objectives-list">
+      <li><strong>Diseñar system prompt</strong> para clasificación + respuesta automática</li>
+      <li><strong>Crear workflow n8n</strong> que reciba webhook de WhatsApp → LLM → respuesta</li>
+      <li><strong>Implementar pattern Prompt-to-Action</strong>: prompt estructurado → JSON → acción</li>
+      <li><strong>Manejar estado de conversación</strong> (memoria simple con ventana deslizante)</li>
+      <li><strong>Probar end-to-end</strong> con webhook real o simulado</li>
+    </ul>
+  </section>
+
+  <section id="teoria" class="reveal">
+    <div class="section-head">
+      <div class="section-tag mono">// teoría</div>
+      <h2>Conceptos clave</h2>
+    </div>
+    <article class="theory-content">
+      <h3>Pattern Prompt-to-Action</h3>
+      <p>El LLM no solo responde texto — devuelve <strong>JSON estructurado</strong> que el workflow n8n ejecuta como acción.</p>
+      <pre><code class="mono">// Output del LLM (forzado por system prompt)
+{
+  "accion": "responder_whatsapp",
+  "payload": { "mensaje": "¡Hola! Gracias por contactarnos..." },
+  "metadata": { "lead_score": 85, "categoria": "venta" }
+}</code></pre>
+      
+      <h3>System Prompt para Agente WhatsApp</h3>
+      <p>Claves: rol claro, categorías definidas, formato JSON estricto, ejemplos few-shot.</p>
+      
+      <h3>Memoria de conversación (ventana deslizante)</h3>
+      <p>n8n no tiene memoria nativa → guardamos últimos N mensajes en variable de workflow o Redis. Contexto: system prompt + últimos 5-10 intercambios.</p>
+      
+      <h3>WhatsApp Business API (visión general)</h3>
+      <p>Webhook recibe mensaje → n8n procesa → responde vía API. Para testing: <code>ngrok</code> + webhook local o sandbox de Meta.</p>
+    </article>
+  </section>
+
+  <section id="ejercicio" class="reveal">
+    <div class="section-head">
+      <div class="section-tag mono">// práctica</div>
+      <h2>Ejercicio guiado: Agente WhatsApp Lead-Gen</h2>
+      <p>Tiempo estimado: 2-3 horas. Nivel: Intermedio.</p>
+    </div>
+    <div class="exercise-wrapper">
+      <div class="exercise-meta">
+        <div class="exercise-prep">
+          <h4>Antes de empezar</h4>
+          <ul>
+            <li>Entorno M02 funcionando (n8n + Ollama + OpenWebUI)</li>
+            <li>Cuenta Meta Developer (para WhatsApp Business API) o usa webhook.test para simular</li>
+            <li>ngrok instalado (<code>ngrok http 5678</code>)</li>
+          </ul>
+        </div>
+      </div>
+      <ol class="exercise-steps">
+        <li>
+          <h4>Paso 1: Crear System Prompt en OpenWebUI</h4>
+          <p>En OpenWebUI → Configuración → Modelos → System Prompts → Nuevo:</p>
+          <div class="step-detail">
+            <pre><code class="mono">Eres un agente de calificación de leads para WhatsApp Business.
+Tu trabajo: analizar el mensaje entrante y devolver SOLO JSON válido.
+
+CATEGORÍAS:
+- "venta": Quiere comprar, pide precio, demo, info comercial
+- "soporte": Tiene problema técnico, error, duda de uso
+- "spam": Promociones, irrelevante, bots
+- "otro": No encaja arriba
+
+FORMATO DE SALIDA (OBLIGATORIO):
+{
+  "categoria": "venta|soporte|spam|otro",
+  "confianza": 0-100,
+  "respuesta_sugerida": "Texto listo para enviar al usuario",
+  "accion_requerida": "notificar_equipo|responder_auto|ignorar|escalar_humano",
+  "lead_score": 0-100,
+  "datos_extraidos": { "nombre": "", "empresa": "", "producto_interes": "" }
+}
+
+EJEMPLOS:
+Input: "Hola, vi su anuncio de agentes IA. Quiero saber precios para mi empresa de 50 personas."
+Output: { "categoria": "venta", "confianza": 95, "respuesta_sugerida": "¡Hola! Gracias por tu interés...", "accion_requerida": "notificar_equipo", "lead_score": 90, "datos_extraidos": { "empresa": "50 personas", "producto_interes": "agentes IA" } }
+
+Input: "La app me da error 500 al subir archivo"
+Output: { "categoria": "soporte", "confianza": 98, "respuesta_sugerida": "Disculpa el inconveniente...", "accion_requerida": "escalar_humano", "lead_score": 10, "datos_extraidos": {} }</code></pre>
+          </div>
+        </li>
+        <li>
+          <h4>Paso 2: Workflow n8n — Webhook WhatsApp</h4>
+          <p>En n8n, crea workflow "Agente WhatsApp Lead-Gen":</p>
+          <ol>
+            <li><strong>Webhook</strong> node: Path <code>/webhook/whatsapp</code>, Method POST</li>
+            <li><strong>Set</strong> node: Extraer <code>mensaje = {{ $json.body.message }}</code>, <code>telefono = {{ $json.body.from }}</code></li>
+            <li><strong>HTTP Request</strong> a Ollama (<code>http://ollama:11434/api/chat</code>):<br>
+              Body: system prompt (arriba) + user message en array messages</li>
+            <li><strong>Function</strong> node: Parsear JSON respuesta del LLM, validar esquema</li>
+            <li><strong>IF</strong> node: Ramificar por <code>accion_requerida</code></li>
+            <li><strong>HTTP Request</strong> (ramas): Responder WhatsApp API / Notificar Slack/Email / Log</li>
+          </ol>
+        </li>
+        <li>
+          <h4>Paso 3: Exponer webhook con ngrok</h4>
+          <div class="step-detail">
+            <pre><code class="mono">ngrok http 5678</code></pre>
+            <p class="step-note">Copia la URL HTTPS (ej. <code>https://abc123.ngrok-free.app/webhook/whatsapp</code>) y configúrala en Meta Developer Console o usa <code>webhook.site</code> para testing.</p>
+          </div>
+        </li>
+        <li>
+          <h4>Paso 4: Test end-to-end</h4>
+          <p>Envía POST al webhook:</p>
+          <div class="step-detail">
+            <pre><code class="mono">curl -X POST https://TU_NGROK.ngrok-free.app/webhook/whatsapp \
+  -H "Content-Type: application/json" \
+  -d '{"body": {"message": "Hola, quiero info de precios para 20 usuarios", "from": "573001234567"}}'</code></pre>
+          </div>
+          <p>Verifica en n8n: execution log → JSON parsed → respuesta enviada.</p>
+        </li>
+        <li>
+          <h4>Paso 5: Memoria simple (opcional, +30 min)</h4>
+          <p>En n8n, usa <strong>Workflow Static Data</strong> o variable global para guardar últimos 5 mensajes por <code>telefono</code>. Inclúyelos en el prompt como historial.</p>
+        </li>
+      </ol>
+      <div class="exercise-checkpoint">
+        <h4>✅ Checkpoint: ¿Todo listo?</h4>
+        <ul class="checklist">
+          <li><label><input type="checkbox" disabled> System prompt creado y probado en OpenWebUI</label></li>
+          <li><label><input type="checkbox" disabled> Workflow n8n recibe webhook → llama Ollama → parsea JSON</label></li>
+          <li><label><input type="checkbox" disabled> Clasificación correcta en 3/3 casos de prueba</label></li>
+          <li><label><input type="checkbox" disabled> Respuesta automática enviada (o loggeada)</label></li>
+          <li><label><input type="checkbox" disabled> Repo Git actualizado con workflow exportado (JSON)</label></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section id="recursos" class="reveal">
+    <div class="section-head">
+      <div class="section-tag mono">// recursos</div>
+      <h2>Recursos verificados</h2>
+      <p>Enlaces validados el <time datetime="2026-08-15">15 de agosto de 2026</time> (HTTP 200 OK).</p>
+    </div>
+    <ul class="resources-list">
+      <li><a href="https://docs.n8n.io/integrations/builtin/core-nodes/n8n-nodes-base.httprequest/" target="_blank" rel="noopener noreferrer"><strong>n8n HTTP Request Node</strong> — Llamadas API a Ollama</a><span class="resource-meta mono">Validado: 2026-08-15</span></li>
+      <li><a href="https://github.com/ollama/ollama/blob/main/docs/api.md#chat" target="_blank" rel="noopener noreferrer"><strong>Ollama Chat API</strong> — Formato request/response</a><span class="resource-meta mono">Validado: 2026-08-15</span></li>
+      <li><a href="https://developers.facebook.com/docs/whatsapp/cloud-api" target="_blank" rel="noopener noreferrer"><strong>WhatsApp Cloud API</strong> — Docs oficiales Meta</a><span class="resource-meta mono">Validado: 2026-08-15</span></li>
+      <li><a href="https://ngrok.com/docs" target="_blank" rel="noopener noreferrer"><strong>ngrok Docs</strong> — Túnel local a público</a><span class="resource-meta mono">Validado: 2026-08-15</span></li>
+    </ul>
+    <p class="resources-disclaimer mono">⚠️ Los enlaces externos pueden cambiar. Si encuentras uno roto, <a href="mailto:contacto@littlecrabsolutions.com?subject=Enlace roto Learning Path M03">repórtalo</a>.</p>
+  </section>
+
+  <section id="autoevaluacion" class="reveal">
+    <div class="section-head">
+      <div class="section-tag mono">// checkpoint</div>
+      <h2>Autoevaluación</h2>
+    </div>
+    <form class="assessment-form" aria-label="Autoevaluación del módulo 03">
+      <fieldset>
+        <legend>Pregunta 1: ¿Por qué el system prompt fuerza salida JSON estricta?</legend>
+        <div class="radio-group">
+          <label><input type="radio" name="q1" value="a"> Para que se vea bonito en logs</label>
+          <label><input type="radio" name="q1" value="b"> Para que n8n pueda parsear y ejecutar acciones programáticamente</label>
+          <label><input type="radio" name="q1" value="c"> Requisito de Ollama</label>
+        </div>
+      </fieldset>
+      <fieldset>
+        <legend>Pregunta 2: ¿Qué hace el nodo IF en el workflow?</legend>
+        <div class="radio-group">
+          <label><input type="radio" name="q2" value="a"> Filtra spam antes de llamar al LLM</label>
+          <label><input type="radio" name="q2" value="b"> Ramifica según accion_requerida (notificar, responder, escalar)</label>
+          <label><input type="radio" name="q2" value="c"> Valida que el JSON sea válido</label>
+        </div>
+      </fieldset>
+      <fieldset>
+        <legend>Pregunta 3: ¿Cómo se mantiene contexto de conversación en n8n?</legend>
+        <div class="radio-group">
+          <label><input type="radio" name="q3" value="a"> n8n lo hace automático</label>
+          <label><input type="radio" name="q3" value="b"> Guardando historial en variable/workflow static data e incluyéndolo en el prompt</label>
+          <label><input type="radio" name="q3" value="c"> Ollama recuerda todo por defecto</label>
+        </div>
+      </fieldset>
+      <button type="button" class="btn-primary assess-btn">Verificar respuestas</button>
+      <div class="assessment-feedback" aria-live="polite"></div>
+    </form>
+  </section>
+
+  <nav class="module-nav reveal" aria-label="Navegación entre módulos">
+    <div class="progress"><span class="mono">Módulo 03 de 7 completado</span></div>
+    <div class="nav-actions">
+      <a href="../modulo-02/modulo-02-stack-tecnico.html" class="nav-btn prev" data-module="02"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="15 18 9 12 15 6"></polyline></svg> Módulo anterior</a>
+      <a href="../learning-path-ia.html" class="nav-btn overview"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg> Volver al overview</a>
+      <a href="../modulo-04/modulo-04-automatizacion-n8n.html" class="nav-btn next" data-module="04">Siguiente módulo <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"></polyline></svg></a>
+    </div>
+  </nav>
+</main>
+
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <svg class="brand-mark" viewBox="0 0 24 24" fill="none"><path d="M12 8c-3 0-5 2-5 5.5S9 20 12 20s5-3 5-6.5S15 8 12 8Z" stroke="#E8623D" stroke-width="1.6"/><path d="M7 10 4 6M17 10l3-4M7 12 3 11M17 12l4-1" stroke="#7FD9C4" stroke-width="1.6" stroke-linecap="round"/></svg>
+      <span>Little Crab Solutions</span>
+      <p class="mono">IT & automatización — Tocancipá, Colombia</p>
+    </div>
+    <div class="footer-col">
+      <h4>Servicios</h4>
+      <ul>
+        <li><a href="#services">Agentes de IA</a></li>
+        <li><a href="#services">Automatización n8n</a></li>
+        <li><a href="#services">Consultoría técnica</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Recursos</h4>
+      <ul>
+        <li><a href="learning-path-ia.html">Ruta IA — Learning Path</a></li>
+        <li><a href="#stack">Stack & herramientas</a></li>
+        <li><a href="#process">Cómo trabajamos</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Contacto</h4>
+      <ul>
+        <li><a href="mailto:contacto@littlecrabsolutions.com">contacto@littlecrabsolutions.com</a></li>
+        <li><a href="#contact">Agendar diagnóstico</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2026 Little Crab Solutions</span>
+    <span class="mono">Hecho con precisión de cangrejo</span>
+  </div>
+</footer>
+
+<style>
+footer {
+  padding: 48px 6vw 24px;
+  border-top: 1px solid rgba(255,255,255,0.06);
+  font-size: 13px;
+  color: var(--text-dim);
+}
+.footer-grid {
+  display: grid;
+  grid-template-columns: 1.5fr repeat(3, 1fr);
+  gap: 32px;
+  max-width: 1280px;
+  margin: 0 auto 32px;
+}
+.footer-brand {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.footer-brand .brand-mark {
+  width: 24px;
+  height: 24px;
+}
+.footer-brand p {
+  margin-top: 4px;
+}
+.footer-col h4 {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text);
+  margin-bottom: 16px;
+  text-transform: lowercase;
+}
+.footer-col ul {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.footer-col a:hover {
+  color: var(--teal);
+}
+.footer-bottom {
+  display: flex;
+  justify-content: space-between;
+  padding-top: 24px;
+  border-top: 1px solid rgba(255,255,255,0.04);
+  max-width: 1280px;
+  margin: 0 auto;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+@media (max-width: 860px) {
+  .footer-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+@media (max-width: 560px) {
+  .footer-grid {
+    grid-template-columns: 1fr;
+  }
+}
+</style>
+
+<style>
+footer {
+  padding: 48px 6vw 24px;
+  border-top: 1px solid rgba(255,255,255,0.06);
+  font-size: 13px;
+  color: var(--text-dim);
+}
+.footer-grid {
+  display: grid;
+  grid-template-columns: 1.5fr repeat(3, 1fr);
+  gap: 32px;
+  max-width: 1280px;
+  margin: 0 auto 32px;
+}
+.footer-brand {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.footer-brand .brand-mark {
+  width: 24px;
+  height: 24px;
+}
+.footer-brand p {
+  margin-top: 4px;
+}
+.footer-col h4 {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text);
+  margin-bottom: 16px;
+  text-transform: lowercase;
+}
+.footer-col ul {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.footer-col a:hover {
+  color: var(--teal);
+}
+.footer-bottom {
+  display: flex;
+  justify-content: space-between;
+  padding-top: 24px;
+  border-top: 1px solid rgba(255,255,255,0.04);
+  max-width: 1280px;
+  margin: 0 auto;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+@media (max-width: 860px) {
+  .footer-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+@media (max-width: 560px) {
+  .footer-grid {
+    grid-template-columns: 1fr;
+  }
+}
+</style>
+
+<style>
+footer {
+  padding: 48px 6vw 24px;
+  border-top: 1px solid rgba(255,255,255,0.06);
+  font-size: 13px;
+  color: var(--text-dim);
+}
+.footer-grid {
+  display: grid;
+  grid-template-columns: 1.5fr repeat(3, 1fr);
+  gap: 32px;
+  max-width: 1280px;
+  margin: 0 auto 32px;
+}
+.footer-brand {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.footer-brand .brand-mark {
+  width: 24px;
+  height: 24px;
+}
+.footer-brand p {
+  margin-top: 4px;
+}
+.footer-col h4 {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text);
+  margin-bottom: 16px;
+  text-transform: lowercase;
+}
+.footer-col ul {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.footer-col a:hover {
+  color: var(--teal);
+}
+.footer-bottom {
+  display: flex;
+  justify-content: space-between;
+  padding-top: 24px;
+  border-top: 1px solid rgba(255,255,255,0.04);
+  max-width: 1280px;
+  margin: 0 auto;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+@media (max-width: 860px) {
+  .footer-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+@media (max-width: 560px) {
+  .footer-grid {
+    grid-template-columns: 1fr;
+  }
+}
+</style>
+<script src="../assets/js/learning-path.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const assessBtn = document.querySelector('.assess-btn');
+  const feedback = document.querySelector('.assessment-feedback');
+  const correctAnswers = { q1: 'b', q2: 'b', q3: 'b' };
+  const explanations = {
+    q1: 'El JSON estructurado permite a n8n extraer campos (categoria, accion_requerida, lead_score) y ramificar lógica sin procesamiento de texto libre.',
+    q2: 'El nodo IF ramifica el flujo según el valor de accion_requerida devuelto por el LLM: notificar_equipo, responder_auto, ignorar, escalar_humano.',
+    q3: 'n8n no tiene memoria conversacional nativa. Se guarda historial (últimos N mensajes) en Workflow Static Data o variable global por sesión/usuario y se inyecta en el prompt.'
+  };
+  if (assessBtn && feedback) {
+    assessBtn.addEventListener('click', () => {
+      const form = document.querySelector('.assessment-form');
+      const formData = new FormData(form);
+      let score = 0;
+      let html = '<h4>Resultados:</h4><ul>';
+      Object.keys(correctAnswers).forEach(q => {
+        const userAnswer = formData.get(q);
+        const isCorrect = userAnswer === correctAnswers[q];
+        if (isCorrect) score++;
+        html += `<li class="${isCorrect ? 'correct' : 'incorrect'}"><strong>${q.toUpperCase()}</strong>: ${isCorrect ? '✅ Correcta' : '❌ Incorrecta'} — ${explanations[q]}</li>`;
+      });
+      html += `</ul><p>Puntuación: ${score}/${Object.keys(correctAnswers).length}</p>`;
+      feedback.innerHTML = html;
+      feedback.classList.add('visible');
+      if (score === Object.keys(correctAnswers).length && window.LearningPath) {
+        window.LearningPath.markComplete('03');
+      }
+    });
+  }
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,794 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Little Crab Solutions — Automatización e IA para negocios</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #0A0F0D;
+    --bg-soft: #0F1613;
+    --panel: rgba(22, 48, 44, 0.45);
+    --panel-border: rgba(127, 217, 196, 0.14);
+    --text: #F2EFE6;
+    --text-dim: #8A9490;
+    --coral: #E8623D;
+    --coral-dim: rgba(232, 98, 61, 0.16);
+    --teal: #7FD9C4;
+    --teal-dim: rgba(127, 217, 196, 0.12);
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    overflow-x: hidden;
+    line-height: 1.6;
+  }
+  h1,h2,h3,.display{
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+  }
+  .mono{font-family:'JetBrains Mono', monospace; letter-spacing: 0.02em;}
+  a{color:inherit; text-decoration:none;}
+
+  .bg-glow{
+    position: fixed; inset: 0; z-index: -1;
+    background:
+      radial-gradient(ellipse 900px 500px at 15% -5%, rgba(232,98,61,0.10), transparent 60%),
+      radial-gradient(ellipse 700px 600px at 90% 20%, rgba(127,217,196,0.08), transparent 60%),
+      var(--bg);
+  }
+
+  nav{
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display:flex; align-items:center; justify-content:space-between;
+    padding: 22px 6vw;
+    backdrop-filter: blur(10px);
+    background: rgba(10,15,13,0.55);
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+  }
+  .brand{display:flex; align-items:center; gap:10px; font-size:15px; font-weight:500;}
+  .brand-mark{width:20px; height:20px; flex-shrink:0;}
+  nav .links{display:flex; gap:36px; font-size:14px; color:var(--text-dim);}
+  nav .links a:hover{color:var(--text);}
+  .nav-cta{
+    font-size:13px; padding:9px 18px; border:1px solid var(--panel-border);
+    border-radius:100px; color:var(--text);
+  }
+  .nav-cta:hover{background: var(--coral-dim); border-color: var(--coral);}
+
+  section{
+    min-height: 100vh;
+    display:flex; flex-direction:column; justify-content:center;
+    padding: 120px 6vw;
+    position: relative;
+  }
+
+  /* HERO */
+  #hero{padding-top:80px; align-items:flex-start;}
+  .hero-inner{
+    display:grid; grid-template-columns: 1.1fr 0.9fr; gap: 40px;
+    align-items:center; width:100%; max-width:1280px; margin:0 auto;
+  }
+  .eyebrow{
+    font-size:13px; color: var(--teal); margin-bottom:22px;
+    display:flex; align-items:center; gap:10px;
+  }
+  .eyebrow::before{content:''; width:6px; height:6px; border-radius:50%; background:var(--teal); box-shadow:0 0 8px var(--teal);}
+  h1.headline{
+    font-size: clamp(2.4rem, 5.2vw, 4.4rem);
+    line-height: 1.04;
+    margin-bottom: 26px;
+  }
+  h1.headline em{
+    font-style: normal; color: var(--coral);
+  }
+  .sub{
+    font-size: 17px; color: var(--text-dim); max-width: 480px; margin-bottom: 36px;
+  }
+  .hero-actions{display:flex; gap:14px; flex-wrap:wrap;}
+  .btn-primary{
+    background: var(--coral); color: #1A0A05; font-weight: 600; font-size:14px;
+    padding: 14px 26px; border-radius: 100px; display:inline-block;
+    transition: transform .2s ease, box-shadow .2s ease;
+  }
+  .btn-primary:hover{transform: translateY(-2px); box-shadow: 0 8px 24px rgba(232,98,61,0.3);}
+  .btn-ghost{
+    border: 1px solid var(--panel-border); font-size:14px; padding: 14px 26px;
+    border-radius: 100px; color: var(--text);
+  }
+  .btn-ghost:hover{border-color: var(--teal); color: var(--teal);}
+
+  .claw-stage{
+    position: relative; height: 440px; display:flex; align-items:center; justify-content:center;
+  }
+  .claw-svg{width: 100%; height: 100%; max-width: 420px; overflow: visible;}
+  .claw-top, .claw-bottom{transform-origin: 210px 120px; transition: transform 0.1s linear;}
+  .task-chip{
+    position:absolute; top: 44%; left: 50%; transform: translate(-50%,-50%);
+    display:flex; align-items:center; gap:8px;
+    background: rgba(15,22,19,0.9); border:1px solid var(--panel-border);
+    padding: 9px 16px; border-radius: 100px; font-size:12px;
+    opacity: 0; transition: opacity 0.4s ease;
+  }
+  .task-chip .dot{width:6px; height:6px; border-radius:50%; background: var(--teal);}
+
+  /* stat strip */
+  .stat-strip{
+    display:flex; gap:56px; margin-top:56px; padding-top:28px;
+    border-top: 1px solid rgba(255,255,255,0.06); max-width: 1280px; margin-left:auto; margin-right:auto; width:100%;
+  }
+  .stat-strip .stat b{display:block; font-family:'Space Grotesk'; font-size:26px; font-weight:500;}
+  .stat-strip .stat span{font-size:12.5px; color:var(--text-dim);}
+
+  /* SECTION HEADERS */
+  .section-head{max-width: 640px; margin-bottom: 64px;}
+  .section-tag{font-size:12.5px; color:var(--coral); margin-bottom:14px; text-transform: lowercase;}
+  .section-head h2{font-size: clamp(1.7rem, 3vw, 2.5rem); margin-bottom:14px;}
+  .section-head p{color:var(--text-dim); font-size:15.5px;}
+
+  .reveal{opacity:0; transform: translateY(28px); transition: opacity .7s ease, transform .7s ease;}
+  .reveal.in{opacity:1; transform: translateY(0);}
+
+  /* SERVICES */
+  #services{max-width:1280px; margin:0 auto; width:100%;}
+  .service-grid{display:grid; grid-template-columns: repeat(3, 1fr); gap:20px;}
+  .service-card{
+    background: var(--panel); border:1px solid var(--panel-border);
+    border-radius:18px; padding: 34px 28px; backdrop-filter: blur(14px);
+    transition: border-color .3s ease, transform .3s ease;
+  }
+  .service-card:hover{border-color: rgba(127,217,196,0.4); transform: translateY(-4px);}
+  .service-icon{
+    width:42px; height:42px; border-radius:12px; background: var(--teal-dim);
+    display:flex; align-items:center; justify-content:center; margin-bottom:22px;
+  }
+  .service-card h3{font-size:18px; margin-bottom:12px; font-weight:500;}
+  .service-card p{font-size:14.5px; color:var(--text-dim);}
+  .service-tags{display:flex; gap:8px; margin-top:20px; flex-wrap:wrap;}
+  .service-tags span{
+    font-size:11px; padding:5px 10px; border-radius:100px;
+    background: rgba(255,255,255,0.04); color: var(--text-dim);
+  }
+
+  /* PROCESS */
+  #process{max-width:1280px; margin:0 auto; width:100%;}
+  .process-list{display:flex; flex-direction:column;}
+  .process-row{
+    display:grid; grid-template-columns: 90px 1fr 1fr; gap: 30px;
+    padding: 34px 0; border-top: 1px solid rgba(255,255,255,0.07);
+    align-items:start;
+  }
+  .process-row:last-child{border-bottom: 1px solid rgba(255,255,255,0.07);}
+  .process-num{font-family:'JetBrains Mono'; font-size:13px; color: var(--coral); padding-top:4px;}
+  .process-row h3{font-size:19px; margin-bottom:8px;}
+  .process-row p{color:var(--text-dim); font-size:14.5px; max-width: 380px;}
+
+  /* STACK */
+  #stack{max-width:1280px; margin:0 auto; width:100%;}
+  .stack-cloud{display:flex; flex-wrap:wrap; gap:12px;}
+  .stack-pill{
+    font-family:'JetBrains Mono'; font-size:13px; padding: 11px 18px;
+    border:1px solid var(--panel-border); border-radius:10px; color:var(--text-dim);
+    transition: color .25s ease, border-color .25s ease;
+  }
+  .stack-pill:hover{color:var(--teal); border-color: var(--teal);}
+
+  /* CONTACT */
+  #contact{max-width: 900px; margin: 0 auto; text-align:center; align-items:center;}
+  #contact h2{font-size: clamp(2rem, 4.4vw, 3.4rem); margin-bottom:20px;}
+  #contact p{color:var(--text-dim); font-size:16px; margin-bottom:40px; max-width:520px;}
+  footer{
+    padding: 40px 6vw; display:flex; justify-content:space-between;
+    border-top:1px solid rgba(255,255,255,0.06); font-size:13px; color:var(--text-dim);
+    flex-wrap:wrap; gap:12px;
+  }
+
+  @media (max-width: 860px){
+    .hero-inner{grid-template-columns: 1fr;}
+    .claw-stage{height:280px; order:-1;}
+    .service-grid{grid-template-columns: 1fr;}
+    .process-row{grid-template-columns: 1fr; gap:10px;}
+    .stat-strip{gap:32px; flex-wrap:wrap;}
+    nav .links{display:none;}
+  }
+</style>
+</head>
+<body>
+
+<div class="bg-glow"></div>
+
+<nav>
+  <div class="brand">
+    <svg class="brand-mark" viewBox="0 0 24 24" fill="none"><path d="M12 8c-3 0-5 2-5 5.5S9 20 12 20s5-3 5-6.5S15 8 12 8Z" stroke="#E8623D" stroke-width="1.6"/><path d="M7 10 4 6M17 10l3-4M7 12 3 11M17 12l4-1" stroke="#7FD9C4" stroke-width="1.6" stroke-linecap="round"/></svg>
+    Little Crab Solutions
+  </div>
+  <div class="links">
+    <a href="#services">Servicios</a>
+    <a href="#process">Proceso</a>
+    <a href="#stack">Stack</a>
+    <a href="learning-path-ia.html">Ruta IA</a>
+  </div>
+  <a href="#contact" class="nav-cta">Hablemos</a>
+</nav>
+
+<section id="hero">
+  <div class="hero-inner">
+    <div>
+      <div class="eyebrow mono">TOCANCIPÁ, COLOMBIA — IT &amp; AUTOMATIZACIÓN</div>
+      <h1 class="headline">Agarramos el trabajo <em>repetitivo</em>. Usted suelta.</h1>
+      <p class="sub">Diseñamos agentes de IA y automatizaciones que hacen el trabajo pesado de su operación, con la misma precisión con la que un cangrejo no suelta lo que agarra.</p>
+      <div class="hero-actions">
+        <a href="#contact" class="btn-primary">Agendar diagnóstico</a>
+        <a href="#services" class="btn-ghost">Ver servicios</a>
+      </div>
+    </div>
+    <div class="claw-stage">
+      <svg class="claw-svg" viewBox="0 0 420 340">
+        <ellipse cx="210" cy="290" rx="120" ry="18" fill="rgba(0,0,0,0.3)"/>
+        <g class="claw-top" id="clawTop">
+          <path d="M120 90 Q150 40 220 55 Q280 68 300 120 Q260 100 220 100 Q170 98 140 130 Z" fill="#16302C" stroke="#7FD9C4" stroke-width="1.5" stroke-opacity="0.5"/>
+        </g>
+        <g class="claw-bottom" id="clawBottom">
+          <path d="M120 150 Q150 200 220 185 Q280 172 300 120 Q260 140 220 140 Q170 142 140 110 Z" fill="#1E3833" stroke="#E8623D" stroke-width="1.5" stroke-opacity="0.5"/>
+        </g>
+        <circle cx="210" cy="120" r="46" fill="none" stroke="rgba(127,217,196,0.15)" stroke-width="1" stroke-dasharray="3 5"/>
+      </svg>
+      <div class="task-chip" id="taskChip"><span class="dot"></span>Reporte semanal — automatizado</div>
+    </div>
+  </div>
+
+  <div class="stat-strip">
+    <div class="stat"><b>+40%</b><span>tiempo devuelto al equipo</span></div>
+    <div class="stat"><b>n8n</b><span>orquestación de flujos</span></div>
+    <div class="stat"><b>24/7</b><span>agentes en producción</span></div>
+  </div>
+</section>
+
+<section id="services">
+  <div class="section-head reveal">
+    <div class="section-tag mono">// servicios</div>
+    <h2>Tres formas de quitarle peso a su operación</h2>
+    <p>No vendemos software genérico. Construimos sobre lo que ya usa su equipo.</p>
+  </div>
+  <div class="service-grid">
+    <div class="service-card reveal">
+      <div class="service-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 2v4M12 18v4M4.9 4.9l2.8 2.8M16.3 16.3l2.8 2.8M2 12h4M18 12h4M4.9 19.1l2.8-2.8M16.3 7.7l2.8-2.8" stroke="#7FD9C4" stroke-width="1.6" stroke-linecap="round"/><circle cx="12" cy="12" r="3.5" stroke="#7FD9C4" stroke-width="1.6"/></svg></div>
+      <h3>Agentes de IA</h3>
+      <p>Ecosistemas de agentes que investigan, deciden y ejecutan tareas de negocio sin supervisión constante.</p>
+      <div class="service-tags"><span>Orquestación</span><span>RAG</span><span>Modelos locales + cloud</span></div>
+    </div>
+    <div class="service-card reveal">
+      <div class="service-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M4 7h16M4 12h10M4 17h13" stroke="#E8623D" stroke-width="1.6" stroke-linecap="round"/><circle cx="20" cy="7" r="1.6" fill="#E8623D"/><circle cx="17" cy="17" r="1.6" fill="#E8623D"/></svg></div>
+      <h3>Automatización n8n</h3>
+      <p>Flujos que conectan sus herramientas — CRM, hojas de cálculo, WhatsApp, correo — para que la información se mueva sola.</p>
+      <div class="service-tags"><span>Lead gen</span><span>Reportes</span><span>Integraciones</span></div>
+    </div>
+    <div class="service-card reveal">
+      <div class="service-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M9 3h6l1 4h4l-2 5 2 5h-4l-1 4H9l-1-4H4l2-5-2-5h4l1-4Z" stroke="#7FD9C4" stroke-width="1.5" stroke-linejoin="round"/></svg></div>
+      <h3>Consultoría técnica</h3>
+      <p>Diagnóstico de procesos y acompañamiento a equipos que necesitan claridad antes de automatizar.</p>
+      <div class="service-tags"><span>Auditoría</span><span>Roadmap</span><span>Capacitación</span></div>
+    </div>
+  </div>
+</section>
+
+<section id="process">
+  <div class="section-head reveal">
+    <div class="section-tag mono">// cómo trabajamos</div>
+    <h2>Tres pasos, sin vueltas</h2>
+  </div>
+  <div class="process-list">
+    <div class="process-row reveal">
+      <div class="process-num">01</div>
+      <h3>Diagnóstico</h3>
+      <p>Mapeamos su operación actual y detectamos dónde se está perdiendo tiempo o dinero en tareas manuales.</p>
+    </div>
+    <div class="process-row reveal">
+      <div class="process-num">02</div>
+      <h3>Construcción</h3>
+      <p>Diseñamos y probamos el flujo o agente en un entorno controlado, con su equipo validando cada paso.</p>
+    </div>
+    <div class="process-row reveal">
+      <div class="process-num">03</div>
+      <h3>Entrega y soporte</h3>
+      <p>Ponemos todo en producción y dejamos documentación clara para que su equipo pueda operarlo sin depender de nosotros.</p>
+    </div>
+  </div>
+</section>
+
+<section id="stack">
+  <div class="section-head reveal">
+    <div class="section-tag mono">// stack</div>
+    <h2>Herramientas que ya conocemos bien</h2>
+  </div>
+  <div class="stack-cloud reveal">
+    <div class="stack-pill">n8n</div>
+    <div class="stack-pill">Claude / Anthropic API</div>
+    <div class="stack-pill">Ollama</div>
+    <div class="stack-pill">Notion API</div>
+    <div class="stack-pill">Next.js</div>
+    <div class="stack-pill">Docker</div>
+    <div class="stack-pill">ComfyUI</div>
+    <div class="stack-pill">Google Workspace</div>
+    <div class="stack-pill">WhatsApp Business API</div>
+  </div>
+</section>
+
+<section id="contact">
+  <div class="reveal">
+    <div class="section-tag mono">// contacto</div>
+    <h2>¿Qué tarea quiere soltar primero?</h2>
+    <p>Escríbanos y agendamos una llamada corta de diagnóstico, sin costo, para ver si tiene sentido automatizar.</p>
+    <a href="mailto:contacto@littlecrabsolutions.com" class="btn-primary">Escribir a Little Crab Solutions</a>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <svg class="brand-mark" viewBox="0 0 24 24" fill="none"><path d="M12 8c-3 0-5 2-5 5.5S9 20 12 20s5-3 5-6.5S15 8 12 8Z" stroke="#E8623D" stroke-width="1.6"/><path d="M7 10 4 6M17 10l3-4M7 12 3 11M17 12l4-1" stroke="#7FD9C4" stroke-width="1.6" stroke-linecap="round"/></svg>
+      <span>Little Crab Solutions</span>
+      <p class="mono">IT & automatización — Tocancipá, Colombia</p>
+    </div>
+    <div class="footer-col">
+      <h4>Servicios</h4>
+      <ul>
+        <li><a href="#services">Agentes de IA</a></li>
+        <li><a href="#services">Automatización n8n</a></li>
+        <li><a href="#services">Consultoría técnica</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Recursos</h4>
+      <ul>
+        <li><a href="learning-path-ia.html">Ruta IA — Learning Path</a></li>
+        <li><a href="#stack">Stack & herramientas</a></li>
+        <li><a href="#process">Cómo trabajamos</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Contacto</h4>
+      <ul>
+        <li><a href="mailto:contacto@littlecrabsolutions.com">contacto@littlecrabsolutions.com</a></li>
+        <li><a href="#contact">Agendar diagnóstico</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2026 Little Crab Solutions</span>
+    <span class="mono">Hecho con precisión de cangrejo</span>
+  </div>
+</footer>
+
+<style>
+footer {
+  padding: 48px 6vw 24px;
+  border-top: 1px solid rgba(255,255,255,0.06);
+  font-size: 13px;
+  color: var(--text-dim);
+}
+.footer-grid {
+  display: grid;
+  grid-template-columns: 1.5fr repeat(3, 1fr);
+  gap: 32px;
+  max-width: 1280px;
+  margin: 0 auto 32px;
+}
+.footer-brand {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.footer-brand .brand-mark {
+  width: 24px;
+  height: 24px;
+}
+.footer-brand p {
+  margin-top: 4px;
+}
+.footer-col h4 {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text);
+  margin-bottom: 16px;
+  text-transform: lowercase;
+}
+.footer-col ul {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.footer-col a:hover {
+  color: var(--teal);
+}
+.footer-bottom {
+  display: flex;
+  justify-content: space-between;
+  padding-top: 24px;
+  border-top: 1px solid rgba(255,255,255,0.04);
+  max-width: 1280px;
+  margin: 0 auto;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+@media (max-width: 860px) {
+  .footer-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+@media (max-width: 560px) {
+  .footer-grid {
+    grid-template-columns: 1fr;
+  }
+}
+</style>
+
+<style>
+footer {
+  padding: 48px 6vw 24px;
+  border-top: 1px solid rgba(255,255,255,0.06);
+  font-size: 13px;
+  color: var(--text-dim);
+}
+.footer-grid {
+  display: grid;
+  grid-template-columns: 1.5fr repeat(3, 1fr);
+  gap: 32px;
+  max-width: 1280px;
+  margin: 0 auto 32px;
+}
+.footer-brand {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.footer-brand .brand-mark {
+  width: 24px;
+  height: 24px;
+}
+.footer-brand p {
+  margin-top: 4px;
+}
+.footer-col h4 {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text);
+  margin-bottom: 16px;
+  text-transform: lowercase;
+}
+.footer-col ul {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.footer-col a:hover {
+  color: var(--teal);
+}
+.footer-bottom {
+  display: flex;
+  justify-content: space-between;
+  padding-top: 24px;
+  border-top: 1px solid rgba(255,255,255,0.04);
+  max-width: 1280px;
+  margin: 0 auto;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+@media (max-width: 860px) {
+  .footer-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+@media (max-width: 560px) {
+  .footer-grid {
+    grid-template-columns: 1fr;
+  }
+}
+</style>
+
+<style>
+footer {
+  padding: 48px 6vw 24px;
+  border-top: 1px solid rgba(255,255,255,0.06);
+  font-size: 13px;
+  color: var(--text-dim);
+}
+.footer-grid {
+  display: grid;
+  grid-template-columns: 1.5fr repeat(3, 1fr);
+  gap: 32px;
+  max-width: 1280px;
+  margin: 0 auto 32px;
+}
+.footer-brand {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.footer-brand .brand-mark {
+  width: 24px;
+  height: 24px;
+}
+.footer-brand p {
+  margin-top: 4px;
+}
+.footer-col h4 {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text);
+  margin-bottom: 16px;
+  text-transform: lowercase;
+}
+.footer-col ul {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.footer-col a:hover {
+  color: var(--teal);
+}
+.footer-bottom {
+  display: flex;
+  justify-content: space-between;
+  padding-top: 24px;
+  border-top: 1px solid rgba(255,255,255,0.04);
+  max-width: 1280px;
+  margin: 0 auto;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+@media (max-width: 860px) {
+  .footer-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+@media (max-width: 560px) {
+  .footer-grid {
+    grid-template-columns: 1fr;
+  }
+}
+</style>
+
+<style>
+footer {
+  padding: 48px 6vw 24px;
+  border-top: 1px solid rgba(255,255,255,0.06);
+  font-size: 13px;
+  color: var(--text-dim);
+}
+.footer-grid {
+  display: grid;
+  grid-template-columns: 1.5fr repeat(3, 1fr);
+  gap: 32px;
+  max-width: 1280px;
+  margin: 0 auto 32px;
+}
+.footer-brand {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.footer-brand .brand-mark {
+  width: 24px;
+  height: 24px;
+}
+.footer-brand p {
+  margin-top: 4px;
+}
+.footer-col h4 {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text);
+  margin-bottom: 16px;
+  text-transform: lowercase;
+}
+.footer-col ul {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.footer-col a:hover {
+  color: var(--teal);
+}
+.footer-bottom {
+  display: flex;
+  justify-content: space-between;
+  padding-top: 24px;
+  border-top: 1px solid rgba(255,255,255,0.04);
+  max-width: 1280px;
+  margin: 0 auto;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+@media (max-width: 860px) {
+  .footer-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+@media (max-width: 560px) {
+  .footer-grid {
+    grid-template-columns: 1fr;
+  }
+}
+</style>
+
+<style>
+footer {
+  padding: 48px 6vw 24px;
+  border-top: 1px solid rgba(255,255,255,0.06);
+  font-size: 13px;
+  color: var(--text-dim);
+}
+.footer-grid {
+  display: grid;
+  grid-template-columns: 1.5fr repeat(3, 1fr);
+  gap: 32px;
+  max-width: 1280px;
+  margin: 0 auto 32px;
+}
+.footer-brand {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.footer-brand .brand-mark {
+  width: 24px;
+  height: 24px;
+}
+.footer-brand p {
+  margin-top: 4px;
+}
+.footer-col h4 {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text);
+  margin-bottom: 16px;
+  text-transform: lowercase;
+}
+.footer-col ul {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.footer-col a:hover {
+  color: var(--teal);
+}
+.footer-bottom {
+  display: flex;
+  justify-content: space-between;
+  padding-top: 24px;
+  border-top: 1px solid rgba(255,255,255,0.04);
+  max-width: 1280px;
+  margin: 0 auto;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+@media (max-width: 860px) {
+  .footer-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+@media (max-width: 560px) {
+  .footer-grid {
+    grid-template-columns: 1fr;
+  }
+}
+</style>
+
+<style>
+footer {
+  padding: 48px 6vw 24px;
+  border-top: 1px solid rgba(255,255,255,0.06);
+  font-size: 13px;
+  color: var(--text-dim);
+}
+.footer-grid {
+  display: grid;
+  grid-template-columns: 1.5fr repeat(3, 1fr);
+  gap: 32px;
+  max-width: 1280px;
+  margin: 0 auto 32px;
+}
+.footer-brand {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.footer-brand .brand-mark {
+  width: 24px;
+  height: 24px;
+}
+.footer-brand p {
+  margin-top: 4px;
+}
+.footer-col h4 {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text);
+  margin-bottom: 16px;
+  text-transform: lowercase;
+}
+.footer-col ul {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.footer-col a:hover {
+  color: var(--teal);
+}
+.footer-bottom {
+  display: flex;
+  justify-content: space-between;
+  padding-top: 24px;
+  border-top: 1px solid rgba(255,255,255,0.04);
+  max-width: 1280px;
+  margin: 0 auto;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+@media (max-width: 860px) {
+  .footer-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+@media (max-width: 560px) {
+  .footer-grid {
+    grid-template-columns: 1fr;
+  }
+}
+</style>
+
+<script>
+  // Scroll-reveal
+  const revealEls = document.querySelectorAll('.reveal');
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('in'); });
+  }, {threshold: 0.15});
+  revealEls.forEach(el => io.observe(el));
+
+  // Claw closes on scroll (hero only), then reveals task chip
+  const clawTop = document.getElementById('clawTop');
+  const clawBottom = document.getElementById('clawBottom');
+  const taskChip = document.getElementById('taskChip');
+  let clawState = 0;
+
+  function updateClaw(){
+    const heroHeight = window.innerHeight;
+    const progress = Math.min(Math.max(window.scrollY / (heroHeight * 0.6), 0), 1);
+    const angle = progress * 16;
+    clawTop.style.transform = `rotate(${angle}deg)`;
+    clawBottom.style.transform = `rotate(${-angle}deg)`;
+    taskChip.style.opacity = progress > 0.6 ? Math.min((progress - 0.6) / 0.4, 1) : 0;
+  }
+  window.addEventListener('scroll', updateClaw, {passive:true});
+  updateClaw();
+
+  // gentle idle claw pulse on load
+  window.addEventListener('load', () => {
+    clawTop.style.transition = 'transform 1.4s cubic-bezier(.2,.8,.2,1)';
+    clawBottom.style.transition = 'transform 1.4s cubic-bezier(.2,.8,.2,1)';
+    setTimeout(()=>{ updateClaw(); }, 50);
+  });
+</script>
+
+</body>
+</html>

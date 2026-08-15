@@ -1,0 +1,77 @@
+graph TD
+    %% Learning Path IA Architecture Diagram
+    
+    subgraph "Developer Machine"
+        A[Source Files\nlearning-path-ia.html\nlearning-path-ia/]
+        B[n8n Workflow\ndeploy-learning-path.json]
+        C[Build Script\nscripts/build-includes.js]
+        D[Video Source\nhyperframe script]
+    end
+    
+    subgraph "Build Pipeline"
+        E[n8n Execute\nbuild-includes.js]
+        F[Inject Nav/Footer\npartials/nav.html\npartials/footer.html]
+        G[Validate Links\nHTTP 200 check]
+        H[Optimize Assets\nimages, video]
+        I[Push to gh-pages]
+    end
+    
+    subgraph "Hosting: GitHub Pages"
+        J[GitHub Pages CDN\nHTTPS + Global CDN]
+        K[learning-path-ia.html\n/Landing]
+        L[learning-path-ia/\nmodulo-*.html]
+        M[assets/\ncss, js, video]
+    end
+    
+    subgraph "Video Generation"
+        N[Hyperframes API\ntext-to-video]
+        O[Deepgram TTS\nGloria Voice ES]
+        P[FFmpeg\nMerge + Subtitles]
+        Q[demo.mp4 + .vtt]
+    end
+    
+    subgraph "Main Site Integration"
+        R[little-crab-solutions.html]
+        S[Shared Nav/Footer\nvia build-includes]
+        T[Design System Tokens\nCSS Variables]
+    end
+    
+    subgraph "Observability"
+        U[Lighthouse CI\nPerf > 90, A11y > 95]
+        V[axe-core\nWCAG 2.1 AA]
+        W[Discord Webhook\nDeploy notification]
+    end
+    
+    A --> E
+    C --> E
+    E --> F
+    F --> G
+    G --> H
+    H --> I
+    I --> J
+    J --> K
+    J --> L
+    J --> M
+    
+    D --> N
+    N --> O
+    O --> P
+    P --> Q
+    Q --> M
+    
+    R --> S
+    A --> S
+    R --> T
+    A --> T
+    
+    K --> U
+    L --> U
+    K --> V
+    L --> V
+    I --> W
+    
+    style A fill:#16302C,stroke:#7FD9C4,stroke-width:2px,color:#F2EFE6
+    style J fill:#1E3833,stroke:#E8623D,stroke-width:2px,color:#F2EFE6
+    style N fill:#2D1B14,stroke:#E8623D,stroke-width:2px,color:#F2EFE6
+    style R fill:#16302C,stroke:#7FD9C4,stroke-width:2px,color:#F2EFE6
+    style U fill:#1E3833,stroke:#E8623D,stroke-width:2px,color:#F2EFE6

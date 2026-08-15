@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Módulo 05: Testing y Observabilidad — Learning Path IA</title>
+<meta name="description" content="Módulo 5 del Learning Path IA: Testing y observabilidad para agentes - LangSmith, Weights & Biases, métricas de latencia, costos, tasa de caída.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/learning-path.css">
+</head>
+<body>
+<a href="#main" class="skip-link">Saltar al contenido principal</a>
+<div class="bg-glow"></div>
+<nav>
+  <div class="brand">
+    <svg class="brand-mark" viewBox="0 0 24 24" fill="none"><path d="M12 8c-3 0-5 2-5 5.5S9 20 12 20s5-3 5-6.5S15 8 12 8Z" stroke="#E8623D" stroke-width="1.6"/><path d="M7 10 4 6M17 10l3-4M7 12 3 11M17 12l4-1" stroke="#7FD9C4" stroke-width="1.6" stroke-linecap="round"/></svg>
+    Little Crab Solutions
+  </div>
+  <div class="links">
+    <a href="#services">Servicios</a>
+    <a href="#process">Proceso</a>
+    <a href="#stack">Stack</a>
+    <a href="learning-path-ia.html">Ruta IA</a>
+  </div>
+  <a href="#contact" class="nav-cta">Hablemos</a>
+</nav>
+
+<main id="main">
+  <header class="module-header reveal">
+    <div class="module-meta">
+      <span class="module-badge mono">Módulo 05 de 7</span>
+      <span class="module-duration mono">~6 h</span>
+    </div>
+    <h1 class="headline">Testing y Observabilidad</h1>
+    <p class="sub">Integra LangSmith o Weights & Biases para monitorear latencia, costos y tasa de caída de tus agentes. Alertas y dashboards operativos.</p>
+    <div class="module-progress">
+      <div class="progress-bar" role="progressbar" aria-valuenow="71" aria-valuemin="1" aria-valuemax="7" aria-label="Progreso del módulo">
+        <div class="progress-fill" style="width: calc(100% * 5 / 7);"></div>
+      </div>
+      <p class="progress-text mono">Paso 5 de 7</p>
+    </div>
+  </header>
+
+  <section id="objetivos" class="reveal">
+    <div class="section-head">
+      <div class="section-tag mono">// objetivos</div>
+      <h2>Qué vas a lograr</h2>
+    </div>
+    <ul class="objectives-list">
+      <li><strong>Configurar LangSmith</strong> (o W&B) para trazar ejecuciones de agentes</li>
+      <li><strong>Instrumentar workflows n8n</strong> con callbacks de observabilidad</li>
+      <li><strong>Definir métricas clave:</strong> latencia P50/P95, costo por ejecución, error rate, token usage</li>
+      <li><strong>Crear dashboards</strong> operativos y alertas (Slack/Email) umbrales</li>
+      <li><strong>Ejecutar tests de regresión</strong> sobre prompts y flujos críticos</li>
+    </ul>
+  </section>
+
+  <section id="teoria" class="reveal">
+    <div class="section-head">
+      <div class="section-tag mono">// teoría</div>
+      <h2>Conceptos clave</h2>
+    </div>
+    <article class="theory-content">
+      <h3>¿Por qué observabilidad en agentes?</h3>
+      <p>Los agentes son sistemas no deterministas. Sin visibilidad: no sabes si fallan, cuánto cuestan, ni por qué alucinan. Observabilidad = confianza para poner en producción.</p>
+      
+      <h3>LangSmith vs Weights & Biases</h3>
+      <table style="width:100%; border-collapse:collapse; margin:16px 0; font-size:14px;">
+        <thead><tr style="border-bottom:1px solid var(--panel-border);"><th style="text-align:left; padding:8px;">Aspecto</th><th style="text-align:left; padding:8px;">LangSmith</th><th style="text-align:left; padding:8px;">Weights & Biases</th></tr></thead>
+        <tbody>
+          <tr style="border-bottom:1px solid var(--panel-border);"><td style="padding:8px;">Foco</td><td style="padding:8px;">LLM apps, chains, agents</td><td style="padding:8px;">ML experiments, models, data</td></tr>
+          <tr style="border-bottom:1px solid var(--panel-border);"><td style="padding:8px;">Integración n8n</td><td style="padding:8px;">HTTP callbacks, SDK</td><td style="padding:8px;">HTTP callbacks, SDK</td></tr>
+          <tr style="border-bottom:1px solid var(--panel-border);"><td style="padding:8px;">Precio</td><td style="padding:8px;">Free tier generoso, pay per seat</td><td style="padding:8px;">Free tier, pay per seat</td></tr>
+          <tr style="border-bottom:1px solid var(--panel-border);"><td style="padding:8px;">Dataset/Eval</td><td style="padding:8px;">Sí (datasets, evaluators)</td><td style="padding:8px;">Sí (tables, evaluations)</td></tr>
+        </tbody>
+      </table>
+      
+      <h3>Métricas obligatorias (Golden Signals para agentes)</h3>
+      <ul>
+        <li><strong>Latencia:</strong> P50, P95, P99 end-to-end (webhook → respuesta)</li>
+        <li><strong>Costo:</strong> USD por ejecución (input/output tokens × precio modelo)</li>
+        <li><strong>Tasa de error:</strong> % ejecuciones con error / timeout / alucinación detectada</li>
+        <li><strong>Token usage:</strong> input + output por llamada, tendencia temporal</li>
+        <li><strong>Calidad:</strong> Evaluadores automáticos (correctitud, tono, formato JSON válido)</li>
+      </ul>
+      
+      <h3>Trazas (Traces) en LangSmith</h3>
+      <p>Una traza = una ejecución completa. Contiene: spans (pasos), inputs/outputs, latencia, tokens, errores, metadata (usuario, sesión, versión prompt).</p>
+    </article>
+  </section>
+
+  <section id="ejercicio" class="reveal">
+    <div class="section-head">
+      <div class="section-tag mono">// práctica</div>
+      <h2>Ejercicio guiado: Observabilidad end-to-end con LangSmith</h2>
+      <p>Tiempo estimado: 90-120 min. Nivel: Intermedio.</p>
+    </div>
+    <div class="exercise-wrapper">
+      <div class="exercise-meta">
+        <div class="exercise-prep">
+          <h4>Antes de empezar</h4>
+          <ul>
+            <li>Cuenta LangSmith (smith.langchain.com) o W&B (wandb.ai)</li>
+            <li>API Key generada</li>
+            <li>Workflow M03 o M04 funcionando para instrumentar</li>
+            <li>Variable de entorno <code>LANGCHAIN_API_KEY</code> en n8n</li>
+          </ul>
+        </div>
+      </div>
+      <ol class="exercise-steps">
+        <li>
+          <h4>Paso 1: Configurar LangSmith en n8n</h4>
+          <p>En Docker Compose (M02), añade a servicio n8n:</p>
+          <div class="step-detail">
+            <pre><code class="mono">environment:
+  - LANGCHAIN_TRACING_V2=true
+  - LANGCHAIN_API_KEY=${LANGCHAIN_API_KEY}
+  - LANGCHAIN_PROJECT=learning-path-agents
+  - LANGCHAIN_ENDPOINT=https://api.smith.langchain.com</code></pre>
+          </div>
+          <p>Reinicia: <code>docker compose up -d --force-recreate n8n</code></p>
+        </li>
+        <li>
+          <h4>Paso 2: Instrumentar llamada a Ollama</h4>
+          <p>En el workflow del agente (M03), el nodo HTTP Request a Ollama ya genera trazas automáticas si LangSmith detecta patrón OpenAI-compatible.</p>
+          <p>Para trazas custom, usa Function node que llama a <code>fetch('https://api.smith.langchain.com/v1/runs', ...)</code> o SDK si migras a código.</p>
+        </li>
+        <li>
+          <h4>Paso 3: Ver trazas en LangSmith UI</h4>
+          <p>Ejecuta el agente 3-5 veces → ve a <code>smith.langchain.com</code> → Projects → learning-path-agents.</p>
+          <p>Verifica: spans por nodo, latencia total, tokens, input/output de cada paso.</p>
+        </li>
+        <li>
+          <h4>Paso 4: Crear Dataset de evaluación</h4>
+          <p>En LangSmith: Datasets → New → "whatsapp-leads-test".</p>
+          <p>Añade 10 ejemplos: input (mensaje) + expected output (categoria, lead_score rango).</p>
+        </li>
+        <li>
+          <h4>Paso 5: Ejecutar Evaluación (Evaluation)</h4>
+          <p>LangSmith → Evaluations → New → selecciona dataset + tu agente (via API/webhook).</p>
+          <p>Evaluadores: "Exact match" para categoria, "Score range" para lead_score, "JSON valid" para formato.</p>
+        </li>
+        <li>
+          <h4>Paso 6: Alertas y Dashboard</h4>
+          <p>En LangSmith: Monitors → New Monitor:</p>
+          <ul>
+            <li>Métrica: <code>latency_p95 > 10s</code> → Alert to Slack webhook</li>
+            <li>Métrica: <code>error_rate > 5%</code> → Alert to Slack</li>
+            <li>Métrica: <code>cost_per_run > $0.10</code> → Alert to Email</li>
+          </ul>
+        </li>
+      </ol>
+      <div class="exercise-checkpoint">
+        <h4>✅ Checkpoint: ¿Todo listo?</h4>
+        <ul class="checklist">
+          <li><label><input type="checkbox" disabled> Trazas visibles en LangSmith tras ejecutar agente</label></li>
+          <li><label><input type="checkbox" disabled> Dataset creado con 10+ ejemplos representativos</label></li>
+          <li><label><input type="checkbox" disabled> Evaluación ejecutada y score > 80%</label></li>
+          <li><label><input type="checkbox" disabled> 2+ alertas configuradas (latencia, error rate, costo)</label></li>
+          <li><label><input type="checkbox" disabled> Dashboard compartido con equipo (read-only link)</label></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section id="recursos" class="reveal">
+    <div class="section-head">
+      <div class="section-tag mono">// recursos</div>
+      <h2>Recursos verificados</h2>
+      <p>Enlaces validados el <time datetime="2026-08-15">15 de agosto de 2026</time> (HTTP 200 OK).</p>
+    </div>
+    <ul class="resources-list">
+      <li><a href="https://docs.smith.langchain.com/" target="_blank" rel="noopener noreferrer"><strong>LangSmith Documentation</strong> — Tracing, evaluation, monitoring</a><span class="resource-meta mono">Validado: 2026-08-15</span></li>
+      <li><a href="https://docs.wandb.ai/" target="_blank" rel="noopener noreferrer"><strong>Weights & Biases Docs</strong> — Alternative para observabilidad</a><span class="resource-meta mono">Validado: 2026-08-15</span></li>
+      <li><a href="https://docs.smith.langchain.com/evaluation" target="_blank" rel="noopener noreferrer"><strong>LangSmith Evaluation</strong> — Datasets, evaluators, CI integration</a><span class="resource-meta mono">Validado: 2026-08-15</span></li>
+      <li><a href="https://docs.smith.langchain.com/monitoring" target="_blank" rel="noopener noreferrer"><strong>LangSmith Monitoring</strong> — Alerts, dashboards, SLOs</a><span class="resource-meta mono">Validado: 2026-08-15</span></li>
+    </ul>
+    <p class="resources-disclaimer mono">⚠️ Los enlaces externos pueden cambiar. Si encuentras uno roto, <a href="mailto:contacto@littlecrabsolutions.com?subject=Enlace roto Learning Path M05">repórtalo</a>.</p>
+  </section>
+
+  <section id="autoevaluacion" class="reveal">
+    <div class="section-head">
+      <div class="section-tag mono">// checkpoint</div>
+      <h2>Autoevaluación</h2>
+    </div>
+    <form class="assessment-form" aria-label="Autoevaluación del módulo 05">
+      <fieldset>
+        <legend>Pregunta 1: ¿Qué son los "Golden Signals" para observabilidad de agentes?</legend>
+        <div class="radio-group">
+          <label><input type="radio" name="q1" value="a"> Latencia, tráfico, errores, saturación (infra tradicional)</label>
+          <label><input type="radio" name="q1" value="b"> Latencia P50/P95, costo/ejecución, error rate, token usage, calidad</label>
+          <label><input type="radio" name="q1" value="c"> CPU, RAM, disco, red del servidor</label>
+        </div>
+      </fieldset>
+      <fieldset>
+        <legend>Pregunta 2: En LangSmith, ¿qué es un "Dataset"?</legend>
+        <div class="radio-group">
+          <label><input type="radio" name="q2" value="a"> Colección de traces de producción</label>
+          <label><input type="radio" name="q2" value="b"> Conjunto de ejemplos input/expected-output para evaluar el agente</label>
+          <label><input type="radio" name="q2" value="c"> Base de datos de embeddings para RAG</label>
+        </div>
+      </fieldset>
+      <fieldset>
+        <legend>Pregunta 3: ¿Cómo se integra LangSmith con n8n (self-hosted Docker)?</legend>
+        <div class="radio-group">
+          <label><input type="radio" name="q3" value="a"> Instalando plugin n8n-langsmith desde npm</label>
+          <label><input type="radio" name="q3" value="b"> Variables de entorno LANGCHAIN_* en el contenedor n8n</label>
+          <label><input type="radio" name="q3" value="c"> Configurando webhook en n8n que apunte a LangSmith</label>
+        </div>
+      </fieldset>
+      <button type="button" class="btn-primary assess-btn">Verificar respuestas</button>
+      <div class="assessment-feedback" aria-live="polite"></div>
+    </form>
+  </section>
+
+  <nav class="module-nav reveal" aria-label="Navegación entre módulos">
+    <div class="progress"><span class="mono">Módulo 05 de 7 completado</span></div>
+    <div class="nav-actions">
+      <a href="../modulo-04/modulo-04-automatizacion-n8n.html" class="nav-btn prev" data-module="04"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="15 18 9 12 15 6"></polyline></svg> Módulo anterior</a>
+      <a href="../learning-path-ia.html" class="nav-btn overview"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg> Volver al overview</a>
+      <a href="../modulo-06/modulo-06-despliegue-escalado.html" class="nav-btn next" data-module="06">Siguiente módulo <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"></polyline></svg></a>
+    </div>
+  </nav>
+</main>
+
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <svg class="brand-mark" viewBox="0 0 24 24" fill="none"><path d="M12 8c-3 0-5 2-5 5.5S9 20 12 20s5-3 5-6.5S15 8 12 8Z" stroke="#E8623D" stroke-width="1.6"/><path d="M7 10 4 6M17 10l3-4M7 12 3 11M17 12l4-1" stroke="#7FD9C4" stroke-width="1.6" stroke-linecap="round"/></svg>
+      <span>Little Crab Solutions</span>
+      <p class="mono">IT & automatización — Tocancipá, Colombia</p>
+    </div>
+    <div class="footer-col">
+      <h4>Servicios</h4>
+      <ul>
+        <li><a href="#services">Agentes de IA</a></li>
+        <li><a href="#services">Automatización n8n</a></li>
+        <li><a href="#services">Consultoría técnica</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Recursos</h4>
+      <ul>
+        <li><a href="learning-path-ia.html">Ruta IA — Learning Path</a></li>
+        <li><a href="#stack">Stack & herramientas</a></li>
+        <li><a href="#process">Cómo trabajamos</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Contacto</h4>
+      <ul>
+        <li><a href="mailto:contacto@littlecrabsolutions.com">contacto@littlecrabsolutions.com</a></li>
+        <li><a href="#contact">Agendar diagnóstico</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2026 Little Crab Solutions</span>
+    <span class="mono">Hecho con precisión de cangrejo</span>
+  </div>
+</footer>
+
+<style>
+footer {
+  padding: 48px 6vw 24px;
+  border-top: 1px solid rgba(255,255,255,0.06);
+  font-size: 13px;
+  color: var(--text-dim);
+}
+.footer-grid {
+  display: grid;
+  grid-template-columns: 1.5fr repeat(3, 1fr);
+  gap: 32px;
+  max-width: 1280px;
+  margin: 0 auto 32px;
+}
+.footer-brand {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.footer-brand .brand-mark {
+  width: 24px;
+  height: 24px;
+}
+.footer-brand p {
+  margin-top: 4px;
+}
+.footer-col h4 {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text);
+  margin-bottom: 16px;
+  text-transform: lowercase;
+}
+.footer-col ul {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.footer-col a:hover {
+  color: var(--teal);
+}
+.footer-bottom {
+  display: flex;
+  justify-content: space-between;
+  padding-top: 24px;
+  border-top: 1px solid rgba(255,255,255,0.04);
+  max-width: 1280px;
+  margin: 0 auto;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+@media (max-width: 860px) {
+  .footer-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+@media (max-width: 560px) {
+  .footer-grid {
+    grid-template-columns: 1fr;
+  }
+}
+</style>
+
+<style>
+footer {
+  padding: 48px 6vw 24px;
+  border-top: 1px solid rgba(255,255,255,0.06);
+  font-size: 13px;
+  color: var(--text-dim);
+}
+.footer-grid {
+  display: grid;
+  grid-template-columns: 1.5fr repeat(3, 1fr);
+  gap: 32px;
+  max-width: 1280px;
+  margin: 0 auto 32px;
+}
+.footer-brand {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.footer-brand .brand-mark {
+  width: 24px;
+  height: 24px;
+}
+.footer-brand p {
+  margin-top: 4px;
+}
+.footer-col h4 {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text);
+  margin-bottom: 16px;
+  text-transform: lowercase;
+}
+.footer-col ul {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.footer-col a:hover {
+  color: var(--teal);
+}
+.footer-bottom {
+  display: flex;
+  justify-content: space-between;
+  padding-top: 24px;
+  border-top: 1px solid rgba(255,255,255,0.04);
+  max-width: 1280px;
+  margin: 0 auto;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+@media (max-width: 860px) {
+  .footer-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+@media (max-width: 560px) {
+  .footer-grid {
+    grid-template-columns: 1fr;
+  }
+}
+</style>
+
+<style>
+footer {
+  padding: 48px 6vw 24px;
+  border-top: 1px solid rgba(255,255,255,0.06);
+  font-size: 13px;
+  color: var(--text-dim);
+}
+.footer-grid {
+  display: grid;
+  grid-template-columns: 1.5fr repeat(3, 1fr);
+  gap: 32px;
+  max-width: 1280px;
+  margin: 0 auto 32px;
+}
+.footer-brand {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.footer-brand .brand-mark {
+  width: 24px;
+  height: 24px;
+}
+.footer-brand p {
+  margin-top: 4px;
+}
+.footer-col h4 {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text);
+  margin-bottom: 16px;
+  text-transform: lowercase;
+}
+.footer-col ul {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.footer-col a:hover {
+  color: var(--teal);
+}
+.footer-bottom {
+  display: flex;
+  justify-content: space-between;
+  padding-top: 24px;
+  border-top: 1px solid rgba(255,255,255,0.04);
+  max-width: 1280px;
+  margin: 0 auto;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+@media (max-width: 860px) {
+  .footer-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+@media (max-width: 560px) {
+  .footer-grid {
+    grid-template-columns: 1fr;
+  }
+}
+</style>
+<script src="../assets/js/learning-path.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const assessBtn = document.querySelector('.assess-btn');
+  const feedback = document.querySelector('.assessment-feedback');
+  const correctAnswers = { q1: 'b', q2: 'b', q3: 'b' };
+  const explanations = {
+    q1: 'Para agentes LLM, las métricas clave son latencia (P50/P95), costo por ejecución (tokens × precio), tasa de error, uso de tokens y calidad (evaluadores automáticos).',
+    q2: 'Un Dataset en LangSmith es una colección curada de pares input/expected-output que sirve como ground truth para ejecutar evaluaciones automatizadas del agente.',
+    q3: 'LangSmith se integra con n8n self-hosted vía variables de entorno estándar (LANGCHAIN_TRACING_V2, LANGCHAIN_API_KEY, LANGCHAIN_PROJECT) en el contenedor Docker.'
+  };
+  if (assessBtn && feedback) {
+    assessBtn.addEventListener('click', () => {
+      const form = document.query('.assessment-form');
+      const formData = new FormData(form);
+      let score = 0;
+      let html = '<h4>Resultados:</h4><ul>';
+      Object.keys(correctAnswers).forEach(q => {
+        const userAnswer = formData.get(q);
+        const isCorrect = userAnswer === correctAnswers[q];
+        if (isCorrect) score++;
+        html += `<li class="${isCorrect ? 'correct' : 'incorrect'}"><strong>${q.toUpperCase()}</strong>: ${isCorrect ? '✅ Correcta' : '❌ Incorrecta'} — ${explanations[q]}</li>`;
+      });
+      html += `</ul><p>Puntuación: ${score}/${Object.keys(correctAnswers).length}</p>`;
+      feedback.innerHTML = html;
+      feedback.classList.add('visible');
+      if (score === Object.keys(correctAnswers).length && window.LearningPath) {
+        window.LearningPath.markComplete('05');
+      }
+    });
+  }
+});
+</script>
+</body>
+</html>

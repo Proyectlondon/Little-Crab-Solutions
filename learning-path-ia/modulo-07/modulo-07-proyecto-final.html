@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Módulo 07: Proyecto Final — Learning Path IA</title>
+<meta name="description" content="Módulo 7 del Learning Path IA: Proyecto final integrador - Agente de Intake (formulario → plan → Notion → Discord + Gloria TTS). Entregas: video demo + documentación.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/learning-path.css">
+</head>
+<body>
+<a href="#main" class="skip-link">Saltar al contenido principal</a>
+<div class="bg-glow"></div>
+<nav>
+  <div class="brand">
+    <svg class="brand-mark" viewBox="0 0 24 24" fill="none"><path d="M12 8c-3 0-5 2-5 5.5S9 20 12 20s5-3 5-6.5S15 8 12 8Z" stroke="#E8623D" stroke-width="1.6"/><path d="M7 10 4 6M17 10l3-4M7 12 3 11M17 12l4-1" stroke="#7FD9C4" stroke-width="1.6" stroke-linecap="round"/></svg>
+    Little Crab Solutions
+  </div>
+  <div class="links">
+    <a href="#services">Servicios</a>
+    <a href="#process">Proceso</a>
+    <a href="#stack">Stack</a>
+    <a href="learning-path-ia.html">Ruta IA</a>
+  </div>
+  <a href="#contact" class="nav-cta">Hablemos</a>
+</nav>
+
+<main id="main">
+  <header class="module-header reveal">
+    <div class="module-meta">
+      <span class="module-badge mono">Módulo 07 de 7</span>
+      <span class="module-duration mono">Proyecto final</span>
+    </div>
+    <h1 class="headline">Proyecto Final: Agente de Intake</h1>
+    <p class="sub">Integra todo: formulario → agente genera plan de proyecto → crea tickets en Notion → notifica en Discord con voz de Gloria (Deepgram). Entregas: video demo vertical + docs en Notion.</p>
+    <div class="module-progress">
+      <div class="progress-bar" role="progressbar" aria-valuenow="100" aria-valuemin="1" aria-valuemax="7" aria-label="Progreso del módulo">
+        <div class="progress-fill" style="width: 100%;"></div>
+      </div>
+      <p class="progress-text mono">Paso 7 de 7 — ¡Completado!</p>
+    </div>
+  </header>
+
+  <section id="objetivos" class="reveal">
+    <div class="section-head">
+      <div class="section-tag mono">// objetivos</div>
+      <h2>Qué vas a entregar</h2>
+    </div>
+    <ul class="objectives-list">
+      <li><strong>Workflow n8n completo</strong> integrando M01-M06 (Forms → LLM → Notion → Discord + TTS)</li>
+      <li><strong>Video demo vertical (60s)</strong> generado con Hyperframes + Gloria TTS</li>
+      <li><strong>Documentación en Notion</strong> con arquitectura, prompts, credenciales, runbook</li>
+      <li><strong>Repo Git</strong> con docker-compose, workflows, prompts, scripts versionados</li>
+      <li><strong>Deploy en producción</strong> (Railway/Render) funcionando end-to-end</li>
+    </ul>
+  </section>
+
+  <section id="teoria" class="reveal">
+    <div class="section-head">
+      <div class="section-tag mono">// arquitectura</div>
+      <h2>Arquitectura del Agente de Intake</h2>
+    </div>
+    <article class="theory-content">
+      <h3>Flujo completo</h3>
+      <pre><code class="mono">┌─────────────┐     ┌─────────────┐     ┌─────────────┐     ┌─────────────┐     ┌─────────────┐
+│  Google     │────▶│   n8n       │────▶│   Ollama    │────▶│   Notion    │────▶│  Discord    │
+│  Forms      │     │  (Orquest.) │     │  (LLM)      │     │  (Tickets)  │     │  + Gloria   │
+└─────────────┘     └─────────────┘     └─────────────┘     └─────────────┘     └─────────────┘
+       │                   │                   │                   │                   │
+  Brief del         Clasifica +        Genera plan          Crea página +        Notifica con
+  cliente           enriquece          estructurado         tasks + DB           audio (TTS)
+</code></pre>
+      
+      <h3>Componentes por módulo</h3>
+      <ul>
+        <li><strong>M01 Fundamentos:</strong> System prompt diseño, few-shot examples, temperatura 0.3</li>
+        <li><strong>M02 Stack:</strong> docker-compose.prod.yml, Ollama + n8n + OpenWebUI en Railway</li>
+        <li><strong>M03 Primer Agente:</strong> Pattern Prompt-to-Action, JSON output, webhook receiver</li>
+        <li><strong>M04 Automatización:</strong> Notion API (crear página, database), Discord webhook, error handling</li>
+        <li><strong>M05 Observabilidad:</strong> LangSmith tracing en cada paso, alertas latencia/costo/error</li>
+        <li><strong>M06 Despliegue:</strong> Dominio custom, SSL, secrets en Railway, healthchecks, TTS endpoint</li>
+      </ul>
+      
+      <h3>System Prompt del Agente Intake</h3>
+      <pre><code class="mono">Eres un consultor senior de automatización IA. Recibes brief de cliente y generas plan de proyecto.
+
+ENTRADA (JSON):
+{
+  "nombre": "", "empresa": "", "email": "",
+  "problema": "", "objetivo": "", "stack_actual": "",
+  "presupuesto_estimado": "", "timeline": "", "contacto_preferido": ""
+}
+
+SALIDA (JSON ESTRICTO):
+{
+  "resumen_ejecutivo": "2-3 frases del problema y solución propuesta",
+  "alcance": [ "Fase 1: ...", "Fase 2: ...", "Fase 3: ..." ],
+  "arquitectura_sugerida": { "n8n": true, "ollama": true, "rag": false, "tts": true },
+  "herramientas_clave": [ "n8n", "Ollama (Qwen 2.5)", "Notion", "Discord", "Deepgram Gloria" ],
+  "estimacion_horas": { "min": 40, "max": 80, "desglose": { "setup": 8, "agente": 20, "integraciones": 16, "testing": 8, "docs": 8 } },
+  "riesgos": [ "Dependencia API externa", "Calidad datos entrada" ],
+  "proximos_pasos": [ "Validar brief con cliente", "Setup entorno", "Sprint 1: Agente core" ],
+  "notion_payload": { "title": "Intake: {empresa} - {fecha}", "properties": { ... } },
+  "discord_message": "🎯 **Nuevo Intake**: {empresa} — {resumen_ejecutivo}. Plan: {alcance[0]}..."
+}</code></pre>
+    </article>
+  </section>
+
+  <section id="ejercicio" class="reveal">
+    <div class="section-head">
+      <div class="section-tag mono">// práctica</div>
+      <h2>Ejercicio guiado: Construcción completa del Agente de Intake</h2>
+      <p>Tiempo estimado: 4-6 horas. Nivel: Avanzado (integra M01-M06).</p>
+    </div>
+    <div class="exercise-wrapper">
+      <div class="exercise-meta">
+        <div class="exercise-prep">
+          <h4>Prerrequisitos (deben estar listos de módulos anteriores)</h4>
+          <ul>
+            <li>Entorno Railway/Render desplegado (M06) con n8n + Ollama + OpenWebUI</li>
+            <li>Notion Integration Token + Database ID para tickets</li>
+            <li>Discord Webhook URL para canal #intakes</li>
+            <li>Deepgram API Key para TTS Gloria</li>
+            <li>LangSmith API Key para tracing</li>
+            <li>Google Forms creado con campos del brief</li>
+          </ul>
+        </div>
+      </div>
+      <ol class="exercise-steps">
+        <li>
+          <h4>Paso 1: Google Forms → n8n Webhook</h4>
+          <p>Form campos: Nombre, Email, Empresa, Problema, Objetivo, Stack actual, Presupuesto, Timeline, Contacto preferido.</p>
+          <p>Apps Script en Forms → POST a <code>https://tu-dominio.com/webhook/intake</code></p>
+        </li>
+        <li>
+          <h4>Paso 2: Workflow n8n "Agente Intake"</h4>
+          <p>Nodos en secuencia:</p>
+          <ol>
+            <li><strong>Webhook</strong> <code>/webhook/intake</code></li>
+            <li><strong>Set</strong>: Normalizar campos, agregar timestamp, UUID</li>
+            <li><strong>HTTP Request → Ollama</strong> con system prompt (arriba) + brief como user message</li>
+            <li><strong>Function</strong>: Parsear JSON respuesta, validar esquema, separar notion_payload y discord_message</li>
+            <li><strong>Notion: Create Page</strong> en database Intakes con notion_payload</li>
+            <li><strong>HTTP Request → Deepgram TTS</strong> con texto: <code>discord_message</code> → modelo <code>aura-hera-es</code></li>
+            <li><strong>Discord: Send Message</strong> con embed + archivo audio (multipart)</li>
+            <li><strong>Google Sheets: Append</strong> log histórico (opcional)</li>
+          </ol>
+        </li>
+        <li>
+          <h4>Paso 3: Credenciales en n8n (Production)</h4>
+          <p>En n8n UI → Credentials → crear:</p>
+          <ul>
+            <li>Notion API: Integration Token (secret)</li>
+            <li>Discord Webhook: URL (secret)</li>
+            <li>Deepgram API: API Key (secret)</li>
+            <li>LangSmith: API Key (secret) — ya en env vars</li>
+          </ul>
+          <p>Asignar cada credencial a su nodo correspondiente.</p>
+        </li>
+        <li>
+          <h4>Paso 4: Error Handling + Observabilidad</h4>
+          <p>Añadir <strong>Error Trigger</strong> workflow que poste a Discord #alertas con <code>{{ $error.workflow.name }}: {{ $error.message }}</code>.</p>
+          <p>Verificar trazas en LangSmith: project "learning-path-prod".</p>
+        </li>
+        <li>
+          <h4>Paso 5: Test End-to-End</h4>
+          <p>Envía form de prueba → verifica:</p>
+          <ul>
+            <li>Página creada en Notion con plan estructurado</li>
+            <li>Mensaje en Discord con embed + audio Gloria reproducible</li>
+            <li>Trazas completas en LangSmith (< 10s latencia total)</li>
+          </ul>
+        </li>
+        <li>
+          <h4>Paso 6: Video Demo (Hyperframes + Gloria)</h4>
+          <p>Guión 60s vertical (9:16):</p>
+          <ol>
+            <li>0-5s: Hook — "De brief a plan automático en 60 segundos"</li>
+            <li>5-15s: Muestra Form → Submit</li>
+            <li>15-35s: n8n workflow corriendo (sped up), Notion página apareciendo</li>
+            <li>35-50s: Discord notificación + audio Gloria "Nuevo intake de Acme Corp..."</li>
+            <li>50-60s: CTA — "¿Quieres automatizar tu intake? Agenda diagnóstico" + logo Little Crab</li>
+          </ol>
+          <p>Generar con <code>hyperframe_text_to_video</code> + TTS Gloria + subtítulos .vtt.</p>
+        </li>
+        <li>
+          <h4>Paso 7: Documentación en Notion + Repo Git</h4>
+          <p>Notion page "Agente Intake — Runbook": arquitectura, prompts, credenciales (referencia), troubleshooting, rollback.</p>
+          <p>Repo Git: <code>docker-compose.prod.yml</code>, <code>workflows/agente-intake.json</code>, <code>prompts/system-intake.md</code>, <code>scripts/</code>, <code>README.md</code>.</p>
+        </li>
+      </ol>
+      <div class="exercise-checkpoint">
+        <h4>✅ Checkpoint Final: ¿Proyecto completo?</h4>
+        <ul class="checklist">
+          <li><label><input type="checkbox" disabled> Form → n8n → Ollama → Notion → Discord + Audio funcionando</label></li>
+          <li><label><input type="checkbox" disabled> Video demo MP4 < 10MB, vertical 9:16, 60s, subtítulos</label></li>
+          <li><label><input type="checkbox" disabled> Notion runbook documentado y compartido</label></li>
+          <li><label><input type="checkbox" disabled> Repo Git con todo versionado (commits semánticos)</label></li>
+          <li><label><input type="checkbox" disabled> Deploy producción accesible en dominio custom HTTPS</label></li>
+          <li><label><input type="checkbox" disabled> LangSmith tracing + alertas configuradas</label></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section id="recursos" class="reveal">
+    <div class="section-head">
+      <div class="section-tag mono">// recursos</div>
+      <h2>Recursos verificados</h2>
+      <p>Enlaces validados el <time datetime="2026-08-15">15 de agosto de 2026</time> (HTTP 200 OK).</p>
+    </div>
+    <ul class="resources-list">
+      <li><a href="https://developers.notion.com/reference/post-page" target="_blank" rel="noopener noreferrer"><strong>Notion API — Create Page</strong> — Estructura payload para database</a><span class="resource-meta mono">Validado: 2026-08-15</span></li>
+      <li><a href="https://discord.com/developers/docs/resources/webhook" target="_blank" rel="noopener noreferrer"><strong>Discord Webhook API</strong> — Enviar mensajes con embeds y archivos</a><span class="resource-meta mono">Validado: 2026-08-15</span></li>
+      <li><a href="https://developers.deepgram.com/docs/text-to-speech" target="_blank" rel="noopener noreferrer"><strong>Deepgram TTS</strong> — Modelo aura-hera-es (Gloria), streaming, formatos</a><span class="resource-meta mono">Validado: 2026-08-15</span></li>
+      <li><a href="https://hermes-agent.nousresearch.com/docs/tools#hyperframe_text_to_video" target="_blank" rel="noopener noreferrer"><strong>Hyperframes Text-to-Video</strong> — Generación video vertical para demo</a><span class="resource-meta mono">Validado: 2026-08-15</span></li>
+      <li><a href="https://docs.smith.langchain.com/" target="_blank" rel="noopener noreferrer"><strong>LangSmith</strong> — Tracing, evaluation, monitoring para el proyecto final</a><span class="resource-meta mono">Validado: 2026-08-15</span></li>
+    </ul>
+    <p class="resources-disclaimer mono">⚠️ Los enlaces externos pueden cambiar. Si encuentras uno roto, <a href="mailto:contacto@littlecrabsolutions.com?subject=Enlace roto Learning Path M07">repórtalo</a>.</p>
+  </section>
+
+  <section id="autoevaluacion" class="reveal">
+    <div class="section-head">
+      <div class="section-tag mono">// checkpoint final</div>
+      <h2>Autoevaluación Final</h2>
+    </div>
+    <form class="assessment-form" aria-label="Autoevaluación final del Learning Path">
+      <fieldset>
+        <legend>Pregunta 1: ¿Qué patrón une la salida del LLM con acciones en n8n?</legend>
+        <div class="radio-group">
+          <label><input type="radio" name="q1" value="a">Prompt-to-Action (JSON estructurado → nodos IF/Switch)</label>
+          <label><input type="radio" name="q1" value="b">Function calling nativo de Ollama</label>
+          <label><input type="radio" name="q1" value="c">Webhook directo sin parsing</label>
+        </div>
+      </fieldset>
+      <fieldset>
+        <legend>Pregunta 2: ¿Dónde se guardan los secrets (Notion token, Deepgram key) en producción?</legend>
+        <div class="radio-group">
+          <label><input type="radio" name="q2" value="a">En el JSON del workflow exportado</label>
+          <label><input type="radio" value="b">En n8n Credentials UI (encriptado) o variables de entorno de la plataforma (Railway/Render)</label>
+          <label><input type="radio" name="q2" value="c">En un archivo .env en el repo Git</label>
+        </div>
+      </fieldset>
+      <fieldset>
+        <legend>Pregunta 3: ¿Qué debe incluir el video demo final?</legend>
+        <div class="radio-group">
+          <label><input type="radio" name="q3" value="a">Solo captura de pantalla del workflow n8n</li>
+          <label><input type="radio" name="q3" value="b">Form submit → Notion page → Discord + audio Gloria (60s, vertical, subtítulos, CTA)</label>
+          <label><input type="radio" name="q3" value="c">Explicación técnica de 10 minutos</label>
+        </div>
+      </fieldset>
+      <button type="button" class="btn-primary assess-btn">Verificar respuestas</button>
+      <div class="assessment-feedback" aria-live="polite"></div>
+    </form>
+  </section>
+
+  <nav class="module-nav reveal" aria-label="Navegación final">
+    <div class="progress"><span class="mono">🎉 ¡Learning Path IA Completado!</span></div>
+    <div class="nav-actions">
+      <a href="../modulo-06/modulo-06-despliegue-escalado.html" class="nav-btn prev" data-module="06"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="15 18 9 12 15 6"></polyline></svg> Módulo anterior</a>
+      <a href="../learning-path-ia.html" class="nav-btn overview" style="background: var(--coral); border-color: var(--coral); color: #1A0A05;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg> Volver al Inicio</a>
+      <a href="#contact" class="nav-btn next" style="background: var(--teal-dim); border-color: var(--teal); color: var(--teal);"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"></polyline></svg> Agendar Diagnóstico</a>
+    </div>
+  </nav>
+</main>
+
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <svg class="brand-mark" viewBox="0 0 24 24" fill="none"><path d="M12 8c-3 0-5 2-5 5.5S9 20 12 20s5-3 5-6.5S15 8 12 8Z" stroke="#E8623D" stroke-width="1.6"/><path d="M7 10 4 6M17 10l3-4M7 12 3 11M17 12l4-1" stroke="#7FD9C4" stroke-width="1.6" stroke-linecap="round"/></svg>
+      <span>Little Crab Solutions</span>
+      <p class="mono">IT & automatización — Tocancipá, Colombia</p>
+    </div>
+    <div class="footer-col">
+      <h4>Servicios</h4>
+      <ul>
+        <li><a href="#services">Agentes de IA</a></li>
+        <li><a href="#services">Automatización n8n</a></li>
+        <li><a href="#services">Consultoría técnica</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Recursos</h4>
+      <ul>
+        <li><a href="learning-path-ia.html">Ruta IA — Learning Path</a></li>
+        <li><a href="#stack">Stack & herramientas</a></li>
+        <li><a href="#process">Cómo trabajamos</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Contacto</h4>
+      <ul>
+        <li><a href="mailto:contacto@littlecrabsolutions.com">contacto@littlecrabsolutions.com</a></li>
+        <li><a href="#contact">Agendar diagnóstico</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2026 Little Crab Solutions</span>
+    <span class="mono">Hecho con precisión de cangrejo</span>
+  </div>
+</footer>
+
+<style>
+footer {
+  padding: 48px 6vw 24px;
+  border-top: 1px solid rgba(255,255,255,0.06);
+  font-size: 13px;
+  color: var(--text-dim);
+}
+.footer-grid {
+  display: grid;
+  grid-template-columns: 1.5fr repeat(3, 1fr);
+  gap: 32px;
+  max-width: 1280px;
+  margin: 0 auto 32px;
+}
+.footer-brand {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.footer-brand .brand-mark {
+  width: 24px;
+  height: 24px;
+}
+.footer-brand p {
+  margin-top: 4px;
+}
+.footer-col h4 {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text);
+  margin-bottom: 16px;
+  text-transform: lowercase;
+}
+.footer-col ul {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.footer-col a:hover {
+  color: var(--teal);
+}
+.footer-bottom {
+  display: flex;
+  justify-content: space-between;
+  padding-top: 24px;
+  border-top: 1px solid rgba(255,255,255,0.04);
+  max-width: 1280px;
+  margin: 0 auto;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+@media (max-width: 860px) {
+  .footer-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+@media (max-width: 560px) {
+  .footer-grid {
+    grid-template-columns: 1fr;
+  }
+}
+</style>
+
+<style>
+footer {
+  padding: 48px 6vw 24px;
+  border-top: 1px solid rgba(255,255,255,0.06);
+  font-size: 13px;
+  color: var(--text-dim);
+}
+.footer-grid {
+  display: grid;
+  grid-template-columns: 1.5fr repeat(3, 1fr);
+  gap: 32px;
+  max-width: 1280px;
+  margin: 0 auto 32px;
+}
+.footer-brand {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.footer-brand .brand-mark {
+  width: 24px;
+  height: 24px;
+}
+.footer-brand p {
+  margin-top: 4px;
+}
+.footer-col h4 {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text);
+  margin-bottom: 16px;
+  text-transform: lowercase;
+}
+.footer-col ul {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.footer-col a:hover {
+  color: var(--teal);
+}
+.footer-bottom {
+  display: flex;
+  justify-content: space-between;
+  padding-top: 24px;
+  border-top: 1px solid rgba(255,255,255,0.04);
+  max-width: 1280px;
+  margin: 0 auto;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+@media (max-width: 860px) {
+  .footer-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+@media (max-width: 560px) {
+  .footer-grid {
+    grid-template-columns: 1fr;
+  }
+}
+</style>
+
+<style>
+footer {
+  padding: 48px 6vw 24px;
+  border-top: 1px solid rgba(255,255,255,0.06);
+  font-size: 13px;
+  color: var(--text-dim);
+}
+.footer-grid {
+  display: grid;
+  grid-template-columns: 1.5fr repeat(3, 1fr);
+  gap: 32px;
+  max-width: 1280px;
+  margin: 0 auto 32px;
+}
+.footer-brand {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.footer-brand .brand-mark {
+  width: 24px;
+  height: 24px;
+}
+.footer-brand p {
+  margin-top: 4px;
+}
+.footer-col h4 {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text);
+  margin-bottom: 16px;
+  text-transform: lowercase;
+}
+.footer-col ul {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.footer-col a:hover {
+  color: var(--teal);
+}
+.footer-bottom {
+  display: flex;
+  justify-content: space-between;
+  padding-top: 24px;
+  border-top: 1px solid rgba(255,255,255,0.04);
+  max-width: 1280px;
+  margin: 0 auto;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+@media (max-width: 860px) {
+  .footer-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+@media (max-width: 560px) {
+  .footer-grid {
+    grid-template-columns: 1fr;
+  }
+}
+</style>
+<script src="../assets/js/learning-path.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const assessBtn = document.querySelector('.assess-btn');
+  const feedback = document.querySelector('.assessment-feedback');
+  const correctAnswers = { q1: 'a', q2: 'b', q3: 'b' };
+  const explanations = {
+    q1: 'Prompt-to-Action: el system prompt fuerza JSON con campos accion_requerida, payload, metadata. n8n parsea y ramifica con nodos IF/Switch.',
+    q2: 'Secrets nunca en código ni repo. En n8n: Credentials UI (encriptado en BD). En Railway/Render: Project Variables marcadas como Secret. La plataforma inyecta como env vars.',
+    q3: 'El video demo del proyecto final debe mostrar el flujo completo end-to-end en 60s vertical: Form → n8n → Notion → Discord con audio de Gloria, subtítulos .vtt y CTA final.'
+  };
+  if (assessBtn && feedback) {
+    assessBtn.addEventListener('click', () => {
+      const form = document.querySelector('.assessment-form');
+      const formData = new FormData(form);
+      let score = 0;
+      let html = '<h4>Resultados:</h4><ul>';
+      Object.keys(correctAnswers).forEach(q => {
+        const userAnswer = formData.get(q);
+        const isCorrect = userAnswer === correctAnswers[q];
+        if (isCorrect) score++;
+        html += `<li class="${isCorrect ? 'correct' : 'incorrect'}"><strong>${q.toUpperCase()}</strong>: ${isCorrect ? '✅ Correcta' : '❌ Incorrecta'} — ${explanations[q]}</li>`;
+      });
+      html += `</ul><p>Puntuación: ${score}/${Object.keys(correctAnswers).length}</p>`;
+      feedback.innerHTML = html;
+      feedback.classList.add('visible');
+      if (score === Object.keys(correctAnswers).length && window.LearningPath) {
+        window.LearningPath.markComplete('07');
+        // Celebration
+        setTimeout(() => {
+          if (confirm('🎉 ¡Felicitaciones! Has completado los 7 módulos del Learning Path IA. ¿Quieres agendar tu diagnóstico gratuito con Little Crab Solutions?')) {
+            window.location.href = '#contact';
+          }
+        }, 1000);
+      }
+    });
+  }
+});
+</script>
+</body>
+</html>

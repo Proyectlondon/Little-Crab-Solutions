@@ -1,0 +1,38 @@
+# Dependencies
+node_modules/
+npm-debug.log*
+
+# Build outputs
+dist/
+build/
+*.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Local config
+.env
+.env.local
+
+# Test artifacts
+coverage/
+.nyc_output/
+
+# Video assets (large files)
+learning-path-ia/assets/video/*.mp4
+!learning-path-ia/assets/video/README.md
+!learning-path-ia/assets/video/video-script.md
+
+# Lighthouse reports
+lighthouse-report.json
+link_validation_*.csv

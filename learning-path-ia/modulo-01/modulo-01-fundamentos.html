@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Módulo 01: Fundamentos de IA Aplicada — Learning Path IA</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/learning-path.css">
+<style>
+  /* Module-specific inline styles if needed */
+</style>
+</head>
+<body>
+<div class="bg-glow"></div>
+
+<!-- NAV INJECTED BY build-includes.js -->
+<nav>
+  <div class="brand">
+    <svg class="brand-mark" viewBox="0 0 24 24" fill="none"><path d="M12 8c-3 0-5 2-5 5.5S9 20 12 20s5-3 5-6.5S15 8 12 8Z" stroke="#E8623D" stroke-width="1.6"/><path d="M7 10 4 6M17 10l3-4M7 12 3 11M17 12l4-1" stroke="#7FD9C4" stroke-width="1.6" stroke-linecap="round"/></svg>
+    Little Crab Solutions
+  </div>
+  <div class="links">
+    <a href="#services">Servicios</a>
+    <a href="#process">Proceso</a>
+    <a href="#stack">Stack</a>
+    <a href="learning-path-ia.html">Ruta IA</a>
+  </div>
+  <a href="#contact" class="nav-cta">Hablemos</a>
+</nav>
+
+<section class="section" id="modulo-01">
+  <div class="container">
+    <!-- Progress Header -->
+    <header class="progress-header reveal">
+      <div class="progress-step">
+        <span>📍</span>
+        <strong>Paso 1 de 7</strong>
+      </div>
+      <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" aria-label="Progreso general del Learning Path">
+        <div class="progress-bar-fill" style="width: 0%"></div>
+      </div>
+    </header>
+
+    <!-- Module Title -->
+    <div class="section-head reveal">
+      <div class="section-tag mono">// modulo 01</div>
+      <h1>Fundamentos de IA Aplicada</h1>
+      <p>Los conceptos base para entender cómo funcionan los LLM, RAG y agentes — sin jerga innecesaria.</p>
+    </div>
+
+    <!-- Objectives -->
+    <section class="objectives reveal" aria-labelledby="objectives-heading">
+      <h2 id="objectives-heading">Objetivos de aprendizaje</h2>
+      <ul>
+        <li>Explicar qué es un LLM, embedding y token en tus propias palabras</li>
+        <li>Diferenciar entre prompting básico, few-shot, chain-of-thought y RAG</li>
+        <li>Identificar cuándo un problema necesita un agente vs. un flujo determinista</li>
+        <li>Configurar tu entorno local con Ollama + OpenWebUI</li>
+        <li>Ejecutar tu primer prompt estructurado y evaluar la respuesta</li>
+      </ul>
+    </section>
+
+    <!-- Content: Conceptos Fundamentales -->
+    <section class="content-section reveal" aria-labelledby="conceptos-heading">
+      <h2 id="conceptos-heading">1. Conceptos fundamentales</h2>
+      
+      <h3>¿Qué es un LLM (Large Language Model)?</h3>
+      <p>Un modelo de lenguaje grande es una red neuronal entrenada con terabytes de texto para predecir la siguiente palabra (token) en una secuencia. No "piensa" ni "entiende" — calcula probabilidades estadísticas basadas en patrones aprendidos.</p>
+      
+      <h3>Tokens y ventana de contexto</h3>
+      <p>Los modelos no leen palabras, leen <strong>tokens</strong> (fragmentos de ~4 caracteres en español). La <strong>ventana de contexto</strong> es cuántos tokens puede "recordar" a la vez (entrada + salida).</p>
+      <ul>
+        <li>Llama 3.1 8B: 128k tokens contexto</li>
+        <li>Qwen 2.5 7B: 128k tokens contexto</li>
+        <li>Modelos mayores (70B+): mayor calidad, más VRAM</li>
+      </ul>
+      
+      <h3>Embeddings (incrustaciones)</h3>
+      <p>Vectores numéricos que representan significado semántico. Textos similares → vectores cercanos en espacio latente. Base de <strong>RAG (Retrieval-Augmented Generation)</strong>.</p>
+      
+      <h3>Temperatura y parámetros de sampling</h3>
+      <ul>
+        <li><strong>Temperature 0:</strong> Determinista, siempre el token más probable</li>
+        <li><strong>Temperature 0.3–0.7:</strong> Balance creatividad/coherencia (recomendado para agentes)</li>
+        <li><strong>Temperature 1+:</strong> Muy creativo, puede alucinar</li>
+      </ul>
+    </section>
+
+    <!-- Content: Prompting -->
+    <section class="content-section reveal" aria-labelledby="prompting-heading">
+      <h2 id="prompting-heading">2. Prompting efectivo</h2>
+      
+      <h3>Estructura de un buen prompt (Pattern: ROLE-CONTEXT-TASK-FORMAT)</h3>
+      <pre><code>ROLE: Eres un analista de procesos senior con 10 años en automatización.
+CONTEXT: Mi cliente recibe 50 leads/día por WhatsApp. Actualmente los clasifica a mano.
+TASK: Diseña un prompt que clasifique: "venta", "soporte", "spam", "otro".
+FORMAT: JSON { "categoria": "...", "confianza": 0-100, "razon": "..." }</code></pre>
+      
+      <h3>Técnicas clave</h3>
+      <ul>
+        <li><strong>Zero-shot:</strong> Instrucción directa sin ejemplos</li>
+        <li><strong>Few-shot:</strong> 3–5 ejemplos input/output antes de la tarea real</li>
+        <li><strong>Chain-of-thought:</strong> "Piensa paso a paso" — mejora razonamiento complejo</li>
+        <li><strong>System prompt:</strong> Instrucciones persistentes de comportamiento (rol, tono, límites)</li>
+      </ul>
+    </section>
+
+    <!-- Content: RAG y Agentes -->
+    <section class="content-section reveal" aria-labelledby="rag-heading">
+      <h2 id="rag-heading">3. RAG y Agentes — Cuándo usar cada uno</h2>
+      
+      <h3>RAG (Retrieval-Augmented Generation)</h3>
+      <p>Pipeline: Consulta → Embedding → Búsqueda vectorial (top-k) → Contexto + Prompt → LLM → Respuesta.</p>
+      <p><strong>Úsalo cuando:</strong> Necesitas responder sobre documentos propios (PDFs, Notion, web) sin reentrenar el modelo.</p>
+      
+      <h3>Agentes</h3>
+      <p>Un agente = LLM + Herramientas (tools) + Bucle de decisión (ReAct: Reasoning + Acting).</p>
+      <p><strong>Úsalo cuando:</strong> La tarea requiere múltiples pasos, decisiones condicionales, o acciones en sistemas externos (API, BD, n8n).</p>
+      
+      <h3>Flujo determinista (n8n sin LLM)</h3>
+      <p><strong>Úsalo cuando:</strong> La lógica es fija, predecible, y no necesita "juicio" (ej: mover fila de Sheets a Notion, enviar email).</p>
+    </section>
+
+    <!-- Exercise -->
+    <section class="exercise reveal" aria-labelledby="exercise-heading">
+      <h2 id="exercise-heading">Ejercicio guiado: Tu primer prompt estructurado en OpenWebUI</h2>
+      <ol>
+        <li>Levanta Ollama + OpenWebUI localmente:
+          <pre><code># Terminal 1: Ollama
+ollama serve
+
+# Terminal 2: OpenWebUI (Docker)
+docker run -d -p 3000:8080 \
+  -v open-webui:/app/backend/data \
+  --add-host=host.docker.internal:host-gateway \
+  --name open-webui \
+  ghcr.io/open-webui/open-webui:main</code></pre>
+        </li>
+        <li>En OpenWebUI (http://localhost:3000), crea una cuenta admin</li>
+        <li>Descarga un modelo ligero: <code>ollama pull qwen2.5:7b</code> (o <code>llama3.1:8b</code>)</li>
+        <li>En OpenWebUI, ve a <strong>Configuración → Modelos</strong> y selecciona el modelo descargado</li>
+        <li>Crea un <strong>System Prompt</strong> nuevo:
+          <pre><code>Eres un clasificador de tickets de soporte técnico.
+Categorías: "bug", "feature", "pregunta", "acceso", "otro".
+Responde SOLO en JSON: { "categoria": "...", "confianza": 0-100, "razon": "..." }</code></pre>
+        </li>
+        <li>Prueba con estos inputs y verifica la salida JSON:
+          <ul>
+            <li>"No puedo entrar a mi cuenta, dice contraseña incorrecta"</li>
+            <li>"Quiero que añadan modo oscuro a la app"</li>
+            <li>"¿Cuánto cuesta el plan enterprise?"</li>
+          </ul>
+        </li>
+        <li>Experimenta con <code>temperature: 0</code> vs <code>temperature: 0.7</code> y nota diferencias</li>
+      </ol>
+    </section>
+
+    <!-- Resources -->
+    <section class="resources reveal" aria-labelledby="resources-heading">
+      <h2 id="resources-heading">Recursos verificados</h2>
+      <ul class="resources-list">
+        <li>
+          <a href="https://learn.deeplearning.ai/courses" target="_blank" rel="noopener" data-validated="2026-08-15">
+            DeepLearning.AI – Short Courses (Prompt Engineering, RAG, Agents)
+          </a>
+        </li>
+        <li>
+          <a href="https://huggingface.co/course" target="_blank" rel="noopener" data-validated="2026-08-15">
+            Hugging Face Course – Unit 3 & 4 (RAG + Agents)
+          </a>
+        </li>
+        <li>
+          <a href="https://ollama.com/" target="_blank" rel="noopener" data-validated="2026-08-15">
+            Ollama – Modelos locales compatibles con OpenAI API
+          </a>
+        </li>
+        <li>
+          <a href="https://github.com/open-webui/open-webui" target="_blank" rel="noopener" data-validated="2026-08-15">
+            OpenWebUI – Interfaz web para LLMs locales
+          </a>
+        </li>
+        <li>
+          <a href="https://www.promptingguide.ai/" target="_blank" rel="noopener" data-validated="2026-08-15">
+            Prompting Guide – Técnicas y patrones avanzados
+          </a>
+        </li>
+      </ul>
+    </section>
+
+    <!-- Checkpoint -->
+    <section class="checkpoint reveal" aria-labelledby="checkpoint-heading">
+      <h2 id="checkpoint-heading">Checkpoint de autoevaluación</h2>
+      <ol>
+        <li>¿Cuál es la diferencia práctica entre temperature 0 y 0.7? ¿Cuándo usar cada uno?</li>
+        <li>Explica en 2 frases qué es un embedding y para qué sirve en RAG.</li>
+        <li>¿Cuándo elegirías un agente vs. un flujo n8n determinista? Da un ejemplo de cada caso.</li>
+        <li>¿Qué hace el system prompt en OpenWebUI? ¿Dónde se configura?</li>
+        <li>Si tu modelo alucina (inventa info), ¿qué 3 cosas intentarías primero para reducirlo?</li>
+      </ol>
+      <p style="margin-top: 16px; color: var(--teal); font-size: 14px;">
+        ✅ Al llegar aquí, tu progreso se guarda automáticamente. Continúa al <a href="../modulo-02/modulo-02-stack-tecnico.html">Módulo 02</a>.
+      </p>
+    </section>
+
+    <!-- Module Navigation -->
+    <nav class="module-nav reveal" aria-label="Navegación entre módulos">
+      <a href="../learning-path-ia.html" class="nav-overview">← Volver al overview</a>
+      <a href="../modulo-02/modulo-02-stack-tecnico.html" class="nav-next">Siguiente: Módulo 02 →</a>
+    </nav>
+  </div>
+</section>
+
+<!-- FOOTER INJECTED BY build-includes.js -->
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <svg class="brand-mark" viewBox="0 0 24 24" fill="none"><path d="M12 8c-3 0-5 2-5 5.5S9 20 12 20s5-3 5-6.5S15 8 12 8Z" stroke="#E8623D" stroke-width="1.6"/><path d="M7 10 4 6M17 10l3-4M7 12 3 11M17 12l4-1" stroke="#7FD9C4" stroke-width="1.6" stroke-linecap="round"/></svg>
+      <span>Little Crab Solutions</span>
+      <p class="mono">IT & automatización — Tocancipá, Colombia</p>
+    </div>
+    <div class="footer-col">
+      <h4>Servicios</h4>
+      <ul>
+        <li><a href="#services">Agentes de IA</a></li>
+        <li><a href="#services">Automatización n8n</a></li>
+        <li><a href="#services">Consultoría técnica</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Recursos</h4>
+      <ul>
+        <li><a href="learning-path-ia.html">Ruta IA — Learning Path</a></li>
+        <li><a href="#stack">Stack & herramientas</a></li>
+        <li><a href="#process">Cómo trabajamos</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Contacto</h4>
+      <ul>
+        <li><a href="mailto:contacto@littlecrabsolutions.com">contacto@littlecrabsolutions.com</a></li>
+        <li><a href="#contact">Agendar diagnóstico</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2026 Little Crab Solutions</span>
+    <span class="mono">Hecho con precisión de cangrejo</span>
+  </div>
+</footer>
+
+<style>
+footer {
+  padding: 48px 6vw 24px;
+  border-top: 1px solid rgba(255,255,255,0.06);
+  font-size: 13px;
+  color: var(--text-dim);
+}
+.footer-grid {
+  display: grid;
+  grid-template-columns: 1.5fr repeat(3, 1fr);
+  gap: 32px;
+  max-width: 1280px;
+  margin: 0 auto 32px;
+}
+.footer-brand {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.footer-brand .brand-mark {
+  width: 24px;
+  height: 24px;
+}
+.footer-brand p {
+  margin-top: 4px;
+}
+.footer-col h4 {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text);
+  margin-bottom: 16px;
+  text-transform: lowercase;
+}
+.footer-col ul {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.footer-col a:hover {
+  color: var(--teal);
+}
+.footer-bottom {
+  display: flex;
+  justify-content: space-between;
+  padding-top: 24px;
+  border-top: 1px solid rgba(255,255,255,0.04);
+  max-width: 1280px;
+  margin: 0 auto;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+@media (max-width: 860px) {
+  .footer-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+@media (max-width: 560px) {
+  .footer-grid {
+    grid-template-columns: 1fr;
+  }
+}
+</style>
+
+<style>
+footer {
+  padding: 48px 6vw 24px;
+  border-top: 1px solid rgba(255,255,255,0.06);
+  font-size: 13px;
+  color: var(--text-dim);
+}
+.footer-grid {
+  display: grid;
+  grid-template-columns: 1.5fr repeat(3, 1fr);
+  gap: 32px;
+  max-width: 1280px;
+  margin: 0 auto 32px;
+}
+.footer-brand {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.footer-brand .brand-mark {
+  width: 24px;
+  height: 24px;
+}
+.footer-brand p {
+  margin-top: 4px;
+}
+.footer-col h4 {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text);
+  margin-bottom: 16px;
+  text-transform: lowercase;
+}
+.footer-col ul {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.footer-col a:hover {
+  color: var(--teal);
+}
+.footer-bottom {
+  display: flex;
+  justify-content: space-between;
+  padding-top: 24px;
+  border-top: 1px solid rgba(255,255,255,0.04);
+  max-width: 1280px;
+  margin: 0 auto;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+@media (max-width: 860px) {
+  .footer-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+@media (max-width: 560px) {
+  .footer-grid {
+    grid-template-columns: 1fr;
+  }
+}
+</style>
+
+<style>
+footer {
+  padding: 48px 6vw 24px;
+  border-top: 1px solid rgba(255,255,255,0.06);
+  font-size: 13px;
+  color: var(--text-dim);
+}
+.footer-grid {
+  display: grid;
+  grid-template-columns: 1.5fr repeat(3, 1fr);
+  gap: 32px;
+  max-width: 1280px;
+  margin: 0 auto 32px;
+}
+.footer-brand {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.footer-brand .brand-mark {
+  width: 24px;
+  height: 24px;
+}
+.footer-brand p {
+  margin-top: 4px;
+}
+.footer-col h4 {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text);
+  margin-bottom: 16px;
+  text-transform: lowercase;
+}
+.footer-col ul {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.footer-col a:hover {
+  color: var(--teal);
+}
+.footer-bottom {
+  display: flex;
+  justify-content: space-between;
+  padding-top: 24px;
+  border-top: 1px solid rgba(255,255,255,0.04);
+  max-width: 1280px;
+  margin: 0 auto;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+@media (max-width: 860px) {
+  .footer-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+@media (max-width: 560px) {
+  .footer-grid {
+    grid-template-columns: 1fr;
+  }
+}
+</style>
+
+<style>
+footer {
+  padding: 48px 6vw 24px;
+  border-top: 1px solid rgba(255,255,255,0.06);
+  font-size: 13px;
+  color: var(--text-dim);
+}
+.footer-grid {
+  display: grid;
+  grid-template-columns: 1.5fr repeat(3, 1fr);
+  gap: 32px;
+  max-width: 1280px;
+  margin: 0 auto 32px;
+}
+.footer-brand {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.footer-brand .brand-mark {
+  width: 24px;
+  height: 24px;
+}
+.footer-brand p {
+  margin-top: 4px;
+}
+.footer-col h4 {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text);
+  margin-bottom: 16px;
+  text-transform: lowercase;
+}
+.footer-col ul {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.footer-col a:hover {
+  color: var(--teal);
+}
+.footer-bottom {
+  display: flex;
+  justify-content: space-between;
+  padding-top: 24px;
+  border-top: 1px solid rgba(255,255,255,0.04);
+  max-width: 1280px;
+  margin: 0 auto;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+@media (max-width: 860px) {
+  .footer-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+@media (max-width: 560px) {
+  .footer-grid {
+    grid-template-columns: 1fr;
+  }
+}
+</style>
+
+<script src="../assets/js/learning-path.js"></script>
+</body>
+</html>

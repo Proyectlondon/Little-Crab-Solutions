@@ -1,0 +1,277 @@
+{
+  "name": "Deploy Learning Path IA to GitHub Pages",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "value": "0 2 * * *"
+            }
+          ]
+        }
+      },
+      "name": "Daily Deploy Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        250,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "command": "git pull origin main",
+        "options": {
+          "cwd": "/workspace"
+        }
+      },
+      "name": "Git Pull Latest",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        450,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "command": "node scripts/build-includes.js",
+        "options": {
+          "cwd": "/workspace"
+        }
+      },
+      "name": "Build Includes (nav/footer)",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        650,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "command": "git add -A && git commit -m \"chore: deploy build $(date -u +'%Y-%m-%d %H:%M:%S')\" || echo \"No changes to commit\"",
+        "options": {
+          "cwd": "/workspace"
+        }
+      },
+      "name": "Git Commit Build",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        850,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "command": "git push origin main",
+        "options": {
+          "cwd": "/workspace"
+        }
+      },
+      "name": "Git Push to Main",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        1050,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "command": "git subtree push --prefix . origin gh-pages",
+        "options": {
+          "cwd": "/workspace"
+        }
+      },
+      "name": "Deploy to gh-pages",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        1250,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://api.github.com/repos/{{$env.GITHUB_REPO}}/pages/builds/latest",
+        "method": "GET",
+        "options": {
+          "headers": {
+            "Authorization": "Bearer {{$env.GITHUB_TOKEN}}",
+            "Accept": "application/vnd.github+json"
+          }
+        }
+      },
+      "name": "Check GitHub Pages Status",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        1450,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "url": "{{$env.DISCORD_WEBHOOK_URL}}",
+        "method": "POST",
+        "jsonParameters": true,
+        "options": {},
+        "bodyParametersJson": "{\n  \"embeds\": [\n    {\n      \"title\": \"🚀 Learning Path IA Deploy\",\n      \"description\": \"Deploy automático completado\",\n      \"color\": 3066993,\n      \"fields\": [\n        {\n          \"name\": \"Status\",\n          \"value\": \"{{ $json.status === 'built' ? '✅ Success' : '❌ Failed' }}\",\n          \"inline\": true\n        },\n        {\n          \"name\": \"URL\",\n          \"value\": \"https://littlecrabsolutions.github.io/learning-path-ia/\",\n          \"inline\": true\n        },\n        {\n          \"name\": \"Commit\",\n          \"value\": \"{{ $json.commit || 'N/A' }}\",\n          \"inline\": true\n        }\n      ],\n      \"timestamp\": \"{{ new Date().toISOString() }}\"\n    }\n  ]\n}"
+      },
+      "name": "Notify Discord",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        1650,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.status }}",
+              "operation": "notEqual",
+              "value2": "built"
+            }
+          ]
+        }
+      },
+      "name": "Deploy Failed?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        1450,
+        500
+      ]
+    },
+    {
+      "parameters": {
+        "url": "{{$env.DISCORD_WEBHOOK_URL}}",
+        "method": "POST",
+        "jsonParameters": true,
+        "options": {},
+        "bodyParametersJson": "{\n  \"embeds\": [\n    {\n      \"title\": \"❌ Learning Path IA Deploy FAILED\",\n      \"description\": \"El deploy automático falló. Revisar logs en n8n.\",\n      \"color\": 15158332,\n      \"fields\": [\n        {\n          \"name\": \"Error\",\n          \"value\": \"{{ $json.error?.message || 'Unknown error' }}\",\n          \"inline\": false\n        },\n        {\n          \"name\": \"Workflow\",\n          \"value\": \"Deploy Learning Path IA\",\n          \"inline\": true\n        }\n      ],\n      \"timestamp\": \"{{ new Date().toISOString() }}\"\n    }\n  ]\n}"
+      },
+      "name": "Notify Discord Failure",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        1650,
+        500
+      ]
+    }
+  ],
+  "connections": {
+    "Daily Deploy Trigger": {
+      "main": [
+        [
+          {
+            "node": "Git Pull Latest",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Git Pull Latest": {
+      "main": [
+        [
+          {
+            "node": "Build Includes (nav/footer)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build Includes (nav/footer)": {
+      "main": [
+        [
+          {
+            "node": "Git Commit Build",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Git Commit Build": {
+      "main": [
+        [
+          {
+            "node": "Git Push to Main",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Git Push to Main": {
+      "main": [
+        [
+          {
+            "node": "Deploy to gh-pages",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Deploy to gh-pages": {
+      "main": [
+        [
+          {
+            "node": "Check GitHub Pages Status",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check GitHub Pages Status": {
+      "main": [
+        [
+          {
+            "node": "Notify Discord",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Deploy Failed?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Deploy Failed?": {
+      "main": [
+        [
+          {
+            "node": "Notify Discord Failure",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "id": "deploy-learning-path-ia",
+  "tags": [
+    "deploy",
+    "learning-path",
+    "github-pages",
+    "automation"
+  ]
+}
