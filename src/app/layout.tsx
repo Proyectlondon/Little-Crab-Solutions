@@ -22,32 +22,28 @@ const spaceGrotesk = Space_Grotesk({
 });
 
 export const metadata: Metadata = {
-  title: "Little Crab Solutions — Soluciones de IA para PYMEs en Latam",
+  title: "Little Crab Solutions — Diseño, software e IA a medida",
   description:
-    "Soluciones de IA que trabajan 24/7 por tu negocio: marketing automatizado, contenido que escala, atención al cliente 24/7 y sitios web que venden. Todo en tu infraestructura, sin suscripciones a la nube, sin vendor lock-in.",
+    "Creamos productos digitales, automatizaciones y sistemas de IA que expresan la identidad de cada cliente y encajan en su forma de trabajar.",
   keywords: [
     "Little Crab Solutions",
-    "JJ Stack",
-    "Local-First AI",
-    "Ollama",
-    "n8n",
-    "ComfyUI",
-    "Swarm Architecture",
-    "Private AI",
-    "Automatización IA",
-    "Qwen 2.5 Coder",
-    "Llama 3",
-    "Stable Diffusion",
+    "diseño web Colombia",
+    "desarrollo de software a medida",
+    "automatización IA",
+    "diseño de producto digital",
+    "IA para PYMEs",
+    "contenido visual con IA",
+    "local-first AI",
   ],
-  authors: [{ name: "Little Crab Solutions — JJ Stack Ecosystem" }],
+  authors: [{ name: "Little Crab Solutions" }],
   icons: {
     icon: "/logo.png",
     apple: "/logo.png",
   },
   openGraph: {
-    title: "Little Crab Solutions — Private Local-First AI Engineering",
+    title: "Little Crab Solutions — Tecnología con tu esencia",
     description:
-      "IA generativa y automatización 100% privada sobre tu propio hardware. Sin APIs en la nube. Sin costo de tokens.",
+      "Diseño, software, automatización e IA creados a la medida de tu negocio y tu identidad.",
     url: "https://little-crab-solutions.vercel.app",
     siteName: "Little Crab Solutions",
     type: "website",
@@ -55,8 +51,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Little Crab Solutions — Private Local-First AI",
-    description: "IA generativa y automatización 100% privada sobre tu propio hardware.",
+    title: "Little Crab Solutions — Tecnología con tu esencia",
+    description: "Diseño, software, automatización e IA creados a tu medida.",
   },
 };
 

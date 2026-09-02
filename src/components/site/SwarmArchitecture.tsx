@@ -7,35 +7,35 @@ import RevealText from "./RevealText";
 
 const NODES = [
   {
-    id: "orchestrator",
-    label: "Orchestrator",
-    role: "Analiza la meta",
+    id: "strategy",
+    label: "Estrategia",
+    role: "Define el problema",
     icon: Brain,
-    desc: "Recibe el objetivo de negocio, lo descompone en fases ejecutables y asigna responsabilidades al resto del enjambre.",
+    desc: "Conecta el objetivo del negocio con las necesidades reales de las personas y define cómo sabremos que el proyecto funciona.",
     color: "#E54B1B",
   },
   {
-    id: "analyst",
-    label: "Analyst",
-    role: "Estructura subtareas",
+    id: "design",
+    label: "Diseño",
+    role: "Da forma a la experiencia",
     icon: ListTree,
-    desc: "Convierte cada fase en un plan técnico concreto: define inputs, outputs, dependencias y criterios de aceptación.",
+    desc: "Traduce la esencia de la marca en lenguaje visual, contenido, interacción y una experiencia coherente de principio a fin.",
     color: "#E8B974",
   },
   {
-    id: "coder",
-    label: "Coder",
-    role: "Escribe scripts",
+    id: "build",
+    label: "Construcción",
+    role: "Convierte intención en producto",
     icon: Code2,
-    desc: "Genera el código, los prompts y las configuraciones de los flujos n8n / ComfyUI necesarios para ejecutar el plan.",
+    desc: "Desarrolla el producto, integra las herramientas necesarias y documenta las decisiones para que pueda mantenerse y evolucionar.",
     color: "#2E6E9E",
   },
   {
-    id: "qa",
-    label: "QA",
-    role: "Valida resultados",
+    id: "quality",
+    label: "Calidad",
+    role: "Prueba lo que entregamos",
     icon: ShieldCheck,
-    desc: "Inspecciona outputs contra los criterios de aceptación. Si algo falla, devuelve la tarea al Coder en bucle cerrado.",
+    desc: "Revisa comportamiento, accesibilidad, rendimiento y detalle visual con escenarios reales. Lo que falla vuelve al ciclo antes de entregarse.",
     color: "#7BC4A4",
   },
 ];
@@ -75,26 +75,25 @@ export default function SwarmArchitecture() {
         {/* Header */}
         <div className="mb-20 text-center">
           <RevealText as="span" className="kicker justify-center inline-flex">
-            Arquitectura Swarm
+            Sistema de calidad
           </RevealText>
           <RevealText
             as="h2"
             delay={0.1}
             className="mx-auto mt-6 max-w-4xl font-display text-[clamp(2rem,5.5vw,5rem)] uppercase leading-[0.95] text-cream"
           >
-            Un enjambre
+            Una idea,
             <br />
-            <span className="text-gradient-coral">de especialistas</span>
+            <span className="text-gradient-coral">cuatro miradas</span>
           </RevealText>
           <RevealText
             as="p"
             delay={0.2}
             className="mx-auto mt-8 max-w-2xl text-mist leading-relaxed"
           >
-            No un único modelo monolítico. Cuatro roles con responsabilidades
-            claras, orquestados en bucle cerrado. Hoy corren en tu hardware
-            local; mañana, cuando tu infraestructura crezca, escalarán a un
-            enjambre distribuido sin reescribir una sola línea de lógica.
+            Estrategia, diseño, construcción y validación trabajan como un solo
+            ciclo. Así evitamos que una idea atractiva falle al usarla o que una
+            solución técnica pierda la personalidad de tu marca.
           </RevealText>
         </div>
 
@@ -114,7 +113,7 @@ export default function SwarmArchitecture() {
             <div className="absolute left-1/2 top-1/2 z-20 flex h-32 w-32 -translate-x-1/2 -translate-y-1/2 flex-col items-center justify-center rounded-full border border-crab/40 bg-deep/90 text-center backdrop-blur">
               <div className="h-2 w-2 rounded-full bg-crab shadow-[0_0_18px_#E54B1B] animate-pulse" />
               <div className="mt-2 font-display text-sm uppercase tracking-[0.15em] text-cream">
-                Swarm
+                Little
               </div>
               <div className="text-[9px] uppercase tracking-[0.2em] text-mist">
                 Loop
@@ -206,7 +205,7 @@ export default function SwarmArchitecture() {
           <div>
             <div className="mb-6 flex items-center gap-3 text-xs uppercase tracking-[0.28em] text-mist">
               <span className="h-px w-8 bg-crab" />
-              Rol activo
+              Foco actual
             </div>
             {NODES.map((n, i) => {
               const Icon = n.icon;
@@ -239,28 +238,37 @@ export default function SwarmArchitecture() {
                       <div className="text-sm text-mist">{n.role}</div>
                     </div>
                   </div>
-                  {isActive && (
-                    <motion.p
-                      initial={{ opacity: 0, height: 0 }}
-                      animate={{ opacity: 1, height: "auto" }}
-                      transition={{ duration: 0.5 }}
-                      className="mt-4 overflow-hidden text-mist leading-relaxed"
-                    >
-                      {n.desc}
-                    </motion.p>
-                  )}
                 </motion.div>
               );
             })}
 
+            {/* Keep a stable slot for the rotating description. Animating
+                height here changed the document height every 2.2 seconds and
+                made mobile browsers move the page away from the footer. */}
+            <div className="relative mt-4 min-h-32 sm:min-h-28 lg:min-h-24">
+              {NODES.map((n, i) =>
+                activeIdx === i ? (
+                  <motion.p
+                    key={n.id}
+                    initial={{ opacity: 0, y: 8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.4 }}
+                    className="absolute inset-x-0 top-0 text-mist leading-relaxed"
+                  >
+                    {n.desc}
+                  </motion.p>
+                ) : null
+              )}
+            </div>
+
             <div className="mt-8 rounded-xl border border-white/10 bg-white/[0.02] p-5">
               <div className="mb-2 text-xs uppercase tracking-[0.22em] text-mist">
-                Bucle cerrado
+                Criterio de entrega
               </div>
               <p className="text-sm leading-relaxed text-cream/80">
-                Cada ejecución regresa al Orchestrator para verificar si la meta
-                fue alcanzada. Si no, se reinicia el ciclo con una nueva
-                descomposición de tareas.
+                Cada decisión vuelve a contrastarse con el objetivo, la identidad
+                y los criterios acordados. Iteramos hasta que el conjunto sea
+                coherente, usable y comprobable.
               </p>
             </div>
           </div>

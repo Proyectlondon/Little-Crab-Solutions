@@ -25,6 +25,10 @@ export default function OceanAmbient() {
     let w = 0;
     let h = 0;
     let dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+    const prefersReducedMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)"
+    ).matches;
+    const isCompact = window.matchMedia("(max-width: 640px)").matches;
 
     const resize = () => {
       dpr = Math.min(window.devicePixelRatio || 1, 1.5);
@@ -57,11 +61,13 @@ export default function OceanAmbient() {
       ripples.push({ x: e.clientX, y: e.clientY, t: 0 });
       if (ripples.length > 8) ripples.shift();
     };
-    window.addEventListener("mousemove", onMove, { passive: true });
-    window.addEventListener("mousedown", onDown, { passive: true });
+    if (!prefersReducedMotion) {
+      window.addEventListener("mousemove", onMove, { passive: true });
+      window.addEventListener("mousedown", onDown, { passive: true });
+    }
 
     // Bubbles — generated at bottom, rise to top
-    const BUBBLE_COUNT = 24;
+    const BUBBLE_COUNT = isCompact ? 12 : 24;
     const bubbles = Array.from({ length: BUBBLE_COUNT }).map(() => ({
       x: Math.random() * w,
       y: h + Math.random() * h,
@@ -73,7 +79,7 @@ export default function OceanAmbient() {
     }));
 
     // God ray sources (fixed positions at the top, with subtle sway)
-    const RAY_COUNT = 7;
+    const RAY_COUNT = isCompact ? 4 : 7;
     const rays = Array.from({ length: RAY_COUNT }).map((_, i) => ({
       xRatio: 0.1 + (i / (RAY_COUNT - 1)) * 0.8, // spread across width
       widthBase: 80 + Math.random() * 60,
@@ -84,8 +90,19 @@ export default function OceanAmbient() {
 
     let t = 0;
     let raf = 0;
+    let scrollTarget = 0;
+    let scrollProgress = 0;
+    let pageVisible = !document.hidden;
 
     const draw = () => {
+      raf = 0;
+      if (!pageVisible) return;
+
+      scrollProgress +=
+        (scrollTarget - scrollProgress) * (prefersReducedMotion ? 1 : 0.055);
+      const depth = Math.sin(Math.PI * scrollProgress);
+      const emergence = Math.max(0, (scrollProgress - 0.78) / 0.22);
+
       ctx.clearRect(0, 0, w, h);
 
       // Smooth mouse follow
@@ -96,10 +113,24 @@ export default function OceanAmbient() {
       // Lighter blue at top (surface), darker at bottom (deep)
       ctx.globalCompositeOperation = "source-over";
       const depthGrad = ctx.createLinearGradient(0, 0, 0, h);
-      depthGrad.addColorStop(0, "rgba(20, 54, 79, 0.45)");     // ocean-deep blue at top
-      depthGrad.addColorStop(0.4, "rgba(12, 38, 58, 0.25)");   // mid
-      depthGrad.addColorStop(0.7, "rgba(7, 20, 32, 0.15)");    // darker
-      depthGrad.addColorStop(1, "rgba(3, 10, 18, 0.4)");       // abyss at bottom
+      depthGrad.addColorStop(
+        0,
+        `rgba(${Math.round(20 + emergence * 18)}, ${Math.round(
+          58 + emergence * 10
+        )}, ${Math.round(82 - depth * 24)}, ${0.5 + depth * 0.18})`
+      );
+      depthGrad.addColorStop(
+        0.45,
+        `rgba(8, ${Math.round(31 - depth * 15)}, ${Math.round(
+          48 - depth * 20
+        )}, ${0.34 + depth * 0.28})`
+      );
+      depthGrad.addColorStop(
+        1,
+        `rgba(${Math.round(3 + emergence * 16)}, ${Math.round(
+          10 + emergence * 8
+        )}, ${Math.round(18 + emergence * 4)}, ${0.5 + depth * 0.3})`
+      );
       ctx.fillStyle = depthGrad;
       ctx.fillRect(0, 0, w, h);
 
@@ -115,8 +146,9 @@ export default function OceanAmbient() {
 
         // Draw the ray as a vertical gradient trapezoid
         const rayGrad = ctx.createLinearGradient(0, 0, 0, h);
-        rayGrad.addColorStop(0, `rgba(140, 200, 240, ${ray.intensity})`);     // bright at surface
-        rayGrad.addColorStop(0.5, `rgba(86, 160, 210, ${ray.intensity * 0.5})`);
+        const rayVisibility = 1 - depth * 0.78 + emergence * 0.28;
+        rayGrad.addColorStop(0, `rgba(140, 200, 240, ${ray.intensity * rayVisibility})`);
+        rayGrad.addColorStop(0.5, `rgba(86, 160, 210, ${ray.intensity * 0.5 * rayVisibility})`);
         rayGrad.addColorStop(1, "rgba(46, 110, 158, 0)");                      // fade at bottom
 
         ctx.fillStyle = rayGrad;
@@ -156,7 +188,7 @@ export default function OceanAmbient() {
 
       // ========== 4. WAVE LINES (sine-based horizontal overlays) ==========
       ctx.globalCompositeOperation = "lighter";
-      ctx.strokeStyle = "rgba(120, 180, 220, 0.08)";
+      ctx.strokeStyle = `rgba(120, 180, 220, ${0.085 - depth * 0.045})`;
       ctx.lineWidth = 1;
       for (let i = 0; i < 5; i++) {
         ctx.beginPath();
@@ -250,16 +282,40 @@ export default function OceanAmbient() {
       }
 
       t += 1;
-      raf = requestAnimationFrame(draw);
+      if (
+        !prefersReducedMotion ||
+        Math.abs(scrollTarget - scrollProgress) > 0.001
+      ) {
+        raf = requestAnimationFrame(draw);
+      }
     };
-    raf = requestAnimationFrame(draw);
+
+    const onScroll = () => {
+      const maxScroll = Math.max(
+        1,
+        document.documentElement.scrollHeight - window.innerHeight
+      );
+      scrollTarget = Math.min(1, Math.max(0, window.scrollY / maxScroll));
+      if (pageVisible && !raf) raf = requestAnimationFrame(draw);
+    };
+
+    const onVisibilityChange = () => {
+      pageVisible = !document.hidden;
+      if (pageVisible && !raf) raf = requestAnimationFrame(draw);
+    };
 
     const onResize = () => resize();
     window.addEventListener("resize", onResize);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    document.addEventListener("visibilitychange", onVisibilityChange);
+    onScroll();
+    if (!raf) raf = requestAnimationFrame(draw);
 
     return () => {
       cancelAnimationFrame(raf);
       window.removeEventListener("resize", onResize);
+      window.removeEventListener("scroll", onScroll);
+      document.removeEventListener("visibilitychange", onVisibilityChange);
       window.removeEventListener("mousemove", onMove);
       window.removeEventListener("mousedown", onDown);
     };

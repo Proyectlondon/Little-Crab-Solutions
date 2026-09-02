@@ -6,20 +6,20 @@ import RevealText from "./RevealText";
 
 const VALUES = [
   {
-    t: "Soluciones sobre herramientas",
-    d: "No te vendemos un stack técnico, te entregamos resultados. La tecnología es el medio, tu negocio es el fin.",
+    t: "Escuchar antes de diseñar",
+    d: "Las mejores decisiones aparecen cuando entendemos tu operación, tus usuarios y lo que quieres representar.",
   },
   {
-    t: "Determinismo sobre magia",
-    d: "Preferimos lógica verificable sobre prompts impredecibles. Si algo se puede codear, se codea. Si no, se automatiza con trazabilidad.",
+    t: "Belleza que cumple una función",
+    d: "Buscamos una identidad memorable y cuidamos que la experiencia siga siendo clara, rápida y accesible.",
   },
   {
-    t: "Autonomía operativa",
-    d: "Verificamos, ejecutamos, auto-corregimos y reportamos concreto. Tu equipo queda capacitado para mantener y escalar sin nosotros.",
+    t: "Tecnología con criterio",
+    d: "Elegimos herramientas por su aporte al proyecto. Verificamos, documentamos y evitamos complejidad que no genere valor.",
   },
   {
-    t: "Veracidad sobre assumptions",
-    d: "Antes de afirmar algo, lo verificamos en código, configuración o documentación. Cero humo, cero promesas vacías.",
+    t: "Evidencia antes que suposiciones",
+    d: "Probamos lo importante y hablamos con claridad sobre capacidades, límites, costes y decisiones pendientes.",
   },
 ];
 
@@ -54,10 +54,10 @@ export default function JJStack() {
             >
               Little Crab Solutions nació de{" "}
               <span className="text-cream">John Esteban</span> y su esposa,
-              con una convicción simple: la IA debe servir al negocio, no
-              viceversa. Construimos soluciones que tus equipos pueden mantener,
-              escalar y poseer — sin ataduras a proveedores, sin suscripciones
-              eternas.
+              con la convicción de que la tecnología también puede tener alma.
+              Unimos diseño visual, desarrollo e IA para crear productos que
+              resuelven una necesidad y expresan con honestidad quién es cada
+              cliente.
             </RevealText>
 
             <RevealText
@@ -68,10 +68,10 @@ export default function JJStack() {
               Esta empresa está construida sobre tres fundamentos:{" "}
               <span className="text-cream">Dios</span> como nuestro motor y
               guía, <span className="text-cream">la familia</span> como
-              prioridad sobre cualquier negocio, y{" "}
-              <span className="text-cream">la IA</span> como herramienta para
-              servir a otros con excelencia. Tratamos a cada cliente como nos
-              gustaría ser tratados — con honestidad, transparencia y respeto.
+              prioridad sobre cualquier negocio, y el trabajo bien hecho como una
+              forma de servir. Por eso tratamos cada proyecto con cuidado,
+              honestidad y respeto, desde la primera conversación hasta el último
+              detalle.
             </RevealText>
 
             <div className="mt-8 flex items-center gap-6">

@@ -11,6 +11,7 @@ import { useEffect, useRef, useState } from "react";
  */
 export default function AudioToggle() {
   const [on, setOn] = useState(false);
+  const [available, setAvailable] = useState(true);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   useEffect(() => {
@@ -20,6 +21,8 @@ export default function AudioToggle() {
     audio.volume = 0;
     audio.preload = "auto";
     audioRef.current = audio;
+    const handleError = () => setAvailable(false);
+    audio.addEventListener("error", handleError);
 
     // Check stored preference — if user previously enabled, start on first interaction
     const stored = localStorage.getItem("lcs-ocean-audio");
@@ -34,6 +37,7 @@ export default function AudioToggle() {
     }
 
     return () => {
+      audio.removeEventListener("error", handleError);
       audio.pause();
       audio.src = "";
     };
@@ -60,6 +64,7 @@ export default function AudioToggle() {
           }
         }, 80);
       } catch (err) {
+        setAvailable(false);
         console.warn("Audio playback failed:", err);
       }
     } else {
@@ -75,6 +80,11 @@ export default function AudioToggle() {
       }, 60);
     }
   };
+
+  // Do not leave an apparently active control when a deployment does not
+  // include the optional audio asset (for example, a preview with file-size
+  // limits). The source remains available for deployments that include it.
+  if (!available) return null;
 
   return (
     <button

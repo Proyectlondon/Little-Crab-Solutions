@@ -6,7 +6,7 @@ import RevealText from "./RevealText";
 import TriangleAccent from "./TriangleAccent";
 
 const MANIFESTO =
-  "No vendemos suscripciones a la nube. Construimos soluciones de IA que son tuyas: las instalamos en tu infraestructura, las orquestamos para tu negocio, y te entregamos el control total. Sin fugas de datos, sin dependencias, sin ataduras.";
+  "Cada empresa tiene una forma propia de trabajar, hablar y crecer. La entendemos antes de diseñar. Después convertimos esa esencia en una experiencia, una automatización o un sistema de IA que encaja de verdad: útil, bello, medible y tuyo.";
 
 export default function Manifesto() {
   const ref = useRef<HTMLDivElement | null>(null);
@@ -18,8 +18,6 @@ export default function Manifesto() {
     window.addEventListener("resize", checkMobile);
     return () => window.removeEventListener("resize", checkMobile);
   }, []);
-
-  const offset = isMobile ? ["start 0.95", "end 0.15"] : ["start 0.8", "end 0.4"];
 
   const { scrollYProgress } = useScroll({
     target: ref,
@@ -73,9 +71,9 @@ export default function Manifesto() {
               delay={0.1}
               className="mt-6 font-display text-[clamp(2rem,5vw,4.5rem)] uppercase leading-[0.95] text-cream"
             >
-              Local-First.
+              Hecho a tu medida.
               <br />
-              <span className="text-gradient-coral">Siempre.</span>
+              <span className="text-gradient-coral">Pensado para durar.</span>
             </RevealText>
           </div>
           <RevealText
@@ -83,19 +81,27 @@ export default function Manifesto() {
             delay={0.2}
             className="max-w-md text-mist leading-relaxed"
           >
-            Construimos soluciones de IA para PYMEs en Latam que{" "}
-            <span className="text-cream">tú posees y controlas</span>. Más leads,
-            contenido que escala, atención 24/7 — todo en tu infraestructura,
-            sin depender de proveedores externos.
+            Tu identidad no es una capa decorativa. Es parte de la arquitectura.
+            Diseñamos desde tu contexto para que el resultado{" "}
+            <span className="text-cream">se vea, se sienta y funcione como tuyo</span>.
           </RevealText>
         </div>
 
-        <div ref={ref} className="max-w-5xl">
+        <div ref={ref} className="relative max-w-5xl">
           <p className="flex flex-wrap gap-x-[0.28em] gap-y-[0.1em] font-display text-[clamp(1.6rem,3.8vw,3.4rem)] uppercase leading-[1.15] tracking-tight">
             {words.map((word, i) => {
               const start = i / words.length;
               const end = start + 1 / words.length;
-              return <Word key={i} progress={scrollYProgress} range={[start, end]}>{word}</Word>;
+              return (
+                <Word
+                  key={i}
+                  progress={scrollYProgress}
+                  range={[start, end]}
+                  isMobile={isMobile}
+                >
+                  {word}
+                </Word>
+              );
             })}
           </p>
         </div>
@@ -105,18 +111,18 @@ export default function Manifesto() {
           {[
             {
               n: "01",
-              t: "Tú posees todo",
-              d: "El código, los workflows, los modelos y los datos viven en tu infraestructura. Nada alquilado, nada en la nube de terceros. Si mañana dejas de pagar, sigues teniendo todo funcionando.",
+              t: "Partimos de tu realidad",
+              d: "Primero entendemos tu negocio, tus usuarios, tu lenguaje y tus límites. La solución nace del problema correcto, no de una herramienta de moda.",
             },
             {
               n: "02",
-              t: "Costo operativo cero",
-              d: "Sin facturas mensuales de APIs. Sin sorpresas a fin de mes. Procesamiento ilimitado sobre tu hardware. Lo que inviertes es en construir, no en mantener suscripciones.",
+              t: "Diseño con intención",
+              d: "La estrategia, la experiencia, el movimiento y cada detalle visual trabajan juntos para comunicar quién eres y guiar a las personas hacia una acción clara.",
             },
             {
               n: "03",
-              t: "Soluciones a tu medida",
-              d: "No vendemos cajas cerradas. Diseñamos pipelines que se adaptan a tu flujo de negocio: marketing, ventas, soporte, contenido. Cada pieza es reemplazable y escalable.",
+              t: "Propiedad y evolución",
+              d: "Entregamos código, documentación y criterio para que puedas operar, mantener y hacer crecer el producto. Cuando conviene, priorizamos una arquitectura local y abierta.",
             },
           ].map((p, i) => (
             <RevealText
@@ -142,12 +148,13 @@ function Word({
   children,
   progress,
   range,
+  isMobile,
 }: {
   children: string;
   progress: any;
   range: [number, number];
+  isMobile: boolean;
 }) {
-  const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
   const opacity = useTransform(progress, range, [isMobile ? 0.4 : 0.15, 1]);
   const y = useTransform(progress, range, [isMobile ? 4 : 8, 0]);
   return (

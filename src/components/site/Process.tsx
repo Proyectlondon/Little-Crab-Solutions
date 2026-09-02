@@ -7,27 +7,27 @@ import RevealText from "./RevealText";
 const STEPS = [
   {
     n: "01",
-    t: "Diagnóstico & Arquitectura",
-    d: "Entendemos tu negocio: qué te duele, qué procesos consumen tiempo, dónde pierdes dinero. Definimos KPIs claros (CAC, LTV, ROAS, velocidad de lead) y diseñamos la arquitectura de soluciones que los va a mover. Entregable: hoja de ruta clara y priorizada.",
-    tags: ["Análisis de negocio", "KPIs medibles", "Hoja de ruta", "Sin compromiso"],
+    t: "Descubrimiento",
+    d: "Escuchamos tu visión, estudiamos a las personas que usarán el producto y revisamos el contexto técnico. Acordamos el problema, el alcance y los criterios con los que evaluaremos el resultado.",
+    tags: ["Contexto", "Usuarios", "Objetivos", "Criterios claros"],
   },
   {
     n: "02",
-    t: "Build & Integración",
-    d: "Construimos las soluciones prioritarias en tu infraestructura. Integramos con las herramientas que ya usas (CRM, Slack, WhatsApp, Meta Ads) para que todo hable el mismo idioma. Tu primer workflow en producción, no un demo.",
-    tags: ["Integración con tu stack", "Workflow en producción", "Tú posees el código", "Sin vendor lock-in"],
+    t: "Dirección & Arquitectura",
+    d: "Definimos el concepto visual, el recorrido y la arquitectura del sistema. Prototipamos las decisiones importantes para que puedas ver y cuestionar la solución antes de invertir en construirla completa.",
+    tags: ["Concepto visual", "Prototipo", "Arquitectura", "Decisiones compartidas"],
   },
   {
     n: "03",
-    t: "Escalamiento & Autonomía",
-    d: "Automatizamos los procesos restantes, entrenamos a tu equipo en 3 sesiones hands-on para que puedan mantener y escalar sin nosotros. Handover total: código, documentación, credenciales, runbooks. Soporte 30 días post-lanzamiento incluido.",
-    tags: ["Equipo capacitado", "Documentación completa", "Handover total", "Soporte 30d"],
+    t: "Construcción & Validación",
+    d: "Desarrollamos por entregas revisables. Probamos el comportamiento, el contenido, la accesibilidad, el rendimiento y las integraciones con casos cercanos al uso real.",
+    tags: ["Iteraciones", "Pruebas reales", "Accesibilidad", "Rendimiento"],
   },
   {
     n: "04",
-    t: "Partner Continuo",
-    d: "Si quieres seguir creciendo, ofrecemos retainer mensual opcional: nuevos workflows, optimización de modelos, monitoreo y soporte prioritario. Seguimos mejorando tus soluciones de IA que trabajan 24/7 por ti.",
-    tags: ["Retainer opcional", "Nuevas soluciones", "Optimización continua", "Soporte prioritario"],
+    t: "Entrega & Evolución",
+    d: "Entregamos el producto, el código y la documentación acordada. Tu equipo entiende cómo operarlo y decidimos juntos si conviene acompañar el lanzamiento o continuar con nuevas etapas.",
+    tags: ["Propiedad clara", "Documentación", "Transferencia", "Acompañamiento opcional"],
   },
 ];
 
@@ -70,9 +70,9 @@ export default function Process() {
             delay={0.2}
             className="max-w-md text-mist leading-relaxed"
           >
-            Cuatro fases en 12 semanas. No entregamos un demo y desaparecemos:
-            dejamos soluciones funcionando, equipo capacitado, y resultados
-            medibles. Tu IA trabajando 24/7, sin que tengas que entenderla.
+            El tiempo y el equipo dependen del alcance. El recorrido se mantiene:
+            entender antes de diseñar, validar antes de construir de más y
+            entregar algo que puedas usar y hacer crecer.
           </RevealText>
         </div>
 

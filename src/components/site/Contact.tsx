@@ -6,18 +6,18 @@ import { toast } from "sonner";
 import RevealText from "./RevealText";
 
 const SCOPES = [
-  "Marketing & Ventas",
-  "Contenido Visual",
-  "Atención al Cliente 24/7",
-  "Sitios Web",
-  "Modelos por Nicho",
+  "Producto o sitio web",
+  "Automatización",
+  "Contenido visual",
+  "Asistente conversacional",
+  "IA aplicada",
 ];
 
 // Formspree endpoint — Reemplaza con tu Form ID real
 const FORMSPREE_ENDPOINT = "https://formspree.io/f/mzdlkjqv";
 
 export default function Contact() {
-  const [scope, setScope] = useState<string[]>(["Marketing & Ventas"]);
+  const [scope, setScope] = useState<string[]>(["Producto o sitio web"]);
   const [sending, setSending] = useState(false);
 
   const toggleScope = (s: string) => {
@@ -87,21 +87,21 @@ export default function Contact() {
               delay={0.1}
               className="mt-6 font-display text-[clamp(2.2rem,6vw,5.5rem)] uppercase leading-[0.92] text-cream"
             >
-              ¿Listo para tu
+              ¿Qué quieres
               <br />
-              <span className="text-gradient-coral">ejército de IA</span>
+              <span className="text-gradient-coral">hacer posible</span>
               <br />
-              local?
+              con nosotros?
             </RevealText>
             <RevealText
               as="p"
               delay={0.2}
               className="mt-8 max-w-md text-mist leading-relaxed"
             >
-              Agenda una llamada de 30 min sin compromiso. Revisamos tu stack
-              actual, definimos el primer workflow de alto impacto, y te damos
-              hoja de ruta clara. Garantía: si el piloto no mejora tu métrica
-              objetivo en 30 días, devolvemos el 50%.
+              Cuéntanos qué estás imaginando, qué necesitas resolver y por qué es
+              importante para ti. En la primera conversación aclaramos el reto,
+              el mejor punto de partida y si somos el equipo adecuado para
+              construirlo contigo.
             </RevealText>
 
             <div className="mt-12 space-y-6">
@@ -192,6 +192,7 @@ export default function Contact() {
                       key={s}
                       type="button"
                       onClick={() => toggleScope(s)}
+                      aria-pressed={active}
                       className={`rounded-full border px-4 py-2 text-sm transition-all ${
                         active
                           ? "border-crab bg-crab text-abyss"
@@ -213,14 +214,14 @@ export default function Contact() {
                 name="message"
                 rows={4}
                 className="lcs-input resize-none"
-                placeholder="Cuéntanos tu caso de uso, hardware disponible y restricciones."
+                placeholder="Cuéntanos la idea, el problema y lo que te gustaría que las personas sintieran o lograran."
               />
             </label>
 
             <div className="mt-10 flex flex-wrap items-center justify-between gap-4">
               <p className="max-w-xs text-xs text-mist">
-                Al enviar aceptas ser contactado por el equipo de Little Crab
-                Solutions. Nunca compartimos tu información.
+                Usaremos estos datos para responder tu solicitud. El envío se
+                procesa de forma segura mediante Formspree.
               </p>
               <button
                 type="submit"

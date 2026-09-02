@@ -1,79 +1,89 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Cpu, Workflow, Image as ImageIcon, Network } from "lucide-react";
+import { LayoutTemplate, Workflow, Palette, MessagesSquare, Sparkles } from "lucide-react";
 import RevealText from "./RevealText";
 import TriangleAccent from "./TriangleAccent";
 
 const SERVICES = [
   {
     n: "01",
-    icon: Workflow,
-    title: "Marketing & Ventas que Convierten",
-    stack: ["Automatización", "Lead Gen", "Funnels", "CRM"],
+    icon: LayoutTemplate,
+    title: "Productos Digitales con Identidad",
+    stack: ["Web", "Landings", "Aplicaciones", "UX/UI"],
     description:
-      "Más leads cualificados, menos tareas manuales. Diseñamos pipelines que captan, califican y nutren prospectos automáticamente — desde el primer contacto hasta la venta, con seguimientos que ningún equipo humano podría sostener 24/7.",
+      "Diseñamos y construimos experiencias digitales que expresan la personalidad de tu marca y facilitan una acción concreta. La estética, el contenido y la tecnología se resuelven como un solo producto.",
+    detail:
+      "Partimos de la historia que quieres contar y de la acción que debe poder realizar tu visitante. Definimos la estructura, el lenguaje visual y los estados de la interfaz antes de convertirlos en un producto que tu equipo pueda mantener.",
     benefits: [
-      "Captación automática de leads con scoring inteligente",
-      "Funnels completos: formulario → CRM → email/SMS → cierre",
-      "Social Media Autopilot: contenido programado sin horas manuales",
-      "Dashboards de conversión que entiende cualquier dueño de negocio",
+      "Dirección visual creada para tu proyecto",
+      "Arquitectura de contenido y recorrido del usuario",
+      "Desarrollo responsive y accesible",
+      "SEO y rendimiento medidos antes de entregar",
     ],
   },
   {
     n: "02",
-    icon: ImageIcon,
-    title: "Contenido Visual que Escala",
-    stack: ["Imágenes", "Video", "Brand", "Avatares"],
+    icon: Workflow,
+    title: "Automatización que Encaja",
+    stack: ["Procesos", "Agentes", "Integraciones", "Datos"],
     description:
-      "Assets de marca consistentes a demanda: imágenes de producto, videos verticales para Reels y TikTok, avatares parlantes para demos y onboarding. Tu marca con presencia profesional en cada canal, sin dependencias de diseñadores externos.",
+      "Conectamos las herramientas que ya usas y automatizamos tareas repetitivas sin imponer una operación ajena. Cada flujo incluye controles, trazabilidad y una salida comprensible para tu equipo.",
+    detail:
+      "Observamos cómo trabaja hoy tu equipo, detectamos dónde se pierde tiempo y diseñamos el flujo con las herramientas que ya forman parte de la operación. La automatización se entrega documentada, con puntos de revisión y una forma clara de corregirla.",
     benefits: [
-      "Imágenes de producto y lifestyle con estilo de marca consistente",
-      "Videos verticales listos para Reels, TikTok y Shorts",
-      "Avatares parlantes para demos, onboarding y FAQs",
-      "Calidad de agencia, velocidad de IA, costo de cero",
+      "Captura, clasificación y seguimiento de oportunidades",
+      "Flujos entre formularios, CRM y mensajería",
+      "Agentes con revisión humana cuando importa",
+      "Paneles y alertas para entender qué ocurre",
     ],
   },
   {
     n: "03",
-    icon: Network,
-    title: "Atención al Cliente 24/7",
-    stack: ["Chatbots", "Voice Agents", "WhatsApp", "Soporte"],
+    icon: Palette,
+    title: "Sistemas de Contenido Visual",
+    stack: ["Imagen", "Video", "Marca", "IA Generativa"],
     description:
-      "Chatbots y agentes de voz que atienden a tus clientes en cualquier momento, en su idioma, conociendo tu negocio. Resuelven consultas comunes, agendan citas y escalan a humano solo cuando es necesario — tus clientes nunca esperan.",
+      "Creamos sistemas para producir imágenes, piezas y video sin perder la identidad de marca. Combinamos dirección de arte, plantillas y modelos generativos según el nivel de control que necesites.",
+    detail:
+      "Construimos una dirección visual utilizable: referencias, reglas, plantillas y ejemplos que ayudan a producir nuevas piezas sin empezar desde cero. La IA entra solo donde mejora el ritmo de trabajo y conserva el criterio de tu marca.",
     benefits: [
-      "Chatbots que conocen tu negocio y tu tono de marca",
-      "Agentes de voz que atienden WhatsApp y llamadas 24/7",
-      "Integración con Discord, Telegram y Slack",
-      "Los modelos se entrenan con tu conocimiento, no genéricos",
+      "Lenguaje visual y reglas de consistencia",
+      "Piezas de producto, campañas y redes",
+      "Video vertical, demos y contenido educativo",
+      "Flujos reutilizables para crecer con orden",
     ],
   },
   {
     n: "04",
-    icon: Cpu,
-    title: "Sitios Web que Venden",
-    stack: ["Landings", "E-commerce", "PWA", "SEO"],
+    icon: MessagesSquare,
+    title: "Experiencias Conversacionales",
+    stack: ["Chat", "Voz", "WhatsApp", "Soporte"],
     description:
-      "Landing pages y sitios web de alta conversión, optimizados para velocidad y SEO. Diseñamos experiencias que cargan rápido, se ven increíbles y guían al visitante hacia la acción. Performance first: Core Web Vitals verdes desde el día uno.",
+      "Diseñamos asistentes que responden con el conocimiento y el tono de tu organización. Pueden orientar, recopilar información, agendar y escalar a una persona cuando el caso lo requiere.",
+    detail:
+      "Definimos qué puede responder el asistente, qué fuentes puede consultar y cuándo debe pasar la conversación a una persona. Probamos las rutas principales con lenguaje real para que la experiencia sea útil y reconocible.",
     benefits: [
-      "Landings optimizadas para conversión desde el diseño",
-      "Carga ultrarrápida: Core Web Vitals en verde",
-      "SEO técnico: schema, sitemap, robots configurados",
-      "PWA: tu sitio funciona incluso offline",
+      "Conversaciones alineadas con tu voz de marca",
+      "Base de conocimiento con fuentes controladas",
+      "Integración con tus canales y procesos",
+      "Límites, registro y transferencia a humano",
     ],
   },
   {
     n: "05",
-    icon: ImageIcon,
-    title: "Modelos Entrenados para Tu Nicho",
-    stack: ["LoRA", "Fine-tuning", "Dominio", "Marca"],
+    icon: Sparkles,
+    title: "IA Aplicada a Tu Contexto",
+    stack: ["RAG", "Fine-tuning", "Local", "Cloud"],
     description:
-      "No usamos modelos genéricos. Entrenamos IA especializada en tu industria — legal, inmobiliario, contable, SaaS — para que entienda tu jerga, tus procesos y tus clientes. La IA trabaja para ti, no para todos.",
+      "Elegimos la arquitectura y el modelo a partir de tus datos, privacidad, presupuesto y objetivo. Puede ser local, en la nube o híbrido; justificamos la decisión y evitamos dependencias innecesarias.",
+    detail:
+      "Comparamos las opciones con casos de uso concretos y dejamos claros sus costes, límites y responsabilidades. El resultado es una base que puedes entender, evaluar y hacer evolucionar sin quedar atado a una única herramienta.",
     benefits: [
-      "Modelos que hablan el lenguaje de tu industria",
-      "Consistencia visual de marca en cada asset generado",
-      "Conocimiento empresarial que no se va a la competencia",
-      "Los pesos y modelos son tuyos, para siempre",
+      "Búsqueda y respuestas sobre tu conocimiento",
+      "Modelos visuales adaptados cuando aportan valor",
+      "Privacidad y costes definidos desde el diseño",
+      "Evaluación con casos reales antes de producción",
     ],
   },
 ];
@@ -117,9 +127,9 @@ export default function Services() {
               delay={0.1}
               className="mt-6 font-display text-[clamp(2rem,5.5vw,5rem)] uppercase leading-[0.95] text-cream"
             >
-              Soluciones
+              Lo que podemos
               <br />
-              de <span className="text-gradient-coral">impacto real</span>
+              <span className="text-gradient-coral">crear contigo</span>
             </RevealText>
           </div>
           <RevealText
@@ -127,9 +137,9 @@ export default function Services() {
             delay={0.2}
             className="max-w-md text-mist leading-relaxed"
           >
-            No vendemos tecnología, vendemos resultados. Cada solución está
-            diseñada para resolver un problema concreto de tu negocio — y tú
-            posees todo al final. Sin cajas cerradas, sin dependencias.
+            El alcance cambia con cada cliente. Estas son capacidades que
+            combinamos para construir la respuesta adecuada, desde una landing
+            singular hasta un sistema de automatización completo.
           </RevealText>
         </div>
 
@@ -211,13 +221,21 @@ export default function Services() {
                   ))}
                 </ul>
 
-                {/* Hover arrow */}
-                <div className="mt-10 flex items-center gap-3 text-sm text-mist transition-colors group-hover:text-crab">
-                  <span className="link-underline">Conocer más</span>
-                  <span className="transition-transform duration-500 group-hover:translate-x-2">
-                    →
-                  </span>
-                </div>
+                {/* Expandable detail */}
+                <details className="group/details mt-10">
+                  <summary className="flex cursor-pointer list-none items-center gap-3 text-sm text-mist transition-colors hover:text-crab [&::-webkit-details-marker]:hidden">
+                    <span className="link-underline">Conocer más</span>
+                    <span aria-hidden className="text-lg leading-none">+</span>
+                  </summary>
+                  <div className="mt-6 border-t border-white/10 pt-5">
+                    <div className="mb-2 text-xs uppercase tracking-[0.22em] text-mist">
+                      Cómo lo abordamos
+                    </div>
+                    <p className="max-w-xl text-sm leading-relaxed text-cream/80">
+                      {s.detail}
+                    </p>
+                  </div>
+                </details>
               </motion.article>
             );
           })}

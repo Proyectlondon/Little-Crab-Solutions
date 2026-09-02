@@ -5,9 +5,8 @@ import { useRef } from "react";
 import ParticleBackground from "./ParticleBackground";
 
 const TITLE_LINES = [
-  ["IA", "que trabaja"],
-  ["por ti,"],
-  ["no", "por", "la nube."],
+  ["Diseñamos", "tecnología"],
+  ["con", "tu", "esencia."],
 ];
 
 export default function Hero() {
@@ -54,9 +53,9 @@ export default function Hero() {
         >
           <span className="tag-pill">
             <span className="dot" />
-            Soluciones de IA para PYMEs · Latam
+            Diseño, software e IA · Latam
           </span>
-          <span className="tag-pill">Sin suscripciones · Sin nube</span>
+          <span className="tag-pill">A medida · Propiedad tuya</span>
         </motion.div>
 
         {/* Title */}
@@ -77,7 +76,7 @@ export default function Hero() {
                   <span
                     key={wi}
                     className={
-                      word === "privada." || word === "nube."
+                      word === "esencia."
                         ? "text-gradient-coral"
                         : "text-cream"
                     }
@@ -97,9 +96,10 @@ export default function Hero() {
           transition={{ duration: 0.8, delay: 0.7, ease: [0.16, 1, 0.3, 1] }}
           className="mt-6 max-w-2xl text-balance text-base leading-relaxed text-mist sm:text-lg"
         >
-          Más leads, menos costo, contenido que escala y atención 24/7. Diseñamos
-          soluciones de IA que viven en tu infraestructura — tú posees todo, tú
-          controlas todo. Sin depender de proveedores externos.
+          Convertimos tu visión en experiencias digitales, automatizaciones y
+          sistemas de IA que se sienten propios de tu marca y encajan en tu forma
+          de trabajar. Cada decisión tiene intención; cada entrega queda bajo tu
+          control.
         </motion.p>
 
         {/* CTAs */}
@@ -110,11 +110,11 @@ export default function Hero() {
           className="mt-8 flex flex-wrap items-center gap-4"
         >
           <a href="#contacto" className="magnetic-btn" data-hover>
-            Agenda tu diagnóstico gratis
+            Cuéntanos qué quieres crear
             <span aria-hidden>→</span>
           </a>
           <a href="#servicios" className="magnetic-btn outline" data-hover>
-            Ver cómo funciona
+            Explorar soluciones
           </a>
         </motion.div>
 
@@ -126,10 +126,10 @@ export default function Hero() {
           className="mt-12 grid grid-cols-2 gap-6 border-t border-white/10 pt-8 sm:grid-cols-4"
         >
           {[
-            { k: "$0", l: "Costo mensual en APIs" },
-            { k: "24/7", l: "Tu IA trabajando" },
-            { k: "100%", l: "Tú posees el código" },
-            { k: "30d", l: "Garantía o 50% devuelto" },
+            { k: "Única", l: "Dirección visual para tu marca" },
+            { k: "Útil", l: "Tecnología que resuelve" },
+            { k: "Tuya", l: "Código y entregables" },
+            { k: "Cerca", l: "Acompañamiento en Latam" },
           ].map((s, i) => (
             <div key={i} className="flex flex-col">
               <span className="font-display text-4xl text-cream sm:text-5xl">

@@ -6,11 +6,11 @@ const COLS = [
   {
     title: "Soluciones",
     links: [
-      { l: "Marketing & Ventas", h: "#servicios" },
-      { l: "Contenido Visual", h: "#servicios" },
-      { l: "Atención al Cliente 24/7", h: "#servicios" },
-      { l: "Sitios Web", h: "#servicios" },
-      { l: "Modelos por Nicho", h: "#servicios" },
+      { l: "Productos digitales", h: "#servicios" },
+      { l: "Automatización", h: "#servicios" },
+      { l: "Contenido visual", h: "#servicios" },
+      { l: "Experiencias conversacionales", h: "#servicios" },
+      { l: "IA aplicada", h: "#servicios" },
     ],
   },
   {
@@ -23,13 +23,13 @@ const COLS = [
     ],
   },
   {
-    title: "Por qué Local-First",
+    title: "Cómo trabajamos",
     links: [
-      { l: "Tú posees el código", h: "#filosofia" },
-      { l: "Sin suscripciones", h: "#filosofia" },
-      { l: "Datos privados", h: "#filosofia" },
-      { l: "Funciona offline", h: "#filosofia" },
-      { l: "Garantía 30 días", h: "#contacto" },
+      { l: "Diseño a medida", h: "#filosofia" },
+      { l: "Calidad verificable", h: "#swarm" },
+      { l: "Propiedad clara", h: "#proceso" },
+      { l: "Arquitectura local cuando conviene", h: "#servicios" },
+      { l: "Acompañamiento cercano", h: "#contacto" },
     ],
   },
 ];
@@ -59,13 +59,13 @@ export default function Footer() {
                   Little Crab Solutions
                 </span>
                 <span className="text-[10px] uppercase tracking-[0.22em] text-mist">
-                  JJ Stack Ecosystem
+                  Diseño + tecnología
                 </span>
               </div>
             </div>
             <p className="mt-6 max-w-xs text-sm text-mist leading-relaxed">
-              Soluciones de IA para PYMEs en Latam. Tu negocio potenciado,
-              tu infraestructura, tus reglas.
+              Productos digitales, automatización e IA creados alrededor de tu
+              negocio, tu identidad y tu manera de trabajar.
             </p>
           </div>
 
@@ -106,7 +106,7 @@ export default function Footer() {
           <div className="flex flex-wrap items-center gap-6">
             <span className="flex items-center gap-2">
               <span className="h-1.5 w-1.5 rounded-full bg-crab shadow-[0_0_10px_#E54B1B]" />
-              100% local · Sin vendor lock-in · Garantía 30d
+              A medida · Propiedad clara · Calidad verificable
             </span>
             <a href="#top" className="link-underline hover:text-cream">
               Volver arriba ↑
